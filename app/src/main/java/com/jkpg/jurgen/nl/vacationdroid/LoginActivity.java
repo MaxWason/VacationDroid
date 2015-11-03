@@ -34,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onNewAccountPress(View v) {
 
+        //show the register fragment
         getFragmentManager().beginTransaction()
                 .hide(login)
                 .show(register)
@@ -52,6 +53,14 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
+    public void onRegisterPress(View v) {
+        //register new account
+
+        //get token for new account
+
+        //goto overview activity
+
+    }
     @Override
     public void onBackPressed() {
 
