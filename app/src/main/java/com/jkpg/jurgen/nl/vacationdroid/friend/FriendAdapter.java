@@ -1,4 +1,4 @@
-package com.jkpg.jurgen.nl.vacationdroid;
+package com.jkpg.jurgen.nl.vacationdroid.friend;
 
 import android.app.Activity;
 import android.content.Context;
@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.jkpg.jurgen.nl.vacationdroid.R;
 
 import java.util.ArrayList;
 

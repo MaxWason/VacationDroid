@@ -1,9 +1,14 @@
-package com.jkpg.jurgen.nl.vacationdroid;
+package com.jkpg.jurgen.nl.vacationdroid.Login;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+
+import com.jkpg.jurgen.nl.vacationdroid.LoginFragment;
+import com.jkpg.jurgen.nl.vacationdroid.OverviewActivity;
+import com.jkpg.jurgen.nl.vacationdroid.R;
+import com.jkpg.jurgen.nl.vacationdroid.RegisterFragment;
 
 public class LoginActivity extends AppCompatActivity {
 

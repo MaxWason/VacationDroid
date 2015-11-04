@@ -1,4 +1,4 @@
-package com.jkpg.jurgen.nl.vacationdroid;
+package com.jkpg.jurgen.nl.vacationdroid.friend;
 
 
 /**
