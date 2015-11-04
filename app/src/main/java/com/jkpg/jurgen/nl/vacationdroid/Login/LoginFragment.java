@@ -1,4 +1,4 @@
-package com.jkpg.jurgen.nl.vacationdroid.Login;
+package com.jkpg.jurgen.nl.vacationdroid.login;
 
 
 import android.os.Bundle;
