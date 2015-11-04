@@ -59,11 +59,11 @@
         android:layout_height="wrap_content"
         android:text="new account"
         android:id="@+id/gotoRegister"
-        android:layout_alignTop="@+id/LoginButton"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
         android:onClick="onNewAccountPress"
-        android:nestedScrollingEnabled="true" />
+        android:nestedScrollingEnabled="true"
+        android:layout_below="@+id/LoginButton"
+        android:layout_alignLeft="@+id/imageView2"
+        android:layout_alignStart="@+id/imageView2" />
 
 
 
