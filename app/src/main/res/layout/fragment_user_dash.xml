@@ -7,7 +7,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right|top"
         android:alignmentMode="alignMargins"
-        android:columnCount="3"
+        android:columnCount="8"
         android:rowCount="4">
 
         <TextView
@@ -26,12 +26,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Vacation name"
+            android:text="Vacations View"
             android:id="@+id/textView2"
             android:layout_row="0"
             android:layout_column="1"
             android:layout_margin="8dp"
-            android:layout_gravity="left" />
+            android:layout_gravity="left"
+            android:clickable="true"
+            android:onClick="onVacationNamePress" />
 
         <ImageView
             android:layout_width="128dp"
@@ -52,5 +54,6 @@
             android:layout_column="1"
             android:layout_gravity="top|left"
             android:layout_margin="8dp" />
+
     </GridLayout>
 </FrameLayout>
