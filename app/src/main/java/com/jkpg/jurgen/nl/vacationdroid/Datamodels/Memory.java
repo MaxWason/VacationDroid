@@ -1,4 +1,4 @@
-package com.jkpg.jurgen.nl.vacationdroid.Datamodels;
+package com.jkpg.jurgen.nl.vacationdroid.datamodels;
 
 /**
  * Created by Jurgen on 11/5/2015.

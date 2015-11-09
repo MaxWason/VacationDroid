@@ -11,7 +11,6 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
-import com.jkpg.jurgen.nl.vacationdroid.Datamodels.Friend;
 import com.jkpg.jurgen.nl.vacationdroid.R;
 import java.util.ArrayList;
 
