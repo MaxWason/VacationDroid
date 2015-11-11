@@ -10,8 +10,11 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.jkpg.jurgen.nl.vacationdroid.R;
+import com.jkpg.jurgen.nl.vacationdroid.core.vacations.logic.VacationsAdapter;
+import com.jkpg.jurgen.nl.vacationdroid.core.vacations.logic.VacationsDummy;
+import com.jkpg.jurgen.nl.vacationdroid.core.vacations.logic.VacationsItem;
 
-public class VacationsActivity extends AppCompatActivity {
+public class VacationsActivity extends AppCompatActivity implements VacationsItem.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,4 +55,8 @@ public class VacationsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onFragmentInteraction(String id) {
+
+    }
 }
