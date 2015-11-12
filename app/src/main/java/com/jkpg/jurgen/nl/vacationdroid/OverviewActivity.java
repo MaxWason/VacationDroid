@@ -15,7 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.jkpg.jurgen.nl.vacationdroid.friendlist.Friend;
-import com.jkpg.jurgen.nl.vacationdroid.core.vacationList.VacationsActivity;
+import com.jkpg.jurgen.nl.vacationdroid.core.vacationList.VacationListActivity;
 import com.jkpg.jurgen.nl.vacationdroid.friendlist.FriendItem;
 
 import java.util.ArrayList;
@@ -122,7 +122,7 @@ public class OverviewActivity extends AppCompatActivity
     }
 
     public void onVacationNamePress(View v){
-        Intent gotoVacation = new Intent(this, VacationsActivity.class);
+        Intent gotoVacation = new Intent(this, VacationListActivity.class);
         startActivity(gotoVacation);
     }
 }

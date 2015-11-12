@@ -12,12 +12,12 @@ import android.view.View;
 import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.vacationList.logic.VacationsItem;
 
-public class VacationsActivity extends AppCompatActivity implements VacationsItem.OnFragmentInteractionListener {
+public class VacationListActivity extends AppCompatActivity implements VacationsItem.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.vacations_activity);
+        setContentView(R.layout.vacation_list_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 

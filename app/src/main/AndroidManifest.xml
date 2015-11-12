@@ -24,8 +24,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".core.vacationList.VacationsActivity"
-            android:label="@string/title_activity_vacation"
+            android:name=".core.vacationList.VacationListActivity"
+            android:label="@string/title_activity_vacation_list"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity

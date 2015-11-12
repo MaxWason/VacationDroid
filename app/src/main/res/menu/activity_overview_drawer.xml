@@ -2,6 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
+        <item android:id="@+id/my_account"
+            android:icon="@drawable/ic_person_black"
+            android:title="My Account"/>
         <item android:id="@+id/nav_camara"
             android:icon="@android:drawable/ic_menu_camera"
             android:title="Import" />
@@ -26,9 +29,6 @@
 
     <item android:title="Other">
         <menu>
-            <item android:id="@+id/my_account"
-                android:icon="@drawable/ic_person_black"
-                android:title="My Account"/>
             <item android:id="@+id/settings"
                 android:icon="@android:drawable/ic_menu_preferences"
                 android:title="Settings"/>
