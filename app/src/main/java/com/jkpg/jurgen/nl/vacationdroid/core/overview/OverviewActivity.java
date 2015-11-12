@@ -1,11 +1,10 @@
-package com.jkpg.jurgen.nl.vacationdroid;
+package com.jkpg.jurgen.nl.vacationdroid.core.overview;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -13,11 +12,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
+import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.vacation.VacationActivity;
-import com.jkpg.jurgen.nl.vacationdroid.friendlist.Friend;
-import com.jkpg.jurgen.nl.vacationdroid.core.vacations.VacationsActivity;
-import com.jkpg.jurgen.nl.vacationdroid.friendlist.FriendItem;
+import com.jkpg.jurgen.nl.vacationdroid.core.vacationList.VacationListActivity;
+import com.jkpg.jurgen.nl.vacationdroid.friends.Friend;
+import com.jkpg.jurgen.nl.vacationdroid.friends.FriendItem;
 
 import java.util.ArrayList;
 
@@ -29,7 +30,7 @@ public class OverviewActivity extends AppCompatActivity
 
     @Override
     public void onFragmentInteraction(String id) {
-        Intent intent = new Intent(OverviewActivity.this,VacationActivity.class);
+        Intent intent = new Intent(OverviewActivity.this, VacationActivity.class);
         startActivity(intent);
         //Open the VacationActivity
         //Fails if you press the last fragment of the overview.
@@ -110,11 +111,13 @@ public class OverviewActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_slideshow) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.view_friends) {
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.add_or_remove_friend) {
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.my_account) {
+
+        } else if (id == R.id.settings) {
 
         }
 
@@ -123,8 +126,8 @@ public class OverviewActivity extends AppCompatActivity
         return true;
     }
 
-    public void onVacationNamePress(View v){
-        Intent gotoVacation = new Intent(this, VacationsActivity.class);
-        startActivity(gotoVacation);
+    public void onVacationListPress(View v){
+        Intent gotoVacationList = new Intent(this, VacationListActivity.class);
+        startActivity(gotoVacationList);
     }
 }

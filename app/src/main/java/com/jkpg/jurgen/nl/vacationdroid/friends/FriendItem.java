@@ -1,4 +1,4 @@
-package com.jkpg.jurgen.nl.vacationdroid.friendlist;
+package com.jkpg.jurgen.nl.vacationdroid.friends;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -12,6 +12,8 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.jkpg.jurgen.nl.vacationdroid.R;
+import com.jkpg.jurgen.nl.vacationdroid.core.overview.OverviewActivity;
+
 import java.util.ArrayList;
 
 /**
@@ -129,6 +131,8 @@ public class FriendItem extends Fragment implements AbsListView.OnItemClickListe
 
             //mListener.onFragmentInteraction(friends.get(position).id);
         }
+        OverviewActivity ac = (OverviewActivity) getActivity();
+        ac.onFragmentInteraction(null);
     }
 
     /**

@@ -33,7 +33,7 @@
             android:layout_margin="8dp"
             android:layout_gravity="left"
             android:clickable="true"
-            android:onClick="onVacationNamePress" />
+            android:onClick="onVacationListPress" />
 
         <ImageView
             android:layout_width="128dp"

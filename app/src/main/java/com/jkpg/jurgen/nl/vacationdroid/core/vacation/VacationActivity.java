@@ -8,8 +8,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
-
-import com.jkpg.jurgen.nl.vacationdroid.ImageAdapter;
 import com.jkpg.jurgen.nl.vacationdroid.R;
 
 public class VacationActivity extends AppCompatActivity {

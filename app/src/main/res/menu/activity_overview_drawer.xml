@@ -2,22 +2,36 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-        <item android:id="@+id/nav_camara" android:icon="@android:drawable/ic_menu_camera"
+        <item android:id="@+id/my_account"
+            android:icon="@drawable/ic_person_black"
+            android:title="My Account"/>
+        <item android:id="@+id/nav_camara"
+            android:icon="@android:drawable/ic_menu_camera"
             android:title="Import" />
-        <item android:id="@+id/nav_gallery" android:icon="@android:drawable/ic_menu_gallery"
+        <item android:id="@+id/nav_gallery"
+            android:icon="@android:drawable/ic_menu_gallery"
             android:title="Gallery" />
-        <item android:id="@+id/nav_slideshow" android:icon="@android:drawable/ic_menu_slideshow"
+        <item android:id="@+id/nav_slideshow"
+            android:icon="@android:drawable/ic_menu_slideshow"
             android:title="Slideshow" />
-        <item android:id="@+id/nav_manage" android:icon="@android:drawable/ic_menu_manage"
-            android:title="Tools" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="Friends">
         <menu>
-            <item android:id="@+id/nav_share" android:icon="@android:drawable/ic_menu_share"
-                android:title="Share" />
-            <item android:id="@+id/nav_send" android:icon="@android:drawable/ic_menu_send"
-                android:title="Send" />
+            <item android:id="@+id/view_friends"
+                android:icon="@drawable/ic_group_black"
+                android:title="View my friends" />
+            <item android:id="@+id/add_or_remove_friend"
+                android:icon="@drawable/ic_group_add_black"
+                android:title="Add or remove a friend" />
+        </menu>
+    </item>
+
+    <item android:title="Other">
+        <menu>
+            <item android:id="@+id/settings"
+                android:icon="@android:drawable/ic_menu_preferences"
+                android:title="Settings"/>
         </menu>
     </item>
 

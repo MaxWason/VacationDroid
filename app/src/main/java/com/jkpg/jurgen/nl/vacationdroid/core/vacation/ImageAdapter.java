@@ -1,4 +1,4 @@
-package com.jkpg.jurgen.nl.vacationdroid;
+package com.jkpg.jurgen.nl.vacationdroid.core.vacation;
 
 import android.content.Context;
 import android.view.View;
@@ -6,6 +6,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+
+import com.jkpg.jurgen.nl.vacationdroid.R;
 
 /**
  * Created by Antoine on 09/11/2015.

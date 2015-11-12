@@ -7,9 +7,12 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_login">LoginActivity</string>
 
+    <string name="title_activity_vacation_list">VacationListActivity</string>
+    <string name="title_activity_memories">MemoriesActivity</string>
+
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_vacation">VacationActivity</string>
+
     <string name="filler_info_text">
         This will be a list of vacations, \n
         with each one clickable,\n
@@ -105,5 +108,5 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
-    <string name="title_activity_memories">MemoriesActivity</string>
+
 </resources>

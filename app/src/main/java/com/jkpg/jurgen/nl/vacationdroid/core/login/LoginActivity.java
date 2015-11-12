@@ -1,4 +1,4 @@
-package com.jkpg.jurgen.nl.vacationdroid.login;
+package com.jkpg.jurgen.nl.vacationdroid.core.login;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,10 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.jkpg.jurgen.nl.vacationdroid.OverviewActivity;
+import com.jkpg.jurgen.nl.vacationdroid.core.overview.OverviewActivity;
 import com.jkpg.jurgen.nl.vacationdroid.R;
-
-import java.util.prefs.Preferences;
 
 public class  LoginActivity extends AppCompatActivity {
 
