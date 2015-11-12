@@ -1,4 +1,4 @@
-package com.jkpg.jurgen.nl.vacationdroid.core.vacations;
+package com.jkpg.jurgen.nl.vacationdroid.core.vacationList;
 
 import android.app.Activity;
 import android.net.Uri;

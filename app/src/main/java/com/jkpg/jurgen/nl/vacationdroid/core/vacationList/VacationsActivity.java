@@ -1,4 +1,4 @@
-package com.jkpg.jurgen.nl.vacationdroid.core.vacations;
+package com.jkpg.jurgen.nl.vacationdroid.core.vacationList;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -10,9 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.jkpg.jurgen.nl.vacationdroid.R;
-import com.jkpg.jurgen.nl.vacationdroid.core.vacations.logic.VacationsAdapter;
-import com.jkpg.jurgen.nl.vacationdroid.core.vacations.logic.VacationsDummy;
-import com.jkpg.jurgen.nl.vacationdroid.core.vacations.logic.VacationsItem;
+import com.jkpg.jurgen.nl.vacationdroid.core.vacationList.logic.VacationsItem;
 
 public class VacationsActivity extends AppCompatActivity implements VacationsItem.OnFragmentInteractionListener {
 

@@ -15,7 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.jkpg.jurgen.nl.vacationdroid.friendlist.Friend;
-import com.jkpg.jurgen.nl.vacationdroid.core.vacations.VacationsActivity;
+import com.jkpg.jurgen.nl.vacationdroid.core.vacationList.VacationsActivity;
 import com.jkpg.jurgen.nl.vacationdroid.friendlist.FriendItem;
 
 import java.util.ArrayList;
@@ -106,11 +106,13 @@ public class OverviewActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_slideshow) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.view_friends) {
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.add_or_remove_friend) {
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.my_account) {
+
+        } else if (id == R.id.settings) {
 
         }
 

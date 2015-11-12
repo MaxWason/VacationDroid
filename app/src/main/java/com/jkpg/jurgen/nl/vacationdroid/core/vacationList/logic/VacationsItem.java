@@ -1,4 +1,4 @@
-package com.jkpg.jurgen.nl.vacationdroid.core.vacations.logic;
+package com.jkpg.jurgen.nl.vacationdroid.core.vacationList.logic;
 
 import android.app.Activity;
 import android.app.Fragment;
