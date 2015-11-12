@@ -14,9 +14,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.jkpg.jurgen.nl.vacationdroid.friend.Friend;
-import com.jkpg.jurgen.nl.vacationdroid.friend.FriendItem;
+import com.jkpg.jurgen.nl.vacationdroid.friendlist.Friend;
 import com.jkpg.jurgen.nl.vacationdroid.core.vacations.VacationsActivity;
+import com.jkpg.jurgen.nl.vacationdroid.friendlist.FriendItem;
 
 import java.util.ArrayList;
 

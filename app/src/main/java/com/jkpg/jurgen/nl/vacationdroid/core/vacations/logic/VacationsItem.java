@@ -12,9 +12,6 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.jkpg.jurgen.nl.vacationdroid.R;
-import com.jkpg.jurgen.nl.vacationdroid.dummy.DummyContent;
-import com.jkpg.jurgen.nl.vacationdroid.friend.Friend;
-import com.jkpg.jurgen.nl.vacationdroid.friend.FriendAdapter;
 
 import java.util.ArrayList;
 
@@ -125,7 +122,7 @@ public class VacationsItem extends Fragment implements AbsListView.OnItemClickLi
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
+//            mListener.onFragmentInteraction(VacationsDummy. ->change stuff-> ITEMS.get(position).id);
         }
     }
 

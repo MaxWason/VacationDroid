@@ -1,4 +1,4 @@
-package com.jkpg.jurgen.nl.vacationdroid.friend;
+package com.jkpg.jurgen.nl.vacationdroid.friendlist;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -12,8 +12,6 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.jkpg.jurgen.nl.vacationdroid.R;
-import com.jkpg.jurgen.nl.vacationdroid.dummy.DummyContent;
-
 import java.util.ArrayList;
 
 /**
@@ -38,6 +36,7 @@ public class FriendItem extends Fragment implements AbsListView.OnItemClickListe
 
     private OnFragmentInteractionListener mListener;
 
+    ArrayList friends = new ArrayList<Friend>();
     /**
      * The fragment's ListView/GridView.
      */
@@ -77,7 +76,7 @@ public class FriendItem extends Fragment implements AbsListView.OnItemClickListe
 
         // TODO: Change Adapter to display your content
 
-        ArrayList friends = new ArrayList<Friend>();
+
         friends.add(new Friend());
         friends.add(new Friend());
         friends.add(new Friend());
@@ -127,7 +126,8 @@ public class FriendItem extends Fragment implements AbsListView.OnItemClickListe
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
+
+            //mListener.onFragmentInteraction(friends.get(position).id);
         }
     }
 
