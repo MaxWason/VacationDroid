@@ -28,7 +28,10 @@ public class OverviewActivity extends AppCompatActivity
 
     @Override
     public void onFragmentInteraction(String id) {
-
+        Intent intent = new Intent(OverviewActivity.this,VacationActivity.class);
+        startActivity(intent);
+        //Open the VacationActivity
+        //Fails if you press the last fragment of the overview.
     }
 
     @Override
