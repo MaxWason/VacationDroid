@@ -1,4 +1,4 @@
-package com.jkpg.jurgen.nl.vacationdroid.friendlist;
+package com.jkpg.jurgen.nl.vacationdroid.friends;
 
 import android.app.Activity;
 import android.os.Bundle;

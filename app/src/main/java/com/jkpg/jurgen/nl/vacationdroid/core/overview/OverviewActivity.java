@@ -1,4 +1,4 @@
-package com.jkpg.jurgen.nl.vacationdroid;
+package com.jkpg.jurgen.nl.vacationdroid.core.overview;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,9 +14,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.jkpg.jurgen.nl.vacationdroid.friendlist.Friend;
+import com.jkpg.jurgen.nl.vacationdroid.R;
+import com.jkpg.jurgen.nl.vacationdroid.core.vacation.VacationActivity;
+import com.jkpg.jurgen.nl.vacationdroid.friends.Friend;
 import com.jkpg.jurgen.nl.vacationdroid.core.vacationList.VacationListActivity;
-import com.jkpg.jurgen.nl.vacationdroid.friendlist.FriendItem;
+import com.jkpg.jurgen.nl.vacationdroid.friends.FriendItem;
 
 import java.util.ArrayList;
 
@@ -28,7 +30,10 @@ public class OverviewActivity extends AppCompatActivity
 
     @Override
     public void onFragmentInteraction(String id) {
-
+        Intent intent = new Intent(OverviewActivity.this,VacationActivity.class);
+        startActivity(intent);
+        //Open the VacationActivity
+        //Fails if you press the last fragment of the overview.
     }
 
     @Override
@@ -121,8 +126,8 @@ public class OverviewActivity extends AppCompatActivity
         return true;
     }
 
-    public void onVacationNamePress(View v){
-        Intent gotoVacation = new Intent(this, VacationListActivity.class);
-        startActivity(gotoVacation);
+    public void onVacationListPress(View v){
+        Intent gotoVacationList = new Intent(this, VacationListActivity.class);
+        startActivity(gotoVacationList);
     }
 }

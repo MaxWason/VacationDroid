@@ -12,7 +12,7 @@
     <fragment
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:name="com.jkpg.jurgen.nl.vacationdroid.UserDashFragment"
+        android:name="com.jkpg.jurgen.nl.vacationdroid.core.overview.UserDashFragment"
         android:id="@+id/fragment2"
         android:layout_alignParentTop="true"
         tools:layout="@layout/fragment_user_dash"
@@ -25,7 +25,7 @@
     <fragment
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:name="com.jkpg.jurgen.nl.vacationdroid.friendlist.FriendItem"
+        android:name="com.jkpg.jurgen.nl.vacationdroid.friends.FriendItem"
         android:id="@+id/fragment3"
         android:layout_below="@+id/fragment2"
         tools:layout="@layout/fragment_friend_dash"
