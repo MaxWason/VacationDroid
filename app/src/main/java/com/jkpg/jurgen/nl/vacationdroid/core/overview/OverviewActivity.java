@@ -17,8 +17,8 @@ import android.view.View;
 import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.vacation.VacationActivity;
 import com.jkpg.jurgen.nl.vacationdroid.core.vacationList.VacationListActivity;
-import com.jkpg.jurgen.nl.vacationdroid.friends.Friend;
-import com.jkpg.jurgen.nl.vacationdroid.friends.FriendItem;
+import com.jkpg.jurgen.nl.vacationdroid.core.friends.logic.Friend;
+import com.jkpg.jurgen.nl.vacationdroid.core.friends.logic.FriendItem;
 
 import java.util.ArrayList;
 
@@ -32,8 +32,6 @@ public class OverviewActivity extends AppCompatActivity
     public void onFragmentInteraction(String id) {
         Intent intent = new Intent(OverviewActivity.this, VacationActivity.class);
         startActivity(intent);
-        //Open the VacationActivity
-        //Fails if you press the last fragment of the overview.
     }
 
     @Override

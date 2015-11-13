@@ -37,7 +37,15 @@
             android:name=".core.vacation.VacationActivity"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
-
+        <activity
+            android:name=".core.friends.FriendsViewActivity"
+            android:label="@string/title_activity_friends_view"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity android:name=".core.friends.FriendsAddActivity"
+            android:label="@string/title_activity_friends_add"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
-package com.jkpg.jurgen.nl.vacationdroid.friends;
+package com.jkpg.jurgen.nl.vacationdroid.core.friends.logic;
 
 import android.app.Activity;
 import android.os.Bundle;
