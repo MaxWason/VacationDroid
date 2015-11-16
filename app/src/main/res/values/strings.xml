@@ -116,5 +116,7 @@
     <string name="menu_search">Search</string>
     <string name="menu_unfriend">Unfriend</string>
     <string name="contact_info">support@vacationdroid.com</string>
+    <string name="search_hint">Memories</string>
+    <string name="title_activity_search">SrchAc</string>
 
 </resources>

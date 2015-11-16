@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.jkpg.jurgen.nl.vacationdroid.R;
+import com.jkpg.jurgen.nl.vacationdroid.core.search.SearchableActivity;
 import com.jkpg.jurgen.nl.vacationdroid.core.vacation.VacationActivity;
 import com.jkpg.jurgen.nl.vacationdroid.core.vacationList.logic.VacationsItem;
 
@@ -51,8 +52,10 @@ public class VacationListActivity extends AppCompatActivity implements Vacations
 
         //noinspection SimplifiableIfStatement
         //TODO: handle cases
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_search) {
+            Intent intent = new Intent(VacationListActivity.this, SearchableActivity.class);
+            startActivity(intent);
+            return false; //true or false?
         } else if (id == R.id.action_unfriend) {
             return true;
         }
@@ -65,5 +68,6 @@ public class VacationListActivity extends AppCompatActivity implements Vacations
         //TODO: go to specific vacation
         Intent intent = new Intent(VacationListActivity.this, VacationActivity.class);
         startActivity(intent);
+        //broken now, wtf?
     }
 }

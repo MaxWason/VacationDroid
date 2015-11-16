@@ -131,6 +131,8 @@ public class FriendItem extends Fragment implements AbsListView.OnItemClickListe
 
             //mListener.onFragmentInteraction(friends.get(position).id);
         }
+
+        //TODO: this is gross hardcoding, when it is used in multiple activities it won't work
         OverviewActivity ac = (OverviewActivity) getActivity();
         ac.onFragmentInteraction(null);
     }

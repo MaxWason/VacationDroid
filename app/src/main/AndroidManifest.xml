@@ -26,7 +26,8 @@
         <activity
             android:name=".core.vacationList.VacationListActivity"
             android:label="@string/title_activity_vacation_list"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTop">
         </activity>
         <activity
             android:name=".core.memory.MemoryActivity"
@@ -42,9 +43,24 @@
             android:label="@string/title_activity_friends_view"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
-        <activity android:name=".core.friends.FriendsAddActivity"
+        <activity
+            android:name=".core.friends.FriendsAddActivity"
             android:label="@string/title_activity_friends_add"
             android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".core.search.SearchableActivity"
+            android:label="@string/title_activity_search"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".core.vacationList.VacationListActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
+
         </activity>
     </application>
 

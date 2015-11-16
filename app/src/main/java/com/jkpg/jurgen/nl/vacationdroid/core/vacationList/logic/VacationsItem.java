@@ -82,7 +82,7 @@ public class VacationsItem extends Fragment implements AbsListView.OnItemClickLi
         //Jurgen: so, this array adapter takes FriendContent objects and translates them to the list items
         //we're probably gonna have to make our own for this to work
 
-        mAdapter = new VacationsAdapter<VacationsDummy>(getActivity(), R.layout.fragment_vaction_list_dash, vacations);
+        mAdapter = new VacationsAdapter<VacationsDummy>(getActivity(), R.layout.fragment_vacation_list_dash, vacations);
     }
 
     @Override

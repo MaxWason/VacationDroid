@@ -4,7 +4,8 @@
     tools:context="com.jkpg.jurgen.nl.vacationdroid.core.vacationList.VacationListFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="match_parent" android:layout_height="370dp"
+    <TextView android:layout_width="match_parent"
+        android:layout_height="370dp"
         android:text="@string/hello_blank_fragment" />
 
 </FrameLayout>
