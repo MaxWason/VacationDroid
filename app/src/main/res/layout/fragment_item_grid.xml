@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.jkpg.jurgen.nl.vacationdroid.friendlist.FriendItem">
+    tools:context="com.jkpg.jurgen.nl.vacationdroid.core.friends.logic.FriendItem">
 
     <GridView android:id="@android:id/list" android:layout_width="match_parent"
         android:layout_height="match_parent" android:numColumns="2" />

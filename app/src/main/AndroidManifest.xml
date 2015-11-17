@@ -9,12 +9,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".OverviewActivity"
+            android:name=".core.overview.OverviewActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity
-            android:name=".login.LoginActivity"
+            android:name=".core.login.LoginActivity"
             android:label="@string/title_activity_login"
             android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
@@ -24,14 +24,50 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".core.vacations.VacationsActivity"
-            android:label="@string/title_activity_vacation"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:name=".core.vacationList.VacationListActivity"
+            android:label="@string/title_activity_vacation_list"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTop">
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
         </activity>
         <activity
             android:name=".core.memory.MemoryActivity"
             android:label="@string/title_activity_memories"
             android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".core.vacation.VacationActivity"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".core.friends.FriendsViewActivity"
+            android:label="@string/title_activity_friends_view"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".core.friends.FriendsAddActivity"
+            android:label="@string/title_activity_friends_add"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".core.search.SearchableActivity"
+            android:label="@string/title_activity_search"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".core.vacationList.VacationListActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
+
         </activity>
     </application>
 
