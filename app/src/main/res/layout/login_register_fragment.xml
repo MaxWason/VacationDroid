@@ -12,7 +12,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:hint="Username"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:inputType="text" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -24,7 +25,8 @@
         android:layout_alignParentStart="false"
         android:layout_alignParentRight="true"
         android:hint="Email Address"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:inputType="text" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -35,7 +37,8 @@
         android:layout_alignParentStart="false"
         android:layout_alignParentRight="true"
         android:textAlignment="center"
-        android:hint="Password" />
+        android:hint="Password"
+        android:inputType="textWebPassword" />
 
     <Button
         android:layout_width="wrap_content"
