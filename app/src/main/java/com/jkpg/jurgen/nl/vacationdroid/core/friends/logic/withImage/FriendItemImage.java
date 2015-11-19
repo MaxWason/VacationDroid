@@ -1,4 +1,4 @@
-package com.jkpg.jurgen.nl.vacationdroid.core.friends.logic;
+package com.jkpg.jurgen.nl.vacationdroid.core.friends.logic.withImage;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -12,6 +12,7 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.jkpg.jurgen.nl.vacationdroid.R;
+import com.jkpg.jurgen.nl.vacationdroid.core.friends.logic.Friend;
 import com.jkpg.jurgen.nl.vacationdroid.core.overview.OverviewActivity;
 
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ import java.util.ArrayList;
  * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
  * interface.
  */
-public class FriendItem extends Fragment implements AbsListView.OnItemClickListener {
+public class FriendItemImage extends Fragment implements AbsListView.OnItemClickListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -51,8 +52,8 @@ public class FriendItem extends Fragment implements AbsListView.OnItemClickListe
     private ListAdapter mAdapter;
 
     // TODO: Rename and change types of parameters
-    public static FriendItem newInstance(String param1, String param2) {
-        FriendItem fragment = new FriendItem();
+    public static FriendItemImage newInstance(String param1, String param2) {
+        FriendItemImage fragment = new FriendItemImage();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -64,7 +65,7 @@ public class FriendItem extends Fragment implements AbsListView.OnItemClickListe
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public FriendItem() {
+    public FriendItemImage() {
     }
 
     @Override
@@ -88,7 +89,7 @@ public class FriendItem extends Fragment implements AbsListView.OnItemClickListe
         //Jurgen: so, this array adapter takes FriendContent objects and translates them to the list items
         //we're probably gonna have to make our own for this to work
 
-        mAdapter = new FriendAdapter<Friend>(getActivity(), R.layout.fragment_friend_dash, friends);
+        mAdapter = new FriendAdapterImage<Friend>(getActivity(), R.layout.fragment_friend_dash, friends);
     }
 
     @Override

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.jkpg.jurgen.nl.vacationdroid" >
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -26,15 +28,15 @@
         <activity
             android:name=".core.vacationList.VacationListActivity"
             android:label="@string/title_activity_vacation_list"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:launchMode="singleTop">
-
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
 
-            <meta-data android:name="android.app.searchable"
-                android:resource="@xml/searchable"/>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
         </activity>
         <activity
             android:name=".core.memory.MemoryActivity"
@@ -46,7 +48,7 @@
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity
-            android:name=".core.friends.FriendsViewActivity"
+            android:name=".core.friends.FriendsListActivity"
             android:label="@string/title_activity_friends_view"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
@@ -56,18 +58,9 @@
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity
-            android:name=".core.search.SearchableActivity"
-            android:label="@string/title_activity_search"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".core.vacationList.VacationListActivity">
-
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-
-            <meta-data android:name="android.app.searchable"
-                android:resource="@xml/searchable"/>
-
+            android:name=".core.account.AccountActivity"
+            android:parentActivityName=".core.overview.OverviewActivity"
+            android:label="@string/title_activity_account" >
         </activity>
     </application>
 

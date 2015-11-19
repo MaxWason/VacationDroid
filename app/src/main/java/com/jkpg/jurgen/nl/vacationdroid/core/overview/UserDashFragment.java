@@ -40,7 +40,7 @@ public class UserDashFragment extends Fragment {
 
         SharedPreferences pref = getActivity().getSharedPreferences("vacation", Context.MODE_PRIVATE);
         String name = pref.getString("username", null);
-        
+
         APIJsonCall dashcall = new APIJsonCall("users/"+name, "GET", getActivity()) {
             @Override
             public void JsonCallback(JsonObject obj) {
