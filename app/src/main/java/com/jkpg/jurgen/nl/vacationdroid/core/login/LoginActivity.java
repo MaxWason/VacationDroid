@@ -46,11 +46,12 @@ public class  LoginActivity extends AppCompatActivity {
 
         pref = getSharedPreferences("vacation", MODE_PRIVATE);
 
-        //DEBUG TODO:this removes the saved credentials to test the login, remove for release
-        SharedPreferences.Editor ed = pref.edit();
-        ed.remove("username");
-        ed.remove("password");
-        ed.remove("token");
+        //DEBUG TODO:this removes the saved credentials to test the login, remove for release version
+//        SharedPreferences.Editor ed = pref.edit();
+//        ed.remove("username");
+//        ed.remove("password");
+//        ed.remove("token");
+//        ed.commit();
         //DEBUG
 
 
@@ -141,7 +142,7 @@ public class  LoginActivity extends AppCompatActivity {
 
         APIJsonCall registercall = new APIJsonCall("accounts", "POST", this) {
             @Override
-            public void JsonCallback(JSONObject obj) {
+            public void JsonCallback(JsonObject obj) {
                 if(obj.has("created")) {
                     //successfully created
                     Toast.makeText(currentct, "created", Toast.LENGTH_SHORT).show();

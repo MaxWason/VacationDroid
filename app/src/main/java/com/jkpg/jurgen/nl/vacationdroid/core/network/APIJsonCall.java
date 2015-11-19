@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
@@ -35,25 +36,31 @@ public abstract class APIJsonCall extends AsyncTask<JsonObject, String, JsonObje
         token = pref.getString("token", "");
     }
 
-    public abstract void JsonCallback(JSONObject obj);
+    public abstract void JsonCallback(JsonObject obj);
 
     @Override
     protected JsonObject doInBackground(JsonObject... params) {
+        int responsecode = 0;
         try {
             URL url = new URL(fullURL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(type);
             connection.addRequestProperty("Content-Type", "application/json");
             connection.addRequestProperty("Accept", "application/json");
-            connection.addRequestProperty("grant_token", token);
+            connection.addRequestProperty("Authorization", "Bearer " + token);
             JsonObject data = params[0];
 
-            OutputStream ostream = connection.getOutputStream();
-            OutputStreamWriter writer = new OutputStreamWriter(ostream);
-            writer.write(data.toString());
-            writer.close();
+            if(type == "POST") {
+                OutputStream ostream = connection.getOutputStream();
+                OutputStreamWriter writer = new OutputStreamWriter(ostream);
+                writer.write(data.toString());
+                writer.close();
+            }
 
             int response = connection.getResponseCode();
+
+            Log.d("Network call", fullURL + " - " + response + ": " + connection.getResponseMessage());
+            responsecode = response;
             //if it has been successfully created it will not return anything, so we create a message
             if(type == "POST" && response == 201) {
                 JsonObject created = new JsonObject();
@@ -61,28 +68,39 @@ public abstract class APIJsonCall extends AsyncTask<JsonObject, String, JsonObje
                 return created;
 
             }
+            if(response != 200) {
+                //shouldn't really happen
+            }
 
             InputStream istream = connection.getInputStream();
             Scanner scan = new Scanner(istream);
             String out = "";
             while (scan.hasNext()) {
-                out += scan.next();
+                out += scan.nextLine();
             }
 
-            JsonObject json = new JsonObject();
+            JsonElement json;
             JsonParser parser = new JsonParser();
-            json = (JsonObject) parser.parse(out);
+            json = parser.parse(out);
+            connection.disconnect();
 
-            return json;
+            if(json.isJsonArray()) {
+                JsonObject j = new JsonObject();
+                j.add("list", json);
+                return j;
+            } else {
+                return json.getAsJsonObject();
+            }
+
 
         } catch (Exception e) {
-            Log.e("WEB ERROR", e.getMessage().toString());
+            Log.e("WEB ERROR", e.getMessage().toString() + " code: " + responsecode);
             return null;
         }
     }
 
     @Override
     protected void onPostExecute(JsonObject jsonObject) {
-
+        JsonCallback(jsonObject);
     }
 }
