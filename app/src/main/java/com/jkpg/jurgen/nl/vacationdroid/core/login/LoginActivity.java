@@ -47,10 +47,10 @@ public class  LoginActivity extends AppCompatActivity {
         pref = getSharedPreferences("vacation", MODE_PRIVATE);
 
         //DEBUG TODO:this removes the saved credentials to test the login, remove for release
-        SharedPreferences.Editor ed = pref.edit();
-        ed.remove("username");
-        ed.remove("password");
-        ed.remove("token");
+//        SharedPreferences.Editor ed = pref.edit();
+//        ed.remove("username");
+//        ed.remove("password");
+//        ed.remove("token");
         //DEBUG
 
 

@@ -25,12 +25,4 @@
         </menu>
     </item>
 
-    <item android:title="Other">
-        <menu>
-            <item android:id="@+id/settings"
-                android:icon="@android:drawable/ic_menu_preferences"
-                android:title="Settings"/>
-        </menu>
-    </item>
-
 </menu>
