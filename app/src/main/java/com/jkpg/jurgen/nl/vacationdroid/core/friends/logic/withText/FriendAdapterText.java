@@ -1,4 +1,4 @@
-package com.jkpg.jurgen.nl.vacationdroid.core.friends.logic;
+package com.jkpg.jurgen.nl.vacationdroid.core.friends.logic.withText;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,16 +13,14 @@ import com.jkpg.jurgen.nl.vacationdroid.R;
 
 import java.util.ArrayList;
 
-/**
- * Created by Jurgen on 10/30/2015.
- */
-public class FriendAdapter<Friend> extends ArrayAdapter<Friend> {
+
+public class FriendAdapterText<Friend> extends ArrayAdapter<Friend> {
 
     Context context;
     ArrayList<Friend> data;
     int viewid;
 
-    public FriendAdapter(Context context, int viewID, ArrayList<Friend> data) {
+    public FriendAdapterText(Context context, int viewID, ArrayList<Friend> data) {
         super(context, viewID, data);
         this.context = context;
         this.data = data;
@@ -41,8 +39,6 @@ public class FriendAdapter<Friend> extends ArrayAdapter<Friend> {
 
             holder = new FriendHolder();
             holder.name = (TextView)row.findViewById(R.id.dashName);
-            holder.vacation = (TextView)row.findViewById(R.id.dashVacation);
-            holder.img = (ImageView)row.findViewById(R.id.dashImg);
 
             row.setTag(holder);
         }
@@ -52,19 +48,16 @@ public class FriendAdapter<Friend> extends ArrayAdapter<Friend> {
         }
 
         Friend f = data.get(position);
-        holder.name.setText("dummy");
-        holder.vacation.setText("dummyvacation");
+        holder.name.setText("filler name");
 
         return row;
     }
-    class FriendHolder {
-        public TextView name;
-        public TextView vacation;
-        public ImageView img;
+class FriendHolder {
+    public TextView name;
 
-        public FriendHolder() {
+    public FriendHolder() {
 
-        }
     }
+}
 }
 

@@ -1,7 +1,5 @@
 package com.jkpg.jurgen.nl.vacationdroid.core.overview;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -15,19 +13,19 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.SearchView;
 
 import com.jkpg.jurgen.nl.vacationdroid.R;
+import com.jkpg.jurgen.nl.vacationdroid.core.friends.FriendsListActivity;
 import com.jkpg.jurgen.nl.vacationdroid.core.vacation.VacationActivity;
 import com.jkpg.jurgen.nl.vacationdroid.core.vacationList.VacationListActivity;
 import com.jkpg.jurgen.nl.vacationdroid.core.friends.logic.Friend;
-import com.jkpg.jurgen.nl.vacationdroid.core.friends.logic.FriendItem;
+import com.jkpg.jurgen.nl.vacationdroid.core.friends.logic.withImage.FriendItemImage;
 
 import java.util.ArrayList;
 
 
 public class OverviewActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, FriendItem.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, FriendItemImage.OnFragmentInteractionListener {
 
     ArrayList<Friend> friends = new ArrayList<>();
 
@@ -117,7 +115,7 @@ public class OverviewActivity extends AppCompatActivity
         } else if (id == R.id.add_vacation) {
 
         } else if (id == R.id.view_friends) {
-
+            startActivity(new Intent(this, FriendsListActivity.class));
         } else if (id == R.id.add_friend) {
 
         } else if (id == R.id.settings) {
