@@ -54,7 +54,9 @@ public class  LoginActivity extends AppCompatActivity {
 //        ed.commit();
         //DEBUG
 
-
+        //To remember...
+        //user: maxwason
+        //pass: superpassword
 
         //check if we already have a saved user or not
         if (pref.getString("username", null) != null) {
@@ -183,11 +185,6 @@ public class  LoginActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
-        getFragmentManager().popBackStack();
-
-        if (getFragmentManager().getBackStackEntryCount() == 0) {
-            super.onBackPressed();
-        }
+        onStop(); //you never need to go back from the log-in page
     }
 }

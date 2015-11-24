@@ -4,6 +4,7 @@ package com.jkpg.jurgen.nl.vacationdroid.core.account;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -19,12 +20,18 @@ import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.login.LoginActivity;
+import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
+import com.jkpg.jurgen.nl.vacationdroid.core.network.APITokenCall;
 import com.jkpg.jurgen.nl.vacationdroid.core.overview.OverviewActivity;
 
 import java.util.List;
@@ -42,10 +49,32 @@ import java.util.logging.Logger;
  * API Guide</a> for more information on developing a Settings UI.
  */
 public class AccountActivity extends AppCompatPreferenceActivity {
+
+    private SharedPreferences preferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupActionBar();
+
+        preferences = getSharedPreferences("vacation", Context.MODE_PRIVATE);
+        String name = preferences.getString("username", null);
+
+        APIJsonCall updateInfo = new APIJsonCall("users/"+name, "GET", this) { //TODO: change to "PUT"
+            @Override
+            public void JsonCallback(JsonObject obj) {
+                try {
+                    Log.d("JASON", obj.toString());
+                    JsonArray arr = obj.getAsJsonArray("list");
+                    JsonObject v1 = arr.get(0).getAsJsonObject();
+//                    v1.addProperty(); //TODO: replace json object -> google
+//                    vtitle.setText(v1. put("title").getAsString());
+//                    vdesc.setText(v1.get("description").getAsString());
+                } catch(Exception E) {
+                    Log.e("WEB ERROR", E.getMessage());
+                }
+            }
+        };updateInfo.execute(new JsonObject());
     }
 
     @Override
@@ -55,14 +84,27 @@ public class AccountActivity extends AppCompatPreferenceActivity {
         return true;
     }
 
+    private void logOut() {
+
+        SharedPreferences pref = getSharedPreferences("vacation", MODE_PRIVATE);
+        SharedPreferences.Editor edit = pref.edit();
+
+        edit.putString("token", null);
+        edit.putString("username", null);
+        edit.putString("password", null);
+
+        edit.commit();
+    }
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.logout:
-                //TODO: log out
-                //clear saved token
+                logOut();
                 startActivity(new Intent(this, LoginActivity.class));
+                finish();
                 return true; //stops normal processing
             default:
                 return super.onOptionsItemSelected(item);
@@ -177,6 +219,9 @@ public class AccountActivity extends AppCompatPreferenceActivity {
                 PreferenceManager
                         .getDefaultSharedPreferences(preference.getContext())
                         .getString(preference.getKey(), ""));
+
+        //my stuff
+
     }
 
     /**
