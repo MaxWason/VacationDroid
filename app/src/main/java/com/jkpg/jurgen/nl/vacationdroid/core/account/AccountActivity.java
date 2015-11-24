@@ -57,24 +57,24 @@ public class AccountActivity extends AppCompatPreferenceActivity {
         super.onCreate(savedInstanceState);
         setupActionBar();
 
-        preferences = getSharedPreferences("vacation", Context.MODE_PRIVATE);
-        String name = preferences.getString("username", null);
-
-        APIJsonCall updateInfo = new APIJsonCall("users/"+name, "GET", this) { //TODO: change to "PUT"
-            @Override
-            public void JsonCallback(JsonObject obj) {
-                try {
-                    Log.d("JASON", obj.toString());
-                    JsonArray arr = obj.getAsJsonArray("list");
-                    JsonObject v1 = arr.get(0).getAsJsonObject();
-//                    v1.addProperty(); //TODO: replace json object -> google
-//                    vtitle.setText(v1. put("title").getAsString());
-//                    vdesc.setText(v1.get("description").getAsString());
-                } catch(Exception E) {
-                    Log.e("WEB ERROR", E.getMessage());
-                }
-            }
-        };updateInfo.execute(new JsonObject());
+//        preferences = getSharedPreferences("vacation", Context.MODE_PRIVATE);
+//        String name = preferences.getString("username", null);
+//
+//        APIJsonCall updateInfo = new APIJsonCall("users/"+name, "GET", this) { //TODO: change to "PUT"
+//            @Override
+//            public void JsonCallback(JsonObject obj) {
+//                try {
+//                    Log.d("JASON", obj.toString());
+//                    JsonArray arr = obj.getAsJsonArray("list");
+//                    JsonObject v1 = arr.get(0).getAsJsonObject();
+////                    v1.addProperty(); //TODO: replace json object -> google
+////                    vtitle.setText(v1. put("title").getAsString());
+////                    vdesc.setText(v1.get("description").getAsString());
+//                } catch(Exception E) {
+//                    Log.e("WEB ERROR", E.getMessage());
+//                }
+//            }
+//        };updateInfo.execute(new JsonObject());
     }
 
     @Override
