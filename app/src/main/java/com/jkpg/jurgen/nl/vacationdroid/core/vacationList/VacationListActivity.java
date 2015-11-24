@@ -3,23 +3,32 @@ package com.jkpg.jurgen.nl.vacationdroid.core.vacationList;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.widget.TextView;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.jkpg.jurgen.nl.vacationdroid.R;
+import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
 import com.jkpg.jurgen.nl.vacationdroid.core.vacation.VacationActivity;
 import com.jkpg.jurgen.nl.vacationdroid.core.vacationList.logic.VacationsItem;
 
 public class VacationListActivity extends AppCompatActivity implements VacationsItem.OnFragmentInteractionListener {
 
     //TODO: alter depending on if user's vactions or a friend's vacations
+
+    private boolean displayUser; //if you should display the data for the user or for a friend
+    private int friendId; //if displaying the friend, this is the one to show
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +47,70 @@ public class VacationListActivity extends AppCompatActivity implements Vacations
         });
 
         Intent intent = getIntent();
+
+
+        //craziness below here
+        displayUser = intent.getBooleanExtra("displayUser", true);
+        String nameToDisplay;
+
+        SharedPreferences pref = this.getSharedPreferences("vacation", Context.MODE_PRIVATE);
+
+        if (displayUser){
+            //get name of user
+
+            nameToDisplay = pref.getString("username", null);
+        }else{
+            //get name of friend
+            nameToDisplay = "A Friend";
+        }
+        this.setTitle(nameToDisplay+"'s Vacations");;
+
+        //craziness ends
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             doMySearch(query);
         }
     }
+
+    private void getUserData(){
+
+//        final TextView username = (TextView) this.findViewById(R.id.userdashUsername);
+//        final TextView vtitle = (TextView) this.findViewById(R.id.userdashVacationTitle);
+//        final TextView vdesc = (TextView) this.findViewById(R.id.userdashVacationDescription);
+//
+//        SharedPreferences pref = getActivity().getSharedPreferences("vacation", Context.MODE_PRIVATE);
+//        String name = pref.getString("username", null);
+//
+//        APIJsonCall dashcall = new APIJsonCall("users/"+name, "GET", getActivity()) {
+//            @Override
+//            public void JsonCallback(JsonObject obj) {
+//                try {
+//                    Log.d("JASON", obj.toString());
+//                    username.setText(obj.get("username").getAsString());
+//                } catch(Exception E) {
+//                    Log.e("WEB ERROR", E.getMessage());
+//                }
+//            }
+//        };
+//        dashcall.execute(new JsonObject());
+//
+//        APIJsonCall vaccall = new APIJsonCall("vacations", "GET", getActivity()) {
+//            @Override
+//            public void JsonCallback(JsonObject obj) {
+//                try {
+//                    Log.d("JASON", obj.toString());
+//                    JsonArray arr = obj.getAsJsonArray("list");
+//                    JsonObject v1 = arr.get(0).getAsJsonObject();
+//                    vtitle.setText(v1.get("title").getAsString());
+//                    vdesc.setText(v1.get("description").getAsString());
+//                } catch(Exception E) {
+//                    Log.e("WEB ERROR", E.getMessage());
+//                }
+//            }
+//        };
+//        vaccall.execute(new JsonObject());
+    }
+
 
     private void doMySearch(String query){
         //TODO: api web call here (with current user/friend as other search param)

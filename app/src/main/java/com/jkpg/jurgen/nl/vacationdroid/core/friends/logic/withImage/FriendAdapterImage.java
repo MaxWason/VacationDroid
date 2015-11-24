@@ -52,8 +52,8 @@ public class FriendAdapterImage<Friend> extends ArrayAdapter<Friend> {
         }
 
         Friend f = data.get(position);
-        holder.name.setText("dummy");
-        holder.vacation.setText("dummyvacation");
+//        holder.name.setText("dummy");
+//        holder.vacation.setText("dummyvacation");
 
         return row;
     }

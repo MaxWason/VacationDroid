@@ -133,6 +133,7 @@ public class FriendItemImage extends Fragment implements AbsListView.OnItemClick
             //mListener.onFragmentInteraction(friends.get(position).id);
         }
 
+//        FriendItemImage image = (FriendItemImage) parent.getItemAtPosition(position);
         //TODO: this is gross hardcoding, when it is used in multiple activities it won't work
         OverviewActivity ac = (OverviewActivity) getActivity();
         ac.onFragmentInteraction(null);

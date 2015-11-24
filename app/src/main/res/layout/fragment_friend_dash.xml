@@ -14,18 +14,18 @@
             android:text="FriendName"
             android:id="@+id/dashName"
             android:layout_row="0"
-            android:layout_column="0"
-            android:clickable="true"
-            android:onClick="onVacationListPress" />
+            android:layout_column="0" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="FriendVacation"
+            android:text="Friend's Vacations"
             android:id="@+id/dashVacation"
             android:layout_row="0"
-            android:layout_column="1" />
+            android:layout_column="1"
+            android:clickable="true"
+            android:onClick="onVacationListFriendPress" />
 
         <ImageView
             android:layout_width="128dp"

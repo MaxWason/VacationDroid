@@ -31,9 +31,23 @@ public class OverviewActivity extends AppCompatActivity
     ArrayList<Friend> friends = new ArrayList<>();
 
     @Override
-    public void onFragmentInteraction(String id) {
+    public void onFragmentInteraction(String id) { //for the friendItems
+
+        //if pressed on the "friend's vacations" text
+//        Intent gotoVacationList = new Intent(this, VacationListActivity.class);
+//        gotoVacationList.putExtra("displayUser", false); //friend's page to display
+//        gotoVacationList.putExtra("friendId", getFriendId());
+//        startActivity(gotoVacationList);
+
+        //if pressed on a specific vacation
         Intent intent = new Intent(OverviewActivity.this, VacationActivity.class);
+        intent.putExtra("vacationName", getVacationName());
         startActivity(intent);
+    }
+
+    private String getVacationName(){
+        //get the name of the vacation to display in the new VacationActivity
+        return "placeholder";
     }
 
     @Override
@@ -126,8 +140,22 @@ public class OverviewActivity extends AppCompatActivity
         return true;
     }
 
-    public void onVacationListPress(View v){
+    public void onVacationListUserPress(View v){
         Intent gotoVacationList = new Intent(this, VacationListActivity.class);
+        startActivity(gotoVacationList); //just go as a user
+    }
+
+    public void onVacationListFriendPress(View v){
+        Intent gotoVacationList = new Intent(this, VacationListActivity.class);
+        gotoVacationList.putExtra("displayUser", false); //friend's page to display
+        gotoVacationList.putExtra("friendId", getFriendId());
         startActivity(gotoVacationList);
+    }
+
+    private int getFriendId(){
+        //get the list element clicked on
+        //get that element's friend's id
+        //return that id
+        return 2;//random placeholder
     }
 }
