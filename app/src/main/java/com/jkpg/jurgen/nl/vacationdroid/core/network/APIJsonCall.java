@@ -50,7 +50,7 @@ public abstract class APIJsonCall extends AsyncTask<JsonObject, String, JsonObje
             connection.addRequestProperty("Authorization", "Bearer " + token);
             JsonObject data = params[0];
 
-            if(type == "POST") {
+            if(type == "POST" || type == "PUT") {
                 OutputStream ostream = connection.getOutputStream();
                 OutputStreamWriter writer = new OutputStreamWriter(ostream);
                 writer.write(data.toString());
@@ -64,12 +64,16 @@ public abstract class APIJsonCall extends AsyncTask<JsonObject, String, JsonObje
             //if it has been successfully created it will not return anything, so we create a message
             if(type == "POST" && response == 201) {
                 JsonObject created = new JsonObject();
+                Log.d("Network", "post call returned 201");
                 created.addProperty("created", "element has been created successfully");
                 return created;
 
             }
-            if(response != 200) {
-                //shouldn't really happen
+            if(type == "PUT" && response == 200) {
+                JsonObject created = new JsonObject();
+                Log.d("Network", "put call returned 200");
+                created.addProperty("updated", "element has been updated successfully");
+                return created;
             }
 
             InputStream istream = connection.getInputStream();
