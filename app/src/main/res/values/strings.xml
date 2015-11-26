@@ -90,5 +90,6 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="sign_out">Sign Out</string>
+    <string name="deleteAccountButtonText">Delete Account</string>
 
 </resources>

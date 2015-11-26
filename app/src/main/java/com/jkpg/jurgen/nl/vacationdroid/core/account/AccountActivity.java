@@ -68,7 +68,7 @@ public class AccountActivity extends AppCompatPreferenceActivity {
     private void setupDeleteButton(){
         ListView v = getListView();
         Button deleteAccountButton = new Button(this);
-        deleteAccountButton.setText("Delete Account");
+        deleteAccountButton.setText(R.string.deleteAccountButtonText);
         deleteAccountButton.setClickable(true);
         deleteAccountButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
