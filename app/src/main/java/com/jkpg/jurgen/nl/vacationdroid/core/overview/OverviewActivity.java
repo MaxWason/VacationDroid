@@ -148,14 +148,14 @@ public class OverviewActivity extends AppCompatActivity
     public void onVacationListFriendPress(View v){
         Intent gotoVacationList = new Intent(this, VacationListActivity.class);
         gotoVacationList.putExtra("displayUser", false); //friend's page to display
-        gotoVacationList.putExtra("friendId", getFriendId());
+        gotoVacationList.putExtra("friendName", getFriendName());
         startActivity(gotoVacationList);
     }
 
-    private int getFriendId(){
+    private String getFriendName(){
         //get the list element clicked on
-        //get that element's friend's id
-        //return that id
-        return 2;//random placeholder
+        //get that element's friend's name
+        //return that name
+        return "someFriend";//random placeholder
     }
 }

@@ -28,7 +28,7 @@ public class VacationListActivity extends AppCompatActivity implements Vacations
     //TODO: alter depending on if user's vactions or a friend's vacations
 
     private boolean displayUser; //if you should display the data for the user or for a friend
-    private int friendId; //if displaying the friend, this is the one to show
+    private String friendName; //if displaying the friend, this is the one to show
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +62,7 @@ public class VacationListActivity extends AppCompatActivity implements Vacations
         }else{
             //get name of friend
             nameToDisplay = "A Friend";
+//            nameToDisplay = intent.getStringExtra("friendName"); //TODO: uncomment when working, when called correctly form other activity
         }
         this.setTitle(nameToDisplay+"'s Vacations");;
 

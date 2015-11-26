@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -27,6 +28,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,6 +62,23 @@ public class AccountActivity extends AppCompatPreferenceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupActionBar();
+        setupDeleteButton();
+    }
+
+    private void setupDeleteButton(){
+        ListView v = getListView();
+        Button deleteAccountButton = new Button(this);
+        deleteAccountButton.setText("Delete Account");
+        deleteAccountButton.setClickable(true);
+        deleteAccountButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                deleteAccount();
+                return false;
+            }
+        });
+
+        v.addFooterView(deleteAccountButton);
     }
 
     @Override
@@ -65,6 +86,28 @@ public class AccountActivity extends AppCompatPreferenceActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.account_log_out, menu);
         return true;
+    }
+
+    private void deleteAccount(){
+
+        SharedPreferences pref = getSharedPreferences("vacation", Context.MODE_PRIVATE);
+        final String name = pref.getString("username", null);
+
+        APIJsonCall dashcall = new APIJsonCall("users/"+name, "DELETE", this) {
+            @Override
+            public void JsonCallback(JsonObject obj) {
+                try {
+                    Log.e("ACCOUNT", "Deleting the user "+name+"!");
+                } catch(Exception E) {
+                    Log.e("WEB ERROR", E.getMessage());
+                }
+            }
+        };
+        dashcall.execute(new JsonObject());
+
+        logOut();
+        startActivity(new Intent(this, LoginActivity.class));
+        finish();
     }
 
     /**
