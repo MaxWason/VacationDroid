@@ -16,6 +16,7 @@ import android.view.View;
 
 import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.account.AccountActivity;
+import com.jkpg.jurgen.nl.vacationdroid.core.friends.FriendsAddActivity;
 import com.jkpg.jurgen.nl.vacationdroid.core.friends.FriendsListActivity;
 import com.jkpg.jurgen.nl.vacationdroid.core.vacation.VacationActivity;
 import com.jkpg.jurgen.nl.vacationdroid.core.vacationList.VacationListActivity;
@@ -128,7 +129,7 @@ public class OverviewActivity extends AppCompatActivity
         } else if (id == R.id.add_memory) {
 
         } else if (id == R.id.add_vacation) {
-
+            startActivity(new Intent(this, FriendsAddActivity.class));
         } else if (id == R.id.view_friends) {
             startActivity(new Intent(this, FriendsListActivity.class));
         } else if (id == R.id.add_friend) {
