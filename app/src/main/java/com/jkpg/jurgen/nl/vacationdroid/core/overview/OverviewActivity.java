@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -129,11 +130,11 @@ public class OverviewActivity extends AppCompatActivity
         } else if (id == R.id.add_memory) {
 
         } else if (id == R.id.add_vacation) {
-            startActivity(new Intent(this, FriendsAddActivity.class));
+
         } else if (id == R.id.view_friends) {
             startActivity(new Intent(this, FriendsListActivity.class));
         } else if (id == R.id.add_friend) {
-
+            startActivity(new Intent(this, FriendsAddActivity.class));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

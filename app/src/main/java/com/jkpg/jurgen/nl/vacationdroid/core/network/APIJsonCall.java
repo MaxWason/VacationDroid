@@ -98,7 +98,11 @@ public abstract class APIJsonCall extends AsyncTask<JsonObject, String, JsonObje
 
 
         } catch (Exception e) {
-            Log.e("WEB ERROR", e.getMessage().toString() + " code: " + responsecode);
+            try {
+                Log.e("WEB ERROR", e.getMessage() + " code: " + responsecode);
+            } catch (Exception ex){
+                Log.e("WEB ERROR", "No error message received!" + " code: " + responsecode);
+            }
             return null;
         }
     }
