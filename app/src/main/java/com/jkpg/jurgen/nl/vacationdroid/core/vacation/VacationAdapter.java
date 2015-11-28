@@ -1,21 +1,29 @@
 package com.jkpg.jurgen.nl.vacationdroid.core.vacation;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.jkpg.jurgen.nl.vacationdroid.R;
+import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
+
+import java.util.ArrayList;
 
 /**
  * Created by Antoine on 09/11/2015.
  */
-    public class ImageAdapter extends BaseAdapter {
+    public class VacationAdapter extends BaseAdapter {
+
         private Context mContext;
 
-        public ImageAdapter(Context c, GridView gridview) {
+        public VacationAdapter(Context c, GridView gridview, JsonObject arrMemory) {
             mContext = c;
         }
 
@@ -50,12 +58,14 @@ import com.jkpg.jurgen.nl.vacationdroid.R;
 
         // references to our images
         private Integer[] mThumbIds = {
-                R.drawable.placeholder2,R.drawable.placeholder2,
-                R.drawable.placeholder2,R.drawable.placeholder2,
-                R.drawable.placeholder2,R.drawable.placeholder2,
-                R.drawable.placeholder2,R.drawable.placeholder2,
-                R.drawable.placeholder2,R.drawable.placeholder2,
-                R.drawable.placeholder2,R.drawable.placeholder2,
-                R.drawable.placeholder2,R.drawable.placeholder2,
+                R.drawable.placeholder2,R.drawable.placeholder,
+                R.drawable.placeholder2,R.drawable.placeholder,
+                R.drawable.placeholder2,R.drawable.placeholder,
+                R.drawable.placeholder2,R.drawable.placeholder,
+                R.drawable.placeholder2,R.drawable.placeholder,
+                R.drawable.placeholder2,R.drawable.placeholder,
+                R.drawable.placeholder2,R.drawable.placeholder,
         };
+
+
     }

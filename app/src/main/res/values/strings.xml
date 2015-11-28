@@ -9,6 +9,8 @@
 
     <string name="title_activity_vacation_list">[Person]\'s Vacations</string>
     <string name="title_activity_memories">MemoriesActivity</string>
+    <string name="title_activity_vacation">VacationActivity</string>
+    <string name="title_activity_memory_list">MemoryList</string>
 
     <string name="title_activity_friends_add">Add Friends</string>
     <string name="title_activity_friends_view">My Friends</string>
@@ -90,5 +92,6 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="sign_out">Sign Out</string>
+
 
 </resources>

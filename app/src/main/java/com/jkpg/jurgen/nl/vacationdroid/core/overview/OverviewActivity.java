@@ -1,5 +1,6 @@
 package com.jkpg.jurgen.nl.vacationdroid.core.overview;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -150,6 +151,26 @@ public class OverviewActivity extends AppCompatActivity
         gotoVacationList.putExtra("displayUser", false); //friend's page to display
         gotoVacationList.putExtra("friendId", getFriendId());
         startActivity(gotoVacationList);
+    }
+
+    public void onUserDashImagePress(View v){
+        Intent gotoVacation = new Intent(this, VacationActivity.class);
+        gotoVacation.putExtra("displayUser", false); //friend's page to display
+        gotoVacation.putExtra("vacationTitle", getDashVacationName());
+        gotoVacation.putExtra("vacationDesc", getDashVacationDesc());
+        startActivity(gotoVacation);
+    }
+
+    private String getDashVacationName(){
+        UserDashFragment udf = (UserDashFragment) getFragmentManager().findFragmentById(R.id.fragment2);
+        String s = udf.getVacationTitle();
+        return s;
+    }
+
+    private String getDashVacationDesc(){
+        UserDashFragment udf = (UserDashFragment) getFragmentManager().findFragmentById(R.id.fragment2);
+        String s = udf.getVacationDesc();
+        return s;
     }
 
     private int getFriendId(){
