@@ -3,20 +3,18 @@ package com.jkpg.jurgen.nl.vacationdroid.core.login;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
+import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
 import com.jkpg.jurgen.nl.vacationdroid.core.network.APITokenCall;
 import com.jkpg.jurgen.nl.vacationdroid.core.overview.OverviewActivity;
-import com.jkpg.jurgen.nl.vacationdroid.R;
-
-import org.json.JSONObject;
 
 public class  LoginActivity extends AppCompatActivity {
 

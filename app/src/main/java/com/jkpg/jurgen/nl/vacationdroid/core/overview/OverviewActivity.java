@@ -17,10 +17,10 @@ import android.view.View;
 import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.account.AccountActivity;
 import com.jkpg.jurgen.nl.vacationdroid.core.friends.FriendsListActivity;
-import com.jkpg.jurgen.nl.vacationdroid.core.vacation.VacationActivity;
-import com.jkpg.jurgen.nl.vacationdroid.core.vacationList.VacationListActivity;
 import com.jkpg.jurgen.nl.vacationdroid.core.friends.logic.Friend;
 import com.jkpg.jurgen.nl.vacationdroid.core.friends.logic.withImage.FriendItemImage;
+import com.jkpg.jurgen.nl.vacationdroid.core.vacation.VacationActivity;
+import com.jkpg.jurgen.nl.vacationdroid.core.vacationList.VacationListActivity;
 
 import java.util.ArrayList;
 
