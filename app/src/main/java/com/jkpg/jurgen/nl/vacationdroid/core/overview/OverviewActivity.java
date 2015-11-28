@@ -133,8 +133,8 @@ public class OverviewActivity extends AppCompatActivity
 
         } else if (id == R.id.view_friends) {
             startActivity(new Intent(this, FriendsListActivity.class));
-        } else if (id == R.id.add_friend) {
-            startActivity(new Intent(this, FriendsAddActivity.class));
+//        } else if (id == R.id.add_friend) { //Deprecated, friends are added in view_friends
+//            startActivity(new Intent(this, FriendsAddActivity.class));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
