@@ -24,6 +24,13 @@ import java.util.List;
 
 public class FriendsAddActivity extends AppCompatActivity {
 
+    //
+    //
+    //===================================UNUSED because you can't get a list of all users=====================================
+    //
+    //
+
+
     private ListView listView;
     private SharedPreferences pref;
     private String username;

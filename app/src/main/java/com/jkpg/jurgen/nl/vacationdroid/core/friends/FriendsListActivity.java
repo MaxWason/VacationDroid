@@ -3,10 +3,12 @@ package com.jkpg.jurgen.nl.vacationdroid.core.friends;
 import android.app.DialogFragment;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -18,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -34,11 +37,13 @@ import com.jkpg.jurgen.nl.vacationdroid.core.vacationList.VacationListActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FriendsListActivity extends AppCompatActivity implements DeleteFriendDialogFragment.NoticeDialogListener {
+public class FriendsListActivity extends AppCompatActivity { //implements DeleteFriendDialogFragment.NoticeDialogListener //unnecessary feature for now
 
     private ListView listView;
     private SharedPreferences pref;
     private String username;
+
+    private ArrayAdapter<String> arrayAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,26 +53,28 @@ public class FriendsListActivity extends AppCompatActivity implements DeleteFrie
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_friend);
         setSupportActionBar(toolbar);
 
+        //add friend
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("test", "should start addFriend activity?");
-                startActivity(new Intent(view.getContext(), FriendsAddActivity.class));
+                doPopupWindowAddFriend();
             }
         });
 
+        //can I actually call this here onCreate?
         pref = this.getSharedPreferences("vacation", Context.MODE_PRIVATE);
         username = pref.getString("username", null);
-        String[] values = populateListWithFriends();
+        ArrayList<String> values = populateListWithFriends();
 
         listView = (ListView) findViewById(R.id.list_friend_id);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+        arrayAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, android.R.id.text1, values);
 
-        listView.setAdapter(adapter);
+        listView.setAdapter(arrayAdapter);
 
+        //go to friend's page on short click
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -82,68 +89,130 @@ public class FriendsListActivity extends AppCompatActivity implements DeleteFrie
                 startActivity(gotoVacationList);
             }
         });
-    }
 
-    //https://developer.android.com/guide/topics/ui/menus.html#context-menu
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.context_menu_friend, menu);
+        //delete friend if long click
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+                // ListView Clicked item value
+                String itemValue = (String) listView.getItemAtPosition(position);
+
+                //remove the friend
+                boolean deleted = removeFriend(itemValue);
+
+                //update the list and notify the user
+                if (deleted) {
+                    Toast.makeText(getApplicationContext(), "  Removed Friend : " + itemValue, Toast.LENGTH_LONG).show();
+                    arrayAdapter.remove(itemValue);
+                    arrayAdapter.notifyDataSetChanged();
+                }
+
+                return true; //makes sure long click is the only one called
+            }
+        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_friend_list, menu);
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    private void doPopupWindowAddFriend(){
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_unfriend_description) {
-            return true;
-        }
+        alert.setTitle("Add Friend");
 
-        return super.onOptionsItemSelected(item);
+        // Set an EditText view to get user input
+        final EditText input = new EditText(this);
+        alert.setView(input);
+
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String name = input.getText().toString();
+
+                //add friend
+                boolean added = addFriend(name);
+
+                //add to the list if valid
+                if (added) {
+                    Toast.makeText(getApplicationContext(), "  Added Friend : " + name, Toast.LENGTH_SHORT).show();
+                    arrayAdapter.add(name);
+                    arrayAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled. Do nothing.
+            }
+        });
+
+        alert.show();
     }
 
-    @Override
-    public void onDialogPositiveClick(DialogFragment dialog) {
+    //TODO: test
+    private boolean addFriend(String friendUsername){
 
+        APIJsonCall dashcall = new APIJsonCall("users/" + username + "/friends" + friendUsername, "POST", this) {
+            @Override
+            public void JsonCallback(JsonObject obj) {
+                try {
+                    Log.d("JASON", obj.toString());
+                } catch (Exception E) {
+                    try {
+                        Log.e("WEB ERROR", E.getMessage());
+                    } catch (Exception ex){
+                        Log.e("WEB ERROR", "No error message received!");
+                    }
+                }
+            }
+        };
+        dashcall.execute(new JsonObject());
+        return true; //TODO: correct return value if it actually succeeded
     }
 
-    @Override
-    public void onDialogNegativeClick(DialogFragment dialog) {
-
+    //TODO: test
+    private boolean removeFriend(String friendName){
+        APIJsonCall dashcall = new APIJsonCall("users/" + username + "/friends/" + friendName, "DELETE", this) {
+            @Override
+            public void JsonCallback(JsonObject obj) {
+                try {
+                    Log.d("JASON", obj.toString());
+                } catch (Exception E) {
+                    try {
+                        Log.e("WEB ERROR", E.getMessage());
+                    } catch (Exception ex){
+                        Log.e("WEB ERROR", "No error message received!");
+                    }
+                }
+            }
+        };
+        dashcall.execute(new JsonObject());
+        return true; //TODO: correct return value if it actually succeeded
     }
 
 
-    private String[] populateListWithFriends() {
-        String[] returnValue;
+    private ArrayList<String> populateListWithFriends() {
+        ArrayList<String> returnValue = new ArrayList<String>();
         //get friends list
         try {
-            returnValue = getFriendsWeb();
-        } catch (Exception e) {
+            returnValue = getFriendsWeb(returnValue);
+        } catch (Exception e) { //is this actually ever caught?
             //web error, use cached data
-            returnValue = new String[]{"Cached data only"};
+            returnValue.add("Cached data only");
         }
 
-        if (returnValue.length == 0) returnValue = new String[]{"No friends :("};
+        if (returnValue.size() == 0) returnValue.add("No friends :(");
 
         //return list
         return returnValue;
     }
 
-    private String[] getFriendsWeb() {
-
-        final List<String> listFinal = new ArrayList<String>();
+    //TODO: test
+    private ArrayList<String> getFriendsWeb(final ArrayList<String> initList) {
 
         APIJsonCall dashcall = new APIJsonCall("users/" + username + "/friends", "GET", this) {
             @Override
@@ -152,7 +221,7 @@ public class FriendsListActivity extends AppCompatActivity implements DeleteFrie
                     Log.d("JASON", obj.toString());
                     JsonArray arr = obj.get("friends").getAsJsonArray();
                     for (JsonElement anArr : arr) {
-                        listFinal.add(anArr.getAsString()); //TODO format as: username
+                        initList.add(anArr.getAsString());
                     }
                 } catch (Exception E) {
                     try {
@@ -164,7 +233,6 @@ public class FriendsListActivity extends AppCompatActivity implements DeleteFrie
             }
         };
         dashcall.execute(new JsonObject());
-
-        return listFinal.toArray(new String[listFinal.size()]);
+        return initList;
     }
 }

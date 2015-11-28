@@ -11,6 +11,8 @@ import com.jkpg.jurgen.nl.vacationdroid.R;
 
 public class DeleteFriendDialogFragment extends DialogFragment {
 
+    //==========================================Unnecessary feature for now, come back to it later if there is time=======================
+
     //https://developer.android.com/guide/topics/ui/dialogs.html
 
     @Override

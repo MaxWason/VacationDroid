@@ -61,8 +61,10 @@ public class VacationListActivity extends AppCompatActivity implements Vacations
             nameToDisplay = pref.getString("username", null);
         }else{
             //get name of friend
-            nameToDisplay = "A Friend";
-//            nameToDisplay = intent.getStringExtra("friendName"); //TODO: uncomment when working, when called correctly form other activity
+            if (intent.getStringExtra("friendName") == null)
+                nameToDisplay = "A Friend";
+            else
+                nameToDisplay = intent.getStringExtra("friendName");
         }
         this.setTitle(nameToDisplay+"'s Vacations");;
 
@@ -165,6 +167,5 @@ public class VacationListActivity extends AppCompatActivity implements Vacations
         //TODO: go to specific vacation
         Intent intent = new Intent(VacationListActivity.this, VacationActivity.class);
         startActivity(intent);
-        //broken now, wtf?
     }
 }

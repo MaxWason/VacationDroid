@@ -2,6 +2,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.jkpg.jurgen.nl.vacationdroid.core.friends.FriendsListActivity">
+    <item android:id="@+id/action_friend_description"
+        android:title="@string/menu_friend_description"
+        android:orderInCategory="1"
+        app:showAsAction="never" />
     <item android:id="@+id/action_unfriend_description"
         android:title="@string/menu_unfriend_description"
         android:orderInCategory="2"
