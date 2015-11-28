@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:name="com.jkpg.jurgen.nl.vacationdroid.core.vacationList.logic.VacationsItem"
-        android:id="@+id/fragment3"
+        android:id="@+id/fragment_vac_item"
         android:layout_alignParentTop="true"
         tools:layout="@layout/fragment_vacation_list_dash"
         android:layout_alignParentLeft="true"

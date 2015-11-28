@@ -1,4 +1,4 @@
-package com.jkpg.jurgen.nl.vacationdroid.core.friends;
+package com.jkpg.jurgen.nl.vacationdroid.core.friends.deprecated;
 
 import android.app.Activity;
 import android.app.AlertDialog;

@@ -2,7 +2,10 @@ package com.jkpg.jurgen.nl.vacationdroid.core.vacationList.logic;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,41 +14,41 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.jkpg.jurgen.nl.vacationdroid.R;
+import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
+import com.jkpg.jurgen.nl.vacationdroid.datamodels.Vacation;
 
 import java.util.ArrayList;
 
 
 public class VacationsItem extends Fragment implements AbsListView.OnItemClickListener {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String USERNAME = "username";
+    private static final String FRIEND_NAME = "friendName";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private boolean useUser;
+    private String userName;
+    private String friendName;
 
     private OnFragmentInteractionListener mListener;
 
-    /**
-     * The fragment's ListView/GridView.
-     */
+
+    //The fragment's ListView/GridView.
     private AbsListView mListView;
 
-    /**
-     * The Adapter which will be used to populate the ListView/GridView with
-     * Views.
-     */
+    //The Adapter which will be used to populate the ListView/GridView with Views.
     private ListAdapter mAdapter;
 
-    // TODO: Rename and change types of parameters
-    public static VacationsItem newInstance(String param1, String param2) {
+    //was static
+    public VacationsItem newInstance(Boolean shouldUseUser, String param1, String param2) {
         VacationsItem fragment = new VacationsItem();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        useUser = shouldUseUser;
+        if (useUser) args.putString(userName, param1);
+        else args.putString(friendName, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -55,34 +58,120 @@ public class VacationsItem extends Fragment implements AbsListView.OnItemClickLi
      * fragment (e.g. upon screen orientation changes).
      */
     public VacationsItem() {
+
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+        useUser = getActivity().getIntent().getBooleanExtra("displayUser", true);
+
+        if (useUser)
+            userName = getActivity().getSharedPreferences("vacation", Context.MODE_PRIVATE).getString("username", null);
+        else
+            friendName = getActivity().getIntent().getStringExtra("friendName");
+
+        ArrayList<Vacation> vacationsList = getVacations();
+
+        if (vacationsList.isEmpty()){ //no vacations for that user
+            vacationsList.add(new Vacation(-1,"No Vacations!", "Add one to see it here.", "No Place", 0, 0, -1));
         }
 
-        // TODO: Change Adapter to display your content
+        mAdapter = new VacationsAdapter(getActivity(), R.layout.fragment_vacation_list_dash, vacationsList);
 
-        ArrayList vacations = new ArrayList<VacationsDummy>();
-        vacations.add(new VacationsDummy("Prague", "Best Vacation ever!"));
-        vacations.add(new VacationsDummy("Stockholm", "SWE is love SWE is life"));
-        vacations.add(new VacationsDummy("Some other place", "Filler text, yay!"));
-        vacations.add(new VacationsDummy("Krakow", "krakow, krakow"));
-        vacations.add(new VacationsDummy());
-        vacations.add(new VacationsDummy());
-        vacations.add(new VacationsDummy());
-        vacations.add(new VacationsDummy());
-        // friends = (OverviewActivity) getActivity().friends or something
+//        ArrayList vacations = new ArrayList<VacationsDummy>();
+//        vacations.add(new VacationsDummy("Prague", "Best Vacation ever!"));
+//        vacations.add(new VacationsDummy("Stockholm", "SWE is love SWE is life"));
+//        vacations.add(new VacationsDummy("Some other place", "Filler text, yay!"));
+//        vacations.add(new VacationsDummy("Krakow", "krakow, krakow"));
+//        vacations.add(new VacationsDummy());
+//        vacations.add(new VacationsDummy());
+//        vacations.add(new VacationsDummy());
+//        vacations.add(new VacationsDummy());
+//        // friends = (OverviewActivity) getActivity().friends or something
+//
+//        mAdapter = new VacationsAdapter<VacationsDummy>(getActivity(), R.layout.fragment_vacation_list_dash, vacations);
+    }
 
-        //Jurgen: so, this array adapter takes FriendContent objects and translates them to the list items
-        //we're probably gonna have to make our own for this to work
+    private ArrayList<Vacation> getVacations(){
+        ArrayList<Vacation> toReturn = new ArrayList<Vacation>();
+        if (useUser){
+            toReturn = getUserVacations(toReturn);
+        }else{
+            toReturn = getFriendVacations(toReturn);
+        }
+        return toReturn;
+    }
 
-        mAdapter = new VacationsAdapter<VacationsDummy>(getActivity(), R.layout.fragment_vacation_list_dash, vacations);
+    private ArrayList<Vacation> getUserVacations(final ArrayList<Vacation> vacs){
+
+        APIJsonCall dashcall = new APIJsonCall("users/"+userName+"/vacations", "GET", getActivity()) {
+            @Override
+            public void JsonCallback(JsonObject obj) {
+                try {
+                    Log.d("JASON", obj.toString());
+                    JsonArray arr = obj.getAsJsonArray("list");
+                    for (JsonElement aVac : arr) {
+                        JsonObject aVacation = aVac.getAsJsonObject();
+                        Vacation myVac = new Vacation(
+                                aVacation.get("id").getAsInt(),
+                                aVacation.get("title").getAsString(),
+                                aVacation.get("description").getAsString(),
+                                aVacation.get("place").getAsString(),
+                                aVacation.get("start").getAsInt(),
+                                aVacation.get("end").getAsInt(),
+                                aVacation.get("userId").getAsInt()
+                        );
+                        vacs.add(myVac);
+                        Log.i("test",myVac.toString());
+                    }
+                } catch (Exception E) {
+                    try {
+                        Log.e("WEB ERROR", E.getMessage());
+                    } catch (Exception ex){
+                        Log.e("WEB ERROR", "No error message received!");
+                    }
+                }
+            }
+        };
+        dashcall.execute(new JsonObject());
+        return vacs;
+    }
+
+    private ArrayList<Vacation> getFriendVacations(final ArrayList<Vacation> vacs){
+
+        APIJsonCall dashcall = new APIJsonCall("users/"+friendName+"/vacations", "GET", getActivity()) {
+            @Override
+            public void JsonCallback(JsonObject obj) {
+                try {
+                    Log.d("JASON", obj.toString());
+                    JsonArray arr = obj.getAsJsonArray("list");
+                    for (JsonElement aVac : arr) {
+                        JsonObject aVacation = aVac.getAsJsonObject();
+                        Vacation myVac = new Vacation(
+                                aVacation.get("id").getAsInt(),
+                                aVacation.get("title").getAsString(),
+                                aVacation.get("description").getAsString(),
+                                aVacation.get("place").getAsString(),
+                                aVacation.get("start").getAsInt(),
+                                aVacation.get("end").getAsInt(),
+                                aVacation.get("userId").getAsInt()
+                        );
+                        vacs.add(myVac);
+                        Log.i("test",myVac.toString());
+                    }
+                } catch (Exception E) {
+                    try {
+                        Log.e("WEB ERROR", E.getMessage());
+                    } catch (Exception ex){
+                        Log.e("WEB ERROR", "No error message received!");
+                    }
+                }
+            }
+        };
+        dashcall.execute(new JsonObject());
+        return vacs;
     }
 
     @Override

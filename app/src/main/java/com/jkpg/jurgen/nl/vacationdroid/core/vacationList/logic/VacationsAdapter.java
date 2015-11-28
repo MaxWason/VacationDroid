@@ -10,59 +10,45 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jkpg.jurgen.nl.vacationdroid.R;
+import com.jkpg.jurgen.nl.vacationdroid.datamodels.Vacation;
 
 import java.util.ArrayList;
 
-public class VacationsAdapter<VacationsDummy> extends ArrayAdapter<VacationsDummy> {
+public class VacationsAdapter extends ArrayAdapter<Vacation> {
 
     Context context;
-    ArrayList<VacationsDummy> data;
+    ArrayList<Vacation> data;
     int viewid;
 
-    public VacationsAdapter(Context context, int viewID, ArrayList<VacationsDummy> data) {
+    public VacationsAdapter(Context context, int viewID, ArrayList<Vacation> data) {
         super(context, viewID, data);
         this.context = context;
         this.data = data;
         this.viewid = viewID;
     }
 
-    //TODO: not actually getting the vacation data, going to the else block
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View row = convertView;
-        VacationsHolder holder = null;
+        View view = convertView;
 
-        if(row == null)
-        {
+        if (view == null){
             LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-            row = inflater.inflate(viewid, parent, false);
-
-            holder = new VacationsHolder();
-            holder.name = (TextView)row.findViewById(R.id.dashNameVacations);
-            holder.description = (TextView)row.findViewById(R.id.dashDescVacations);
-            holder.img = (ImageView)row.findViewById(R.id.dashImg);
-
-            row.setTag(holder);
-        }
-        else
-        {
-            holder = (VacationsHolder)row.getTag();
+            view = inflater.inflate(viewid, parent, false);
         }
 
-        VacationsDummy f = data.get(position);
-        holder.name.setText("VacName");
-        holder.description.setText("Filler Description");
+        Vacation v = data.get(position);
 
-        return row;
-    }
+        if (v != null){
 
-    class VacationsHolder {
-        public TextView name;
-        public TextView description;
-        public ImageView img;
+            //actual items
+            ((TextView)view.findViewById(R.id.dashNameVacations)).setText(data.get(position).getTitle());
+            ((TextView)view.findViewById(R.id.dashDescVacations)).setText(data.get(position).getDescription());
 
-        public VacationsHolder() {
-
+            //temporary items
+//            ((ImageView)view.findViewById(R.id.dashImg)).setImage(something); //TODO: get last memory and get an image there
+            //TODO: populate entirely
         }
+
+        return view;
     }
 }

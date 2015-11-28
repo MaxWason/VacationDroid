@@ -1,5 +1,6 @@
 package com.jkpg.jurgen.nl.vacationdroid.core.vacationList;
 
+import android.app.Fragment;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +23,7 @@ import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
 import com.jkpg.jurgen.nl.vacationdroid.core.vacation.VacationActivity;
 import com.jkpg.jurgen.nl.vacationdroid.core.vacationList.logic.VacationsItem;
+import com.jkpg.jurgen.nl.vacationdroid.datamodels.Vacation;
 
 public class VacationListActivity extends AppCompatActivity implements VacationsItem.OnFragmentInteractionListener {
 
@@ -34,6 +36,7 @@ public class VacationListActivity extends AppCompatActivity implements Vacations
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.vacation_list_activity);
+        Log.d("t","settingContentView");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -48,7 +51,6 @@ public class VacationListActivity extends AppCompatActivity implements Vacations
 
         Intent intent = getIntent();
 
-
         //craziness below here
         displayUser = intent.getBooleanExtra("displayUser", true);
         String nameToDisplay;
@@ -57,7 +59,6 @@ public class VacationListActivity extends AppCompatActivity implements Vacations
 
         if (displayUser){
             //get name of user
-
             nameToDisplay = pref.getString("username", null);
         }else{
             //get name of friend
@@ -66,7 +67,12 @@ public class VacationListActivity extends AppCompatActivity implements Vacations
             else
                 nameToDisplay = intent.getStringExtra("friendName");
         }
-        this.setTitle(nameToDisplay+"'s Vacations");;
+        this.setTitle(nameToDisplay + "'s Vacations");
+
+//        Fragment myFrag = this.getFragmentManager().findFragmentByTag("fragment_vac_item");
+//        VacationsItem vacationsItem = (VacationsItem) getFragmentManager().findFragmentById(R.id.fragment_vac_item);
+//        Bundle myBundle = new Bundle();
+//        vacationsItem.onCreate();
 
         //craziness ends
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
@@ -77,41 +83,6 @@ public class VacationListActivity extends AppCompatActivity implements Vacations
 
     private void getUserData(){
 
-//        final TextView username = (TextView) this.findViewById(R.id.userdashUsername);
-//        final TextView vtitle = (TextView) this.findViewById(R.id.userdashVacationTitle);
-//        final TextView vdesc = (TextView) this.findViewById(R.id.userdashVacationDescription);
-//
-//        SharedPreferences pref = getActivity().getSharedPreferences("vacation", Context.MODE_PRIVATE);
-//        String name = pref.getString("username", null);
-//
-//        APIJsonCall dashcall = new APIJsonCall("users/"+name, "GET", getActivity()) {
-//            @Override
-//            public void JsonCallback(JsonObject obj) {
-//                try {
-//                    Log.d("JASON", obj.toString());
-//                    username.setText(obj.get("username").getAsString());
-//                } catch(Exception E) {
-//                    Log.e("WEB ERROR", E.getMessage());
-//                }
-//            }
-//        };
-//        dashcall.execute(new JsonObject());
-//
-//        APIJsonCall vaccall = new APIJsonCall("vacations", "GET", getActivity()) {
-//            @Override
-//            public void JsonCallback(JsonObject obj) {
-//                try {
-//                    Log.d("JASON", obj.toString());
-//                    JsonArray arr = obj.getAsJsonArray("list");
-//                    JsonObject v1 = arr.get(0).getAsJsonObject();
-//                    vtitle.setText(v1.get("title").getAsString());
-//                    vdesc.setText(v1.get("description").getAsString());
-//                } catch(Exception E) {
-//                    Log.e("WEB ERROR", E.getMessage());
-//                }
-//            }
-//        };
-//        vaccall.execute(new JsonObject());
     }
 
 

@@ -156,7 +156,7 @@ public class FriendsListActivity extends AppCompatActivity { //implements Delete
     //TODO: test
     private boolean addFriend(String friendUsername){
 
-        APIJsonCall dashcall = new APIJsonCall("users/" + username + "/friends" + friendUsername, "POST", this) {
+        APIJsonCall dashcall = new APIJsonCall("users/" + username + "/friends/" + friendUsername, "POST", this) {
             @Override
             public void JsonCallback(JsonObject obj) {
                 try {
