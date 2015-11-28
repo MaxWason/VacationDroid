@@ -4,6 +4,7 @@
     tools:context="com.jkpg.jurgen.nl.vacationdroid.core.friends.FriendsListActivity">
     <item android:id="@+id/action_friend_description"
         android:title="@string/menu_friend_description"
+        android:icon="@android:drawable/ic_menu_compass"
         android:orderInCategory="1"
         app:showAsAction="never" />
     <item android:id="@+id/action_unfriend_description"
