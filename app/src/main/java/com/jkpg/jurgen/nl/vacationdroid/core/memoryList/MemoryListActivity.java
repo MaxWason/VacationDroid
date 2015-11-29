@@ -1,5 +1,6 @@
 package com.jkpg.jurgen.nl.vacationdroid.core.memoryList;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,6 +27,11 @@ public class MemoryListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         c = this;
+
+        Intent intent = getIntent();
+        memoryID = intent.getIntExtra("id",-1);
+        Log.d("IDMEMORY", memoryID+"");
+
         setContentView(R.layout.memory_list_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -38,19 +44,23 @@ public class MemoryListActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+    }
 
-        Intent intent = getIntent();
-        //int memoryId = intent.getIntExtra("id", 1);
-
-        APIJsonCall memcall = new APIJsonCall("memories/1-", "GET", this) {
+        protected void onStart(){
+            super.onStart();
+            final Activity a = this;
+        APIJsonCall memcall = new APIJsonCall("memories/"+memoryID, "GET", this) {
             @Override
             public void JsonCallback(JsonObject obj) {
                 try {
-                    Log.d("JASON", obj.toString());
-                    JsonArray arr = obj.getAsJsonArray("list");
-                    JsonObject v1 = arr.get(0).getAsJsonObject();
-                    title = (v1.get("title").getAsString());
-                    desc = (v1.get("description").getAsString());
+                    title = obj.get("title").getAsString();
+                    Log.d("TITLE", title);
+                    a.setTitle(title);
+                    desc = obj.get("description").getAsString() + " in "+ obj.get("place").getAsString()
+                            +" at  "+obj.get("time").getAsString();
+                    Log.d("DESCRIPTION", desc);
+                    TextView descView = (TextView) findViewById(R.id.MemoryDescription);
+                    descView.setText(desc);
                 } catch(Exception E) {
                     Log.e("WEB ERROR", E.getMessage());
                 }
@@ -58,9 +68,6 @@ public class MemoryListActivity extends AppCompatActivity {
         };
         memcall.execute(new JsonObject());
 
-        this.setTitle(title);
-        TextView descView = (TextView) findViewById(R.id.VacationDescription);
-        descView.setText(desc);
 
         GridView gridview = (GridView) findViewById(R.id.gridview);
         //gridview.setAdapter(new VacationAdapter(this, gridview));
@@ -88,5 +95,5 @@ public class MemoryListActivity extends AppCompatActivity {
     private Context c;
     private String title;
     private String desc;
-
+    private int memoryID;
 }

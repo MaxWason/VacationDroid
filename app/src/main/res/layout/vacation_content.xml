@@ -51,15 +51,5 @@
         android:layout_toLeftOf="@+id/VacationDate"
         android:layout_toStartOf="@+id/VacationDate" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="VacationDate"
-        android:id="@+id/VacationDate"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
 
 </RelativeLayout>
