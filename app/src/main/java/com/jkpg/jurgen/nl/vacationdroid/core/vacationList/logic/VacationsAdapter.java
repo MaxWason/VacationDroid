@@ -27,6 +27,11 @@ public class VacationsAdapter extends ArrayAdapter<Vacation> {
     }
 
     @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
 
