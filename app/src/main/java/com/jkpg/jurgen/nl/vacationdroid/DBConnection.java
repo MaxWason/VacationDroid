@@ -1,8 +1,11 @@
 package com.jkpg.jurgen.nl.vacationdroid;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import com.jkpg.jurgen.nl.vacationdroid.datamodels.Vacation;
 
 /**
  * Created by Jurgen on 11/5/2015.
@@ -10,8 +13,23 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBConnection extends SQLiteOpenHelper {
 
     public static String dbname = "vacationdb";
+
     public DBConnection(Context context) {
         super(context, dbname, null, 1);
+
+    }
+
+    public void addVacation(Vacation v) {
+        SQLiteDatabase db = SQLiteDatabase.openDatabase("vacationdb", null, SQLiteDatabase.OPEN_READWRITE);
+
+        String values = v.title + "," +
+                v.description + "," +
+                v.place + "," +
+                v.start + "," +
+                v.end;
+        db.execSQL("INSERT INTO vacations" +
+                "values (" + values + ");");
+
 
     }
 
