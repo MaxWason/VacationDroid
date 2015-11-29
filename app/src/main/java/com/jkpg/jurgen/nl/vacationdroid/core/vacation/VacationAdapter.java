@@ -28,14 +28,15 @@ import java.util.ArrayList;
 
         private Context mContext;
         private Activity a;
-        private int memoryId;
+        private int vacID;
         private GridView gv;
         private ArrayList<String> am = new ArrayList<String>();
 
-        public VacationAdapter(Context c, GridView gridview, JsonArray arrMemory, Activity ac) {
+        public VacationAdapter(Context c, GridView gridview, JsonArray arrMemory, Activity ac, int vacId) {
             a = ac;
             mContext = c;
             gv=gridview;
+            vacID=vacId;
             if (arrMemory != null) {
                 for (int i=0;i<arrMemory.size();i++){
                     am.add(arrMemory.get(i).toString());
@@ -89,14 +90,14 @@ import java.util.ArrayList;
             final int positioN = position;
             final Activity ac = a;
             final Intent intent = new Intent(a, MemoryListActivity.class);
-            APIJsonCall memcall = new APIJsonCall("vacations/"+3+"/memories", "GET", a) {//3 is id for Antoine's first vacation
+            APIJsonCall memcall = new APIJsonCall("vacations/"+vacID+"/memories", "GET", a) {//3 is id for Antoine's first vacation
                 @Override
                 public void JsonCallback(JsonObject obj) {
                     try {
                         JsonArray arrMemories = obj.getAsJsonArray("list");
                         JsonObject ml = arrMemories.get(positioN).getAsJsonObject();
                         Log.d("MEMORY", ml.toString());
-                        memoryId = ml.get("id").getAsInt();
+                        final int memoryId = ml.get("id").getAsInt();
                         Log.d("ID", "" + memoryId);
                         intent.putExtra("id", memoryId);
                         ac.startActivity(intent);

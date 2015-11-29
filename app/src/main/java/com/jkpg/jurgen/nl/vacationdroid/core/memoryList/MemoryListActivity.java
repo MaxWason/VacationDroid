@@ -49,47 +49,42 @@ public class MemoryListActivity extends AppCompatActivity {
         protected void onStart(){
             super.onStart();
             final Activity a = this;
-        APIJsonCall memcall = new APIJsonCall("memories/"+memoryID, "GET", this) {
-            @Override
-            public void JsonCallback(JsonObject obj) {
-                try {
-                    title = obj.get("title").getAsString();
-                    Log.d("TITLE", title);
-                    a.setTitle(title);
-                    desc = obj.get("description").getAsString() + " in "+ obj.get("place").getAsString()
-                            +" at  "+obj.get("time").getAsString();
-                    Log.d("DESCRIPTION", desc);
-                    TextView descView = (TextView) findViewById(R.id.MemoryDescription);
-                    descView.setText(desc);
-                } catch(Exception E) {
-                    Log.e("WEB ERROR", E.getMessage());
+
+            final GridView gridview = (GridView) findViewById(R.id.gridview);
+            APIJsonCall memcall = new APIJsonCall("memories/"+memoryID, "GET", this) {//get the info from the memory
+                @Override
+                public void JsonCallback(JsonObject obj) {
+                    try {
+                        title = obj.get("title").getAsString();
+                        Log.d("TITLE", title);
+                        a.setTitle(title);
+                        desc = obj.get("description").getAsString() + " in "+ obj.get("place").getAsString()
+                                +" at  "+obj.get("time").getAsString();
+                        Log.d("DESCRIPTION", desc);
+                        TextView descView = (TextView) findViewById(R.id.MemoryDescription);
+                        descView.setText(desc);
+                    } catch(Exception E) {
+                        Log.e("WEB ERROR", E.getMessage());
+                    }
                 }
-            }
-        };
-        memcall.execute(new JsonObject());
+            };
+            memcall.execute(new JsonObject());
 
+            APIJsonCall filescall = new APIJsonCall("memories/"+memoryID+"/media-objects", "GET", this) {//get the list of medias for a given memory
+                @Override
+                public void JsonCallback(JsonObject obj) {
+                    try {
+                        JsonArray arrFiles = obj.getAsJsonArray("list");
+                        JsonObject ml = arrFiles.get(0).getAsJsonObject();
+                        Log.d("FILESLIST", arrFiles.toString());
+                        gridview.setAdapter(new MemoryListAdapter(c, gridview, arrFiles, a, memoryID));
+                    } catch(Exception E) {
+                        Log.e("WEB ERROR", E.getMessage());
+                    }
+                }
+            };
+            filescall.execute(new JsonObject());
 
-        GridView gridview = (GridView) findViewById(R.id.gridview);
-        //gridview.setAdapter(new VacationAdapter(this, gridview));
-
-        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            public void onItemClick(AdapterView<?> parent, View v, int position,
-                                    long id) {
-                goToMemoryActivity();
-            }
-        });
-    }
-
-    private void goToMemoryActivity(){
-        Intent intent = new Intent(MemoryListActivity.this, MemoryActivity.class);
-        intent.putExtra("test","blblblblblblbl");
-        intent.putExtra("fileName",getMemoryFileName());
-        startActivity(intent);
-    }
-
-    private String getMemoryFileName(){
-        return "Cool file name";
     }
 
     private Context c;

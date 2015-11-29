@@ -75,9 +75,8 @@ public class VacationActivity extends AppCompatActivity {
             public void JsonCallback(JsonObject obj) {
                 try {
                     JsonArray arrMemories = obj.getAsJsonArray("list");
-                    JsonObject ml = arrMemories.get(0).getAsJsonObject();
                     Log.d("MEMORYLIST", arrMemories.toString());
-                    gridview.setAdapter(new VacationAdapter(mContext, gridview, arrMemories, a));
+                    gridview.setAdapter(new VacationAdapter(mContext, gridview, arrMemories, a, vacID));
                 } catch(Exception E) {
                     Log.e("WEB ERROR", E.getMessage());
                 }
