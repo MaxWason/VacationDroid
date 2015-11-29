@@ -10,15 +10,19 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.account.AccountActivity;
 import com.jkpg.jurgen.nl.vacationdroid.core.friends.FriendsListActivity;
 import com.jkpg.jurgen.nl.vacationdroid.core.friends.logic.Friend;
 import com.jkpg.jurgen.nl.vacationdroid.core.friends.logic.withImage.FriendItemImage;
+import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
 import com.jkpg.jurgen.nl.vacationdroid.core.vacation.VacationActivity;
 import com.jkpg.jurgen.nl.vacationdroid.core.vacationList.VacationListActivity;
 
@@ -29,6 +33,7 @@ public class OverviewActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, FriendItemImage.OnFragmentInteractionListener {
 
     ArrayList<Friend> friends = new ArrayList<>();
+    int vacID;
 
     @Override
     public void onFragmentInteraction(String id) { //for the friendItems
@@ -150,6 +155,27 @@ public class OverviewActivity extends AppCompatActivity
         gotoVacationList.putExtra("displayUser", false); //friend's page to display
         gotoVacationList.putExtra("friendName", getFriendName());
         startActivity(gotoVacationList);
+    }
+
+    public void onUserDashImagePress(View v){
+        final Intent gotoVacation = new Intent(this, VacationActivity.class);
+
+        APIJsonCall vaccall = new APIJsonCall("vacations", "GET", this) {//get the list of all vacations for the user
+            @Override
+            public void JsonCallback(JsonObject obj) {
+                try {
+                    JsonArray arrVac = obj.getAsJsonArray("list");
+                    JsonObject ml = arrVac.get(arrVac.size()-1).getAsJsonObject();
+                    Log.d("LASTVACATION", ml.toString());
+                    vacID = ml.get("id").getAsInt();
+                    gotoVacation.putExtra("id", vacID);
+                    startActivity(gotoVacation);
+                } catch(Exception E) {
+                    Log.e("WEB ERROR", E.getMessage());
+                }
+            }
+        };
+        vaccall.execute(new JsonObject());
     }
 
     private String getFriendName(){

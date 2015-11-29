@@ -1,5 +1,6 @@
 package com.jkpg.jurgen.nl.vacationdroid.core.vacation;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
@@ -25,6 +26,12 @@ public class VacationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
+
+        Intent intent = getIntent();
+        vacID = intent.getIntExtra("id",-1);
+        Log.d("IDVACATION", vacID+"");
+
+
         setContentView(R.layout.vacation_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -40,49 +47,50 @@ public class VacationActivity extends AppCompatActivity {
 
 
         gridview = (GridView) findViewById(R.id.gridview);
+    }
 
-
-            final int vacid=3;//first Antoine's vacation
-            APIJsonCall memcall = new APIJsonCall("vacations/"+vacid+"/memories", "GET", this) {
-                @Override
-                public void JsonCallback(JsonObject obj) {
-                    try {
-                        Log.d("MEMORYLIST", obj.toString());
-                        JsonArray arrMemories = obj.getAsJsonArray("list");
-                        JsonObject ml = arrMemories.get(0).getAsJsonObject();
-                        gridview.setAdapter(new VacationAdapter(mContext, gridview, ml));
-                    } catch(Exception E) {
-                        Log.e("WEB ERROR", E.getMessage());
-                    }
+    protected void onStart(){
+        super.onStart();
+        final Activity a = this;
+        APIJsonCall vaccall = new APIJsonCall("vacations/"+vacID, "GET", this) {//3 is id for Antoine's first vacation
+            @Override
+            public void JsonCallback(JsonObject obj) {
+                try {
+                    Log.d("VACATION", obj.toString());
+                    title = obj.get("title").getAsString();
+                    a.setTitle(title);
+                    desc = obj.get("description").getAsString() + " at "+ obj.get("place").getAsString()
+                            +". Date : "+obj.get("start").getAsString()+" / "+obj.get("end").getAsString();
+                    TextView descView = (TextView) findViewById(R.id.VacationDescription);
+                    descView.setText(desc);
+                } catch(Exception E) {
+                    Log.e("WEB ERROR", E.getMessage());
                 }
-            };
-             memcall.execute(new JsonObject());
-
-        Intent intent = getIntent();
-        String title = intent.getStringExtra("vacationTitle");
-        String desc = intent.getStringExtra("vacationDesc");
-        this.setTitle(title);
-        TextView descView = (TextView) findViewById(R.id.VacationDescription);
-        descView.setText(desc);
-
-        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            public void onItemClick(AdapterView<?> parent, View v, int position,
-                                    long id) {
-                goToMemoryList(position);
             }
-        });
-    }
+        };
+        vaccall.execute(new JsonObject());
 
-    public void goToMemoryList(int position){
-        Intent intent = new Intent(VacationActivity.this, MemoryListActivity.class);
-        intent.putExtra("id", (int)1);
-        startActivity(intent);
-    }
+        APIJsonCall memcall = new APIJsonCall("vacations/"+vacID+"/memories", "GET", this) {//3 is id for Antoine's first vacation
+            @Override
+            public void JsonCallback(JsonObject obj) {
+                try {
+                    JsonArray arrMemories = obj.getAsJsonArray("list");
+                    JsonObject ml = arrMemories.get(0).getAsJsonObject();
+                    Log.d("MEMORYLIST", arrMemories.toString());
+                    gridview.setAdapter(new VacationAdapter(mContext, gridview, arrMemories, a));
+                } catch(Exception E) {
+                    Log.e("WEB ERROR", E.getMessage());
+                }
+            }
+        };
+        memcall.execute(new JsonObject());
 
+
+    }
 
     private String title;
     private String desc;
     private GridView gridview=null;
     private Context mContext;
+    private int vacID;
 }
