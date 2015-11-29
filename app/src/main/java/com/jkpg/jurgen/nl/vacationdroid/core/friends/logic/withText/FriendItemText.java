@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.friends.logic.Friend;
-import com.jkpg.jurgen.nl.vacationdroid.core.friends.logic.withImage.FriendAdapterImage;
 import com.jkpg.jurgen.nl.vacationdroid.core.overview.OverviewActivity;
 
 import java.util.ArrayList;

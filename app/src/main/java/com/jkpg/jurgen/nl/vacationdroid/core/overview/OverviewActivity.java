@@ -1,6 +1,5 @@
 package com.jkpg.jurgen.nl.vacationdroid.core.overview;
 
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -18,10 +17,10 @@ import android.view.View;
 import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.account.AccountActivity;
 import com.jkpg.jurgen.nl.vacationdroid.core.friends.FriendsListActivity;
-import com.jkpg.jurgen.nl.vacationdroid.core.vacation.VacationActivity;
-import com.jkpg.jurgen.nl.vacationdroid.core.vacationList.VacationListActivity;
 import com.jkpg.jurgen.nl.vacationdroid.core.friends.logic.Friend;
 import com.jkpg.jurgen.nl.vacationdroid.core.friends.logic.withImage.FriendItemImage;
+import com.jkpg.jurgen.nl.vacationdroid.core.vacation.VacationActivity;
+import com.jkpg.jurgen.nl.vacationdroid.core.vacationList.VacationListActivity;
 
 import java.util.ArrayList;
 
@@ -132,8 +131,8 @@ public class OverviewActivity extends AppCompatActivity
 
         } else if (id == R.id.view_friends) {
             startActivity(new Intent(this, FriendsListActivity.class));
-        } else if (id == R.id.add_friend) {
-
+//        } else if (id == R.id.add_friend) { //Deprecated, friends are added in view_friends
+//            startActivity(new Intent(this, FriendsAddActivity.class));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -149,34 +148,14 @@ public class OverviewActivity extends AppCompatActivity
     public void onVacationListFriendPress(View v){
         Intent gotoVacationList = new Intent(this, VacationListActivity.class);
         gotoVacationList.putExtra("displayUser", false); //friend's page to display
-        gotoVacationList.putExtra("friendId", getFriendId());
+        gotoVacationList.putExtra("friendName", getFriendName());
         startActivity(gotoVacationList);
     }
 
-    public void onUserDashImagePress(View v){
-        Intent gotoVacation = new Intent(this, VacationActivity.class);
-        gotoVacation.putExtra("displayUser", false); //friend's page to display
-        gotoVacation.putExtra("vacationTitle", getDashVacationName());
-        gotoVacation.putExtra("vacationDesc", getDashVacationDesc());
-        startActivity(gotoVacation);
-    }
-
-    private String getDashVacationName(){
-        UserDashFragment udf = (UserDashFragment) getFragmentManager().findFragmentById(R.id.fragment2);
-        String s = udf.getVacationTitle();
-        return s;
-    }
-
-    private String getDashVacationDesc(){
-        UserDashFragment udf = (UserDashFragment) getFragmentManager().findFragmentById(R.id.fragment2);
-        String s = udf.getVacationDesc();
-        return s;
-    }
-
-    private int getFriendId(){
+    private String getFriendName(){
         //get the list element clicked on
-        //get that element's friend's id
-        //return that id
-        return 2;//random placeholder
+        //get that element's friend's name
+        //return that name
+        return "someFriend";//random placeholder
     }
 }

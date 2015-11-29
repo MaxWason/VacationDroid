@@ -22,6 +22,7 @@
     <string name="contact_info">support@vacationdroid.com</string>
     <string name="search_hint">Memories</string>
     <string name="title_activity_search">SrchAc</string>
+    <string name="menu_friend_description">Click on a friend to see their vacations.</string>
     <string name="menu_unfriend_description">Long click a friend to unfriend them.</string>
     <string name="title_activity_account">My Account</string>
 
@@ -92,6 +93,7 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="sign_out">Sign Out</string>
+    <string name="deleteAccountButtonText">Delete Account</string>
 
 
 </resources>

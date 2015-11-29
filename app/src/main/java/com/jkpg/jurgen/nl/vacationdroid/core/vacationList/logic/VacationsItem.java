@@ -1,98 +1,114 @@
 package com.jkpg.jurgen.nl.vacationdroid.core.vacationList.logic;
 
-import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
-import android.widget.TextView;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.jkpg.jurgen.nl.vacationdroid.R;
+import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
+import com.jkpg.jurgen.nl.vacationdroid.datamodels.Vacation;
 
 import java.util.ArrayList;
 
 
 public class VacationsItem extends Fragment implements AbsListView.OnItemClickListener {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    //variables for knowing who to make this fragment for
+    private boolean useUser;
+    private String userName;
+    private String friendName;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
-
-    /**
-     * The fragment's ListView/GridView.
-     */
+    //The fragment's ListView/GridView.
     private AbsListView mListView;
 
-    /**
-     * The Adapter which will be used to populate the ListView/GridView with
-     * Views.
-     */
+    //The Adapter which will be used to populate the ListView/GridView with Views.
     private ListAdapter mAdapter;
 
-    // TODO: Rename and change types of parameters
-    public static VacationsItem newInstance(String param1, String param2) {
-        VacationsItem fragment = new VacationsItem();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
-    public VacationsItem() {
-    }
+    //Mandatory empty constructor
+    public VacationsItem() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        //get the data for who to make this fragment for
+        useUser = getActivity().getIntent().getBooleanExtra("displayUser", true);
+        if (useUser)
+            userName = getActivity().getSharedPreferences("vacation", Context.MODE_PRIVATE).getString("username", null);
+        else
+            friendName = getActivity().getIntent().getStringExtra("friendName");
 
-        // TODO: Change Adapter to display your content
+        //get the vacations
+        ArrayList<Vacation> vacationsList = getVacations();
+        if (vacationsList.isEmpty()) //no vacations for that user
+            vacationsList.add(new Vacation(-1,"No Vacations!", "Add one to see it here.", "No Place", 0, 0, -1));
+        //make the adapter take the vacation list
+        mAdapter = new VacationsAdapter(getActivity(), R.layout.fragment_vacation_list_dash, vacationsList);
+    }
 
-        ArrayList vacations = new ArrayList<VacationsDummy>();
-        vacations.add(new VacationsDummy("Prague", "Best Vacation ever!"));
-        vacations.add(new VacationsDummy("Stockholm", "SWE is love SWE is life"));
-        vacations.add(new VacationsDummy("Some other place", "Filler text, yay!"));
-        vacations.add(new VacationsDummy("Krakow", "krakow, krakow"));
-        vacations.add(new VacationsDummy());
-        vacations.add(new VacationsDummy());
-        vacations.add(new VacationsDummy());
-        vacations.add(new VacationsDummy());
-        // friends = (OverviewActivity) getActivity().friends or something
+    /**
+     * Gets a list of vacations depending on if the user or a friend needs them.
+     * @return - the list of vacations
+     */
+    private ArrayList<Vacation> getVacations(){
 
-        //Jurgen: so, this array adapter takes FriendContent objects and translates them to the list items
-        //we're probably gonna have to make our own for this to work
+        //if using the user get the data for them otherwise get it for the friend
+        String personToGetDataFor = useUser ? userName : friendName;
 
-        mAdapter = new VacationsAdapter<VacationsDummy>(getActivity(), R.layout.fragment_vacation_list_dash, vacations);
+        final ArrayList<Vacation> vacationArrayList = new ArrayList<Vacation>();
+
+        //TODO: test this, specifically the JsonElement/Object structure and if it gets the correct data that way
+        APIJsonCall dashcall = new APIJsonCall("users/"+personToGetDataFor+"/vacations", "GET", getActivity()) {
+            @Override
+            public void JsonCallback(JsonObject obj) {
+                try {
+                    Log.d("JASON", obj.toString());
+                    JsonArray arr = obj.getAsJsonArray("list");
+                    for (JsonElement aVac : arr) {
+                        JsonObject aVacation = aVac.getAsJsonObject();
+                        Vacation myVac = new Vacation(
+                                aVacation.get("id").getAsInt(),
+                                aVacation.get("title").getAsString(),
+                                aVacation.get("description").getAsString(),
+                                aVacation.get("place").getAsString(),
+                                aVacation.get("start").getAsInt(),
+                                aVacation.get("end").getAsInt(),
+                                aVacation.get("userId").getAsInt()
+                        );
+                        vacationArrayList.add(myVac);
+                        Log.i("test",myVac.toString());
+                    }
+                } catch (Exception E) {
+                    try {
+                        Log.e("WEB ERROR", E.getMessage());
+                    } catch (Exception ex){
+                        Log.e("WEB ERROR", "No error message received!");
+                    }
+                }
+            }
+        };
+        dashcall.execute(new JsonObject());
+        return vacationArrayList;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_item, container, false);
 
         // Set the adapter
         mListView = (AbsListView) view.findViewById(android.R.id.list);
-        ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
+        mListView.setAdapter(mAdapter);
 
         // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(this);
@@ -101,57 +117,7 @@ public class VacationsItem extends Fragment implements AbsListView.OnItemClickLi
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (null != mListener) {
-            // Notify the active callbacks interface (the activity, if the
-            // fragment is attached to one) that an item has been selected.
-//            mListener.onFragmentInteraction(VacationsDummy. ->change stuff-> ITEMS.get(position).id);
-        }
+        //TODO: go to specific vacation here
     }
-
-    /**
-     * The default content for this Fragment has a TextView that is shown when
-     * the list is empty. If you would like to change the text, call this method
-     * to supply the text it should use.
-     */
-    public void setEmptyText(CharSequence emptyText) {
-        View emptyView = mListView.getEmptyView();
-
-        if (emptyView instanceof TextView) {
-            ((TextView) emptyView).setText(emptyText);
-        }
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(String id);
-    }
-
 }

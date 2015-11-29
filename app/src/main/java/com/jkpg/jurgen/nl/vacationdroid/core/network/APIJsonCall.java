@@ -3,15 +3,11 @@ package com.jkpg.jurgen.nl.vacationdroid.core.network;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
-
-import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -98,7 +94,11 @@ public abstract class APIJsonCall extends AsyncTask<JsonObject, String, JsonObje
 
 
         } catch (Exception e) {
-            Log.e("WEB ERROR", e.getMessage().toString() + " code: " + responsecode);
+            try {
+                Log.e("WEB ERROR", e.getMessage() + " code: " + responsecode);
+            } catch (Exception ex){
+                Log.e("WEB ERROR", "No error message received!" + " code: " + responsecode);
+            }
             return null;
         }
     }

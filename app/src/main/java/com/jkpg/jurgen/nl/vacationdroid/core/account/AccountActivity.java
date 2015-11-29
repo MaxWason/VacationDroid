@@ -11,31 +11,29 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ListView;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.login.LoginActivity;
 import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
-import com.jkpg.jurgen.nl.vacationdroid.core.network.APITokenCall;
-import com.jkpg.jurgen.nl.vacationdroid.core.overview.OverviewActivity;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -50,31 +48,27 @@ import java.util.logging.Logger;
  */
 public class AccountActivity extends AppCompatPreferenceActivity {
 
-    private SharedPreferences preferences;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupActionBar();
+        setupDeleteButton();
+    }
 
-//        preferences = getSharedPreferences("vacation", Context.MODE_PRIVATE);
-//        String name = preferences.getString("username", null);
-//
-//        APIJsonCall updateInfo = new APIJsonCall("users/"+name, "GET", this) { //TODO: change to "PUT"
-//            @Override
-//            public void JsonCallback(JsonObject obj) {
-//                try {
-//                    Log.d("JASON", obj.toString());
-//                    JsonArray arr = obj.getAsJsonArray("list");
-//                    JsonObject v1 = arr.get(0).getAsJsonObject();
-////                    v1.addProperty(); //TODO: replace json object -> google
-////                    vtitle.setText(v1. put("title").getAsString());
-////                    vdesc.setText(v1.get("description").getAsString());
-//                } catch(Exception E) {
-//                    Log.e("WEB ERROR", E.getMessage());
-//                }
-//            }
-//        };updateInfo.execute(new JsonObject());
+    private void setupDeleteButton(){
+        ListView v = getListView();
+        Button deleteAccountButton = new Button(this);
+        deleteAccountButton.setText(R.string.deleteAccountButtonText);
+        deleteAccountButton.setClickable(true);
+        deleteAccountButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                deleteAccount();
+                return false;
+            }
+        });
+
+        v.addFooterView(deleteAccountButton);
     }
 
     @Override
@@ -84,6 +78,31 @@ public class AccountActivity extends AppCompatPreferenceActivity {
         return true;
     }
 
+    private void deleteAccount(){
+
+        SharedPreferences pref = getSharedPreferences("vacation", Context.MODE_PRIVATE);
+        final String name = pref.getString("username", null);
+
+        APIJsonCall dashcall = new APIJsonCall("users/"+name, "DELETE", this) {
+            @Override
+            public void JsonCallback(JsonObject obj) {
+                try {
+                    Log.e("ACCOUNT", "Deleting the user "+name+"!");
+                } catch(Exception E) {
+                    Log.e("WEB ERROR", E.getMessage());
+                }
+            }
+        };
+        dashcall.execute(new JsonObject());
+
+        logOut();
+        startActivity(new Intent(this, LoginActivity.class));
+        finish();
+    }
+
+    /**
+     * Logs the person out by removing their current saved data
+     */
     private void logOut() {
 
         SharedPreferences pref = getSharedPreferences("vacation", MODE_PRIVATE);
@@ -93,7 +112,7 @@ public class AccountActivity extends AppCompatPreferenceActivity {
         edit.putString("username", null);
         edit.putString("password", null);
 
-        edit.commit();
+        edit.apply();
     }
 
 
@@ -155,7 +174,7 @@ public class AccountActivity extends AppCompatPreferenceActivity {
     private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
-            String stringValue = value.toString();
+            final String stringValue = value.toString();
 
             if (preference instanceof ListPreference) {
                 // For list preferences, look up the correct display value in
@@ -192,8 +211,7 @@ public class AccountActivity extends AppCompatPreferenceActivity {
                 }
 
             } else {
-                // For all other preferences, set the summary to the value's
-                // simple string representation.
+                //update it
                 preference.setSummary(stringValue);
             }
             return true;
@@ -219,9 +237,6 @@ public class AccountActivity extends AppCompatPreferenceActivity {
                 PreferenceManager
                         .getDefaultSharedPreferences(preference.getContext())
                         .getString(preference.getKey(), ""));
-
-        //my stuff
-
     }
 
     /**
@@ -235,36 +250,114 @@ public class AccountActivity extends AppCompatPreferenceActivity {
                 || NotificationPreferenceFragment.class.getName().equals(fragmentName);
     }
 
+
     /**
      * This fragment shows general preferences only. It is used when the
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class GeneralPreferenceFragment extends PreferenceFragment {
+
+        private JsonObject jsonObject;
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_general);
             setHasOptionsMenu(true);
+            updateDisplayedInfo();
 
             // Bind the summaries of EditText/List/Dialog/Ringtone preferences
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("pref_username"));
-            bindPreferenceSummaryToValue(findPreference("pref_first_name"));
-            bindPreferenceSummaryToValue(findPreference("pref_last_name"));
-            bindPreferenceSummaryToValue(findPreference("pref_email"));
+            bindPreferenceSummaryToValue(findPreference("firstName"));
+            bindPreferenceSummaryToValue(findPreference("lastName"));
+            bindPreferenceSummaryToValue(findPreference("email"));
+
         }
 
-        @Override //delete?
-        public boolean onOptionsItemSelected(MenuItem item) {
-            int id = item.getItemId();
-            if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), AccountActivity.class));
-                return true;
-            }
-            return super.onOptionsItemSelected(item);
+        /**
+         * Gets the JsonObject for use in the future PUT calls
+         */
+        @Override
+        public void onStart() {
+            super.onStart();
+
+            SharedPreferences pref = getActivity().getSharedPreferences("vacation", Context.MODE_PRIVATE);
+            String name = pref.getString("username", null);
+
+            APIJsonCall dashcall = new APIJsonCall("users/"+name, "GET", getActivity()) {
+                @Override
+                public void JsonCallback(JsonObject obj) {
+                    try {
+                        jsonObject = obj;
+                    } catch(Exception E) {
+                        Log.e("WEB ERROR", E.getMessage());
+                    }
+                }
+            };
+            dashcall.execute(new JsonObject());
+        }
+
+        /**
+         * Updates the JsonObject when the fragment ends/is closed and puts it to the server so it is updated on the web
+         */
+        @Override
+        public void onStop() {
+
+            super.onStop();
+
+            final EditTextPreference firstNameTextPref = (EditTextPreference) findPreference("firstName");
+            final EditTextPreference lastNameTextPref = (EditTextPreference) findPreference("lastName");
+            final EditTextPreference emailTextPref = (EditTextPreference) findPreference("email");
+
+            SharedPreferences pref = getActivity().getSharedPreferences("vacation", Context.MODE_PRIVATE);
+            String name = pref.getString("username", null);
+
+
+            jsonObject.addProperty("firstName", firstNameTextPref.getText());
+            jsonObject.addProperty("lastName", lastNameTextPref.getText());
+            jsonObject.addProperty("email", emailTextPref.getText());
+
+            //update on web
+            APIJsonCall updateInfo = new APIJsonCall("users/"+name, "PUT", getActivity()) {
+                @Override
+                public void JsonCallback(JsonObject obj) {
+                    try {
+//                        Log.d("JASON after", v1.toString());
+                    } catch(Exception E) {
+                        Log.e("WEB ERROR", E.getMessage());
+                    }
+                }
+            };
+            updateInfo.execute(jsonObject);
+
+        }
+
+        public void updateDisplayedInfo() {
+
+            final EditTextPreference firstNameTextPref = (EditTextPreference) findPreference("firstName");
+            final EditTextPreference lastNameTextPref = (EditTextPreference) findPreference("lastName");
+            final EditTextPreference emailTextPref = (EditTextPreference) findPreference("email");
+
+            SharedPreferences pref = getActivity().getSharedPreferences("vacation", Context.MODE_PRIVATE);
+            String name = pref.getString("username", null);
+
+            APIJsonCall dashcall = new APIJsonCall("users/"+name, "GET", getActivity()) {
+                @Override
+                public void JsonCallback(JsonObject obj) {
+                    try {
+                        Log.d("JASON", obj.toString());
+                        firstNameTextPref.setText(obj.get("firstName").getAsString());
+                        lastNameTextPref.setText(obj.get("lastName").getAsString());
+                        emailTextPref.setText(obj.get("email").getAsString());
+                    } catch(Exception E) {
+                        Log.e("WEB ERROR", E.getMessage());
+                    }
+                }
+            };
+            dashcall.execute(new JsonObject());
         }
     }
 
@@ -287,15 +380,6 @@ public class AccountActivity extends AppCompatPreferenceActivity {
             bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
         }
 
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-            int id = item.getItemId();
-            if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), AccountActivity.class));
-                return true;
-            }
-            return super.onOptionsItemSelected(item);
-        }
     }
 
     /**
@@ -317,14 +401,5 @@ public class AccountActivity extends AppCompatPreferenceActivity {
             bindPreferenceSummaryToValue(findPreference("sync_frequency"));
         }
 
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-            int id = item.getItemId();
-            if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), AccountActivity.class));
-                return true;
-            }
-            return super.onOptionsItemSelected(item);
-        }
     }
 }

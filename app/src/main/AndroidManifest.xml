@@ -54,7 +54,7 @@
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity
-            android:name=".core.friends.FriendsAddActivity"
+            android:name=".core.friends.deprecated.FriendsAddActivity"
             android:label="@string/title_activity_friends_add"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>

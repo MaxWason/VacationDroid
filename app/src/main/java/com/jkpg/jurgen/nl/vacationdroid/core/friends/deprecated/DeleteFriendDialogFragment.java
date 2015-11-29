@@ -1,4 +1,4 @@
-package com.jkpg.jurgen.nl.vacationdroid.core.friends;
+package com.jkpg.jurgen.nl.vacationdroid.core.friends.deprecated;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -10,6 +10,8 @@ import android.os.Bundle;
 import com.jkpg.jurgen.nl.vacationdroid.R;
 
 public class DeleteFriendDialogFragment extends DialogFragment {
+
+    //==========================================Unnecessary feature for now, come back to it later if there is time=======================
 
     //https://developer.android.com/guide/topics/ui/dialogs.html
 
