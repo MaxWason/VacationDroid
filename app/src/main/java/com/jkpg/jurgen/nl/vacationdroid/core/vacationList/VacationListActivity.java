@@ -14,13 +14,20 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.jkpg.jurgen.nl.vacationdroid.R;
+import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
+import com.jkpg.jurgen.nl.vacationdroid.datamodels.Vacation;
+
+import java.util.ArrayList;
 
 public class VacationListActivity extends AppCompatActivity {
 
     private boolean displayUser; //if you should display the data for the user or for a friend
     private String friendName; //if displaying the friend, this is the one to show
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -34,8 +41,8 @@ public class VacationListActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG) //TODO: make a new vacation
-                        .setAction("Action", null).show();
+                //add new vacation
+
             }
         });
 
@@ -69,6 +76,7 @@ public class VacationListActivity extends AppCompatActivity {
 
     private void doMySearch(String query){
         //TODO: api web call here (with current user/friend as other search param)
+
     }
 
     @Override
