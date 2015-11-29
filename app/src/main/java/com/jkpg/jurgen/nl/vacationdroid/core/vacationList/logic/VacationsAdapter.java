@@ -40,8 +40,9 @@ public class VacationsAdapter extends ArrayAdapter<Vacation> {
         if (v != null){
 
             //actual items
-            //((TextView)view.findViewById(R.id.dashNameVacations)).setText(data.get(position).getTitle());
-            //((TextView)view.findViewById(R.id.dashDescVacations)).setText(data.get(position).getDescription());
+            ((TextView)view.findViewById(R.id.dashNameVacations)).setText(data.get(position).title);
+            ((TextView)view.findViewById(R.id.dashDescVacations)).setText(data.get(position).description);
+
 
             //temporary items
 //            ((ImageView)view.findViewById(R.id.dashImg)).setImage(something); //TODO: get last memory and get an image there

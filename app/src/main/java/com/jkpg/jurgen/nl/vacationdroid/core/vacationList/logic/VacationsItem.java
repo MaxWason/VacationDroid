@@ -51,7 +51,7 @@ public class VacationsItem extends Fragment implements AbsListView.OnItemClickLi
         //get the vacations
         ArrayList<Vacation> vacationsList = getVacations();
         if (vacationsList.isEmpty()) //no vacations for that user
-            vacationsList.add(new Vacation(-1,"No Vacations!", "Add one to see it here.", "No Place", 0, 0, -1));
+            vacationsList.add(new Vacation("No Vacations!", "Add one to see it here.", "No Place", 0, 0));
         //make the adapter take the vacation list
         mAdapter = new VacationsAdapter(getActivity(), R.layout.fragment_vacation_list_dash, vacationsList);
     }
@@ -77,13 +77,11 @@ public class VacationsItem extends Fragment implements AbsListView.OnItemClickLi
                     for (JsonElement aVac : arr) {
                         JsonObject aVacation = aVac.getAsJsonObject();
                         Vacation myVac = new Vacation(
-                                aVacation.get("id").getAsInt(),
                                 aVacation.get("title").getAsString(),
                                 aVacation.get("description").getAsString(),
                                 aVacation.get("place").getAsString(),
                                 aVacation.get("start").getAsInt(),
-                                aVacation.get("end").getAsInt(),
-                                aVacation.get("userId").getAsInt()
+                                aVacation.get("end").getAsInt()
                         );
                         vacationArrayList.add(myVac);
                         Log.i("test",myVac.toString());
