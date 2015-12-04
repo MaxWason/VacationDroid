@@ -1,5 +1,6 @@
 package com.jkpg.jurgen.nl.vacationdroid.core.vacationList.logic;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
@@ -8,7 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.Adapter;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 
 import com.google.gson.JsonArray;
@@ -32,7 +35,7 @@ public class VacationsItem extends Fragment implements AbsListView.OnItemClickLi
     private AbsListView mListView;
 
     //The Adapter which will be used to populate the ListView/GridView with Views.
-    private ListAdapter mAdapter;
+    private ArrayAdapter mAdapter;
 
     //Mandatory empty constructor
     public VacationsItem() {}
@@ -50,12 +53,14 @@ public class VacationsItem extends Fragment implements AbsListView.OnItemClickLi
 
         //get the vacations
         ArrayList<Vacation> vacationsList = getVacations();
-        if (vacationsList.isEmpty()) //no vacations for that user
-            vacationsList.add(new Vacation(-1,"No Vacations!", "Add one to see it here.", "No Place", 0, 0, -1));
+
         //make the adapter take the vacation list
         mAdapter = new VacationsAdapter(getActivity(), R.layout.fragment_vacation_list_dash, vacationsList);
     }
 
+    private void notifyList() {
+
+    }
     /**
      * Gets a list of vacations depending on if the user or a friend needs them.
      * @return - the list of vacations
@@ -66,7 +71,6 @@ public class VacationsItem extends Fragment implements AbsListView.OnItemClickLi
         String personToGetDataFor = useUser ? userName : friendName;
 
         final ArrayList<Vacation> vacationArrayList = new ArrayList<Vacation>();
-
         //TODO: test this, specifically the JsonElement/Object structure and if it gets the correct data that way
         APIJsonCall dashcall = new APIJsonCall("users/"+personToGetDataFor+"/vacations", "GET", getActivity()) {
             @Override
@@ -77,17 +81,18 @@ public class VacationsItem extends Fragment implements AbsListView.OnItemClickLi
                     for (JsonElement aVac : arr) {
                         JsonObject aVacation = aVac.getAsJsonObject();
                         Vacation myVac = new Vacation(
-                                aVacation.get("id").getAsInt(),
                                 aVacation.get("title").getAsString(),
                                 aVacation.get("description").getAsString(),
                                 aVacation.get("place").getAsString(),
                                 aVacation.get("start").getAsInt(),
-                                aVacation.get("end").getAsInt(),
-                                aVacation.get("userId").getAsInt()
+                                aVacation.get("end").getAsInt()
                         );
                         vacationArrayList.add(myVac);
                         Log.i("test",myVac.toString());
                     }
+                    if (vacationArrayList.isEmpty()) //no vacations for that user
+                        vacationArrayList.add(new Vacation("No Vacations!", "Add one to see it here.", "No Place", 0, 0));
+                    mAdapter.notifyDataSetChanged();
                 } catch (Exception E) {
                     try {
                         Log.e("WEB ERROR", E.getMessage());

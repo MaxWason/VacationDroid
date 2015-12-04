@@ -22,7 +22,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/vacation_list_content" />
+    <include layout="@layout/vacation_content" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

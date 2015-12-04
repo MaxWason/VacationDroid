@@ -10,46 +10,27 @@
     tools:showIn="@layout/app_bar_overview"
     tools:context="com.jkpg.jurgen.nl.vacationdroid.core.vacation.VacationActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="VacationDate"
-        android:id="@+id/VacationDate"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="VacationName"
-        android:id="@+id/VacationName"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@+id/VacationDate"
-        android:layout_toStartOf="@+id/VacationDate" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="VacationDescription"
-        android:id="@+id/VacationDescription"
-        android:layout_below="@+id/VacationName"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true" />
-
     <GridView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/gridview"
-        android:layout_below="@+id/VacationDescription"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:columnWidth="90dp"
         android:numColumns="4"
         android:stretchMode="columnWidth"
         android:gravity="center"
-        />
+        android:layout_below="@+id/MemoryDescription"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="MemoryDesc"
+        android:id="@+id/MemoryDescription"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 
 </RelativeLayout>

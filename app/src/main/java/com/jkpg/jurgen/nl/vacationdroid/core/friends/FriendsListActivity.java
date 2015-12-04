@@ -148,8 +148,9 @@ public class FriendsListActivity extends AppCompatActivity { //implements Delete
 
     //TODO: test
     private boolean addFriend(String friendUsername){
-
-        APIJsonCall dashcall = new APIJsonCall("users/" + username + "/friends/" + friendUsername, "POST", this) {
+        JsonObject friend = new JsonObject();
+        friend.addProperty("username",friendUsername);
+        APIJsonCall dashcall = new APIJsonCall("users/" + username + "/friends/" , "POST", this) {
             @Override
             public void JsonCallback(JsonObject obj) {
                 try {
@@ -163,7 +164,7 @@ public class FriendsListActivity extends AppCompatActivity { //implements Delete
                 }
             }
         };
-        dashcall.execute(new JsonObject());
+        dashcall.execute(friend);
         return true; //TODO: correct return value if it actually succeeded
     }
 
@@ -212,10 +213,12 @@ public class FriendsListActivity extends AppCompatActivity { //implements Delete
             public void JsonCallback(JsonObject obj) {
                 try {
                     Log.d("JASON", obj.toString());
-                    JsonArray arr = obj.get("friends").getAsJsonArray();
+                    JsonArray arr = obj.get("list").getAsJsonArray();
                     for (JsonElement anArr : arr) {
-                        initList.add(anArr.getAsString());
+                        JsonObject j = (JsonObject)anArr;
+                        initList.add(j.get("username").getAsString());
                     }
+                    arrayAdapter.notifyDataSetChanged();
                 } catch (Exception E) {
                     try {
                         Log.e("WEB ERROR", E.getMessage());

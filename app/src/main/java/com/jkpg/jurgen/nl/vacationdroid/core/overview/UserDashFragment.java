@@ -20,6 +20,10 @@ import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
  */
 public class UserDashFragment extends Fragment {
 
+    private TextView username =null;
+    private TextView vtitle =null;
+    private TextView vdesc = null;
+
     public UserDashFragment() {
     }
 
@@ -31,9 +35,9 @@ public class UserDashFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        final TextView username = (TextView) getActivity().findViewById(R.id.userdashUsername);
-        final TextView vtitle = (TextView) getActivity().findViewById(R.id.userdashVacationTitle);
-        final TextView vdesc = (TextView) getActivity().findViewById(R.id.userdashVacationDescription);
+        username = (TextView) getActivity().findViewById(R.id.userdashUsername);
+        vtitle = (TextView) getActivity().findViewById(R.id.userdashVacationTitle);
+        vdesc = (TextView) getActivity().findViewById(R.id.userdashVacationDescription);
 
         SharedPreferences pref = getActivity().getSharedPreferences("vacation", Context.MODE_PRIVATE);
         String name = pref.getString("username", null);
@@ -67,4 +71,13 @@ public class UserDashFragment extends Fragment {
         };
         vaccall.execute(new JsonObject());
     }
+
+    public String getVacationTitle(){
+        return vtitle.getText().toString();
+    }
+
+    public String getVacationDesc(){
+        return vdesc.getText().toString();
+    }
+
 }

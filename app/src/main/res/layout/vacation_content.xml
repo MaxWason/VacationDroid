@@ -1,66 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.jkpg.jurgen.nl.vacationdroid.core.vacation.VacationActivity">
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/app_bar_overview"
+    tools:context="com.jkpg.jurgen.nl.vacationdroid.core.vacation.VacationActivity"><![CDATA[
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="VacationDate"
-        android:id="@+id/VacationDate"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true" />
 
-    <TextView
+
+    TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="VacationName"
-        android:id="@+id/VacationName"
+        android:id="@+id/MemoryName"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@+id/VacationDate"
-        android:layout_toStartOf="@+id/VacationDate" />
+        android:layout_toLeftOf="@+id/MemoryDate"
+        android:layout_toStartOf="@+id/MemoryDate" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="VacationDescription"
-        android:id="@+id/VacationDescription"
-        android:layout_below="@+id/VacationName"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true" />
+
+
+    ]]>
 
     <GridView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/gridview"
-        android:layout_below="@+id/VacationDescription"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:columnWidth="90dp"
         android:numColumns="4"
         android:stretchMode="columnWidth"
         android:gravity="center"
-        />
+        android:layout_below="@+id/VacationDescription"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:src="@android:drawable/ic_input_add"
-        android:tint="@color/colorWhite"
-        app:backgroundTint="@color/colorPrimary"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="VacationDescription"
+        android:id="@+id/VacationDescription"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/VacationDate"
+        android:layout_toStartOf="@+id/VacationDate" />
+
 
 </RelativeLayout>
