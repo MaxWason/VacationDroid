@@ -92,14 +92,7 @@ public class FriendsListActivity extends AppCompatActivity { //implements Delete
                 String itemValue = (String) listView.getItemAtPosition(position);
 
                 //remove the friend
-                boolean deleted = removeFriend(itemValue);
-
-                //update the list and notify the user
-                if (deleted) {
-                    Toast.makeText(getApplicationContext(), "  Removed Friend : " + itemValue, Toast.LENGTH_LONG).show();
-                    arrayAdapter.remove(itemValue);
-                    arrayAdapter.notifyDataSetChanged();
-                }
+                removeFriend(itemValue);
 
                 return true; //makes sure long click is the only one called
             }
@@ -126,14 +119,7 @@ public class FriendsListActivity extends AppCompatActivity { //implements Delete
                 String name = input.getText().toString();
 
                 //add friend
-                boolean added = addFriend(name);
-
-                //add to the list if valid
-                if (added) {
-                    Toast.makeText(getApplicationContext(), "  Added Friend : " + name, Toast.LENGTH_SHORT).show();
-                    arrayAdapter.add(name);
-                    arrayAdapter.notifyDataSetChanged();
-                }
+                addFriend(name);
             }
         });
 
@@ -147,7 +133,7 @@ public class FriendsListActivity extends AppCompatActivity { //implements Delete
     }
 
     //TODO: test
-    private boolean addFriend(String friendUsername){
+    private void addFriend(String friendUsername){
         JsonObject friend = new JsonObject();
         friend.addProperty("username",friendUsername);
         APIJsonCall dashcall = new APIJsonCall("users/" + username + "/friends/" , "POST", this) {
@@ -155,6 +141,10 @@ public class FriendsListActivity extends AppCompatActivity { //implements Delete
             public void JsonCallback(JsonObject obj) {
                 try {
                     Log.d("JASON", obj.toString());
+                    //notify user and update list if successful
+                    Toast.makeText(getApplicationContext(), "  Added Friend : " + obj.toString(), Toast.LENGTH_SHORT).show();
+                    arrayAdapter.add(obj.toString());
+                    arrayAdapter.notifyDataSetChanged();
                 } catch (Exception E) {
                     try {
                         Log.e("WEB ERROR", E.getMessage());
@@ -165,16 +155,19 @@ public class FriendsListActivity extends AppCompatActivity { //implements Delete
             }
         };
         dashcall.execute(friend);
-        return true; //TODO: correct return value if it actually succeeded
     }
 
     //TODO: test
-    private boolean removeFriend(String friendName){
+    private void removeFriend(String friendName){
         APIJsonCall dashcall = new APIJsonCall("users/" + username + "/friends/" + friendName, "DELETE", this) {
             @Override
             public void JsonCallback(JsonObject obj) {
                 try {
                     Log.d("JASON", obj.toString());
+                    //update the list and notify the user if successful
+                    Toast.makeText(getApplicationContext(), "  Removed Friend : " + obj.toString(), Toast.LENGTH_LONG).show();
+                    arrayAdapter.remove(obj.toString());
+                    arrayAdapter.notifyDataSetChanged();
                 } catch (Exception E) {
                     try {
                         Log.e("WEB ERROR", E.getMessage());
@@ -185,7 +178,6 @@ public class FriendsListActivity extends AppCompatActivity { //implements Delete
             }
         };
         dashcall.execute(new JsonObject());
-        return true; //TODO: correct return value if it actually succeeded
     }
 
 
