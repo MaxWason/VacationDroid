@@ -3,6 +3,7 @@ package com.jkpg.jurgen.nl.vacationdroid.core.vacationList.logic;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,8 +18,10 @@ import android.widget.ListAdapter;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.jkpg.jurgen.nl.vacationdroid.DBConnection;
 import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
+import com.jkpg.jurgen.nl.vacationdroid.core.vacation.VacationActivity;
 import com.jkpg.jurgen.nl.vacationdroid.datamodels.Vacation;
 
 import java.util.ArrayList;
@@ -33,7 +36,7 @@ public class VacationsItem extends Fragment implements AbsListView.OnItemClickLi
 
     //The fragment's ListView/GridView.
     private AbsListView mListView;
-
+    final ArrayList<Vacation> vacationArrayList = new ArrayList<Vacation>();
     //The Adapter which will be used to populate the ListView/GridView with Views.
     private ArrayAdapter mAdapter;
 
@@ -52,10 +55,10 @@ public class VacationsItem extends Fragment implements AbsListView.OnItemClickLi
             friendName = getActivity().getIntent().getStringExtra("friendName");
 
         //get the vacations
-        ArrayList<Vacation> vacationsList = getVacations();
+        getVacations();
 
         //make the adapter take the vacation list
-        mAdapter = new VacationsAdapter(getActivity(), R.layout.fragment_vacation_list_dash, vacationsList);
+        mAdapter = new VacationsAdapter(getActivity(), R.layout.fragment_vacation_list_dash, vacationArrayList);
     }
 
     private void notifyList() {
@@ -65,45 +68,13 @@ public class VacationsItem extends Fragment implements AbsListView.OnItemClickLi
      * Gets a list of vacations depending on if the user or a friend needs them.
      * @return - the list of vacations
      */
-    private ArrayList<Vacation> getVacations(){
+    private void getVacations(){
 
         //if using the user get the data for them otherwise get it for the friend
         String personToGetDataFor = useUser ? userName : friendName;
 
-        final ArrayList<Vacation> vacationArrayList = new ArrayList<Vacation>();
-        //TODO: test this, specifically the JsonElement/Object structure and if it gets the correct data that way
-        APIJsonCall dashcall = new APIJsonCall("users/"+personToGetDataFor+"/vacations", "GET", getActivity()) {
-            @Override
-            public void JsonCallback(JsonObject obj) {
-                try {
-                    Log.d("JASON", obj.toString());
-                    JsonArray arr = obj.getAsJsonArray("list");
-                    for (JsonElement aVac : arr) {
-                        JsonObject aVacation = aVac.getAsJsonObject();
-                        Vacation myVac = new Vacation(
-                                aVacation.get("title").getAsString(),
-                                aVacation.get("description").getAsString(),
-                                aVacation.get("place").getAsString(),
-                                aVacation.get("start").getAsInt(),
-                                aVacation.get("end").getAsInt()
-                        );
-                        vacationArrayList.add(myVac);
-                        Log.i("test",myVac.toString());
-                    }
-                    if (vacationArrayList.isEmpty()) //no vacations for that user
-                        vacationArrayList.add(new Vacation("No Vacations!", "Add one to see it here.", "No Place", 0, 0));
-                    mAdapter.notifyDataSetChanged();
-                } catch (Exception E) {
-                    try {
-                        Log.e("WEB ERROR", E.getMessage());
-                    } catch (Exception ex){
-                        Log.e("WEB ERROR", "No error message received!");
-                    }
-                }
-            }
-        };
-        dashcall.execute(new JsonObject());
-        return vacationArrayList;
+        DBConnection db = new DBConnection(getActivity());
+        vacationArrayList.addAll(db.getUserVacations(personToGetDataFor));
     }
 
     @Override
@@ -123,6 +94,11 @@ public class VacationsItem extends Fragment implements AbsListView.OnItemClickLi
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        //TODO: go to specific vacation here
+
+        Intent gotoVacation = new Intent(getActivity(), VacationActivity.class);
+        int newid = vacationArrayList.get((int)position).id;
+
+        gotoVacation.putExtra("id", newid);
+        startActivity(gotoVacation);
     }
 }

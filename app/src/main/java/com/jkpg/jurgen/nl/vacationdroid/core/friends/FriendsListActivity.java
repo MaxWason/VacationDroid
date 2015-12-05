@@ -24,9 +24,11 @@ import android.widget.Toast;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.jkpg.jurgen.nl.vacationdroid.DBConnection;
 import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
 import com.jkpg.jurgen.nl.vacationdroid.core.vacationList.VacationListActivity;
+import com.jkpg.jurgen.nl.vacationdroid.datamodels.User;
 
 import java.util.ArrayList;
 
@@ -58,7 +60,19 @@ public class FriendsListActivity extends AppCompatActivity { //implements Delete
         //can I actually call this here onCreate?
         pref = this.getSharedPreferences("vacation", Context.MODE_PRIVATE);
         username = pref.getString("username", null);
-        ArrayList<String> values = populateListWithFriends();
+        ArrayList<String> values = new ArrayList<>();
+
+        getFriendsWeb(new ArrayList<String>());
+
+        DBConnection db = new DBConnection(this);
+        ArrayList<User> users = db.getUsers();
+
+        for(User u: users) {
+            values.add(u.username);
+        }
+
+        if(values.size() == 0)
+            values.add("no friends man, i'm sorry, we could grab a beer if you want");
 
         listView = (ListView) findViewById(R.id.list_friend_id);
 
@@ -207,16 +221,20 @@ public class FriendsListActivity extends AppCompatActivity { //implements Delete
 
     //TODO: test
     private ArrayList<String> getFriendsWeb(final ArrayList<String> initList) {
-
+        final Context c = this;
         APIJsonCall dashcall = new APIJsonCall("users/" + username + "/friends", "GET", this) {
             @Override
             public void JsonCallback(JsonObject obj) {
                 try {
                     Log.d("JASON", obj.toString());
                     JsonArray arr = obj.get("list").getAsJsonArray();
+                    DBConnection db = new DBConnection(c);
+
                     for (JsonElement anArr : arr) {
                         JsonObject j = (JsonObject)anArr;
                         initList.add(j.get("username").getAsString());
+                        User u = new User(j.get("id").getAsInt(), j.get("username").getAsString());
+                        db.addOrUpdateUser(u);
                     }
                     arrayAdapter.notifyDataSetChanged();
                 } catch (Exception E) {

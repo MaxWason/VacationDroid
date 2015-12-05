@@ -1,7 +1,10 @@
 package com.jkpg.jurgen.nl.vacationdroid.core.memory;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +15,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import com.google.gson.JsonObject;
 import com.jkpg.jurgen.nl.vacationdroid.R;
+import com.jkpg.jurgen.nl.vacationdroid.core.network.APIPictureCall;
 import com.squareup.picasso.Picasso;
 
 public class MemoryActivity extends AppCompatActivity {
@@ -29,13 +34,11 @@ public class MemoryActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+
             }
         });
 
-        this.setTitle("woblblbl");
-
+        this.setTitle("Media");
 
         editViews();
     }
@@ -43,13 +46,13 @@ public class MemoryActivity extends AppCompatActivity {
     private void editViews(){
         Intent intent = getIntent();
         String s = intent.getStringExtra("url");
-        Log.d("WHASSUP", s);
+        Log.d("IMAGE ID", s);
         TextView tv = (TextView) findViewById(R.id.txtView);
         ImageView iv = (ImageView) findViewById(R.id.imgView);
         VideoView vv = (VideoView) findViewById(R.id.mediaView);
 
         Picasso.with(this)
-                .load("http://lh6.ggpht.com/i5cqDggGOu7hqiL5O2enWG5iW6oq1pUlsrcM8aG0Tc9IgO8K9C7LUZKVptifeJZ9vJRgTy7f8C11gLPV5kFsx4U=s240")
+                .load(s)
                 .into(iv);
 
 //        iv.setVisibility(View.GONE);

@@ -3,6 +3,8 @@ package com.jkpg.jurgen.nl.vacationdroid.core.login;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -55,6 +57,14 @@ public class  LoginActivity extends AppCompatActivity {
         //To remember...
         //user: maxwason
         //pass: superpassword
+
+        ConnectivityManager m = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo info = m.getActiveNetworkInfo();
+        if (info == null) {
+            Toast.makeText(this, "no network detected, showing local data", Toast.LENGTH_LONG);
+            gotoOverview();
+            return;
+        }
 
         //check if we already have a saved user or not
         if (pref.getString("username", null) != null) {

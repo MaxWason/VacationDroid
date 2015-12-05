@@ -46,7 +46,8 @@ public class VacationsAdapter extends ArrayAdapter<Vacation> {
 
             //actual items
             ((TextView)view.findViewById(R.id.dashNameVacations)).setText(data.get(position).title);
-            ((TextView)view.findViewById(R.id.dashDescVacations)).setText(data.get(position).description);
+            ((TextView)view.findViewById(R.id.dashPlaceVacations)).setText(data.get(position).place);
+            ((TextView)view.findViewById(R.id.dashDateVacations)).setText("From " + data.get(position).start + " to "+ data.get(position).end);
 
 
             //temporary items

@@ -12,8 +12,10 @@ import android.widget.TextView;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.jkpg.jurgen.nl.vacationdroid.DBConnection;
 import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
+import com.jkpg.jurgen.nl.vacationdroid.datamodels.Vacation;
 
 /**
  * Created by Jurgen on 10/27/2015.
@@ -35,49 +37,31 @@ public class UserDashFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+
+        updateView();
+
+    }
+
+    public void updateView() {
         username = (TextView) getActivity().findViewById(R.id.userdashUsername);
         vtitle = (TextView) getActivity().findViewById(R.id.userdashVacationTitle);
         vdesc = (TextView) getActivity().findViewById(R.id.userdashVacationDescription);
 
-        SharedPreferences pref = getActivity().getSharedPreferences("vacation", Context.MODE_PRIVATE);
-        String name = pref.getString("username", null);
+        SharedPreferences sp = getActivity().getSharedPreferences("vacation", Context.MODE_PRIVATE);
+        String un = sp.getString("username", "error");
 
-        APIJsonCall dashcall = new APIJsonCall("users/"+name, "GET", getActivity()) {
-            @Override
-            public void JsonCallback(JsonObject obj) {
-                try {
-                    Log.d("JASON", obj.toString());
-                    username.setText(obj.get("username").getAsString());
-                } catch(Exception E) {
-                    Log.e("WEB ERROR", E.getMessage());
-                }
-            }
-        };
-        dashcall.execute(new JsonObject());
+        DBConnection db = new DBConnection(getActivity());
 
-        APIJsonCall vaccall = new APIJsonCall("vacations", "GET", getActivity()) {
-            @Override
-            public void JsonCallback(JsonObject obj) {
-                try {
-                    Log.d("JASON", obj.toString());
-                    JsonArray arr = obj.getAsJsonArray("list");
-                    JsonObject v1 = arr.get(0).getAsJsonObject();
-                    vtitle.setText(v1.get("title").getAsString());
-                    vdesc.setText(v1.get("description").getAsString());
-                } catch(Exception E) {
-                    Log.e("WEB ERROR", E.getMessage());
-                }
-            }
-        };
-        vaccall.execute(new JsonObject());
+        username.setText(un);
+
+        try {
+            Vacation firstVac = db.getUserVacations(sp.getString("username", "error")).get(0);
+            vtitle.setText(firstVac.title);
+            vdesc.setText(firstVac.description);
+        }catch(IndexOutOfBoundsException e) {
+            Log.d("index", e.getMessage());
+            vtitle.setText("no vacation to show");
+            vdesc.setText("create a new vacation to see it here");
+        }
     }
-
-    public String getVacationTitle(){
-        return vtitle.getText().toString();
-    }
-
-    public String getVacationDesc(){
-        return vdesc.getText().toString();
-    }
-
 }

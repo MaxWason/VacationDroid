@@ -3,7 +3,10 @@ package com.jkpg.jurgen.nl.vacationdroid.core.memoryList;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -19,9 +22,15 @@ import com.google.gson.JsonObject;
 import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.memory.MemoryActivity;
 import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
+import com.jkpg.jurgen.nl.vacationdroid.core.network.APIPictureCall;
 import com.jkpg.jurgen.nl.vacationdroid.core.vacation.VacationAdapter;
 
 public class MemoryListActivity extends AppCompatActivity {
+
+    private Context c;
+    private String title;
+    private String desc;
+    private int memoryID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,13 +49,50 @@ public class MemoryListActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+
+                startActivityForResult(
+                        Intent.createChooser(intent, "Complete action using"),
+                        1);
+
+
             }
         });
     }
 
-        protected void onStart(){
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // if (resultCode != RESULT_OK) return;
+        switch (resultCode) {
+
+            case RESULT_OK:
+                if (data != null) {
+
+                    Uri uri = data.getData();
+                    Bitmap bitmap;
+                    try {
+                        bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+                    }catch (Exception e) {
+                        bitmap = null;
+                        Log.e("FILE", e.getMessage());
+                    }
+                    /// use btemp Image file
+                    Log.d("Image", bitmap.toString());
+                    APIPictureCall picture = new APIPictureCall(memoryID, bitmap, this) {
+                        @Override
+                        public void JsonCallback(JsonObject obj) {
+
+                        }
+                    };
+                }
+                break;
+        }
+
+    }
+
+    protected void onStart(){
             super.onStart();
             final Activity a = this;
 
@@ -87,8 +133,5 @@ public class MemoryListActivity extends AppCompatActivity {
 
     }
 
-    private Context c;
-    private String title;
-    private String desc;
-    private int memoryID;
+
 }

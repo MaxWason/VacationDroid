@@ -9,20 +9,23 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.jkpg.jurgen.nl.vacationdroid.DBConnection;
 import com.jkpg.jurgen.nl.vacationdroid.R;
+import com.jkpg.jurgen.nl.vacationdroid.datamodels.User;
+import com.jkpg.jurgen.nl.vacationdroid.datamodels.Vacation;
 
 import java.util.ArrayList;
 
 /**
  * Created by Jurgen on 10/30/2015.
  */
-public class FriendAdapterImage<Friend> extends ArrayAdapter<Friend> {
+public class FriendAdapterImage extends ArrayAdapter<User> {
 
     Context context;
-    ArrayList<Friend> data;
+    ArrayList<User> data;
     int viewid;
 
-    public FriendAdapterImage(Context context, int viewID, ArrayList<Friend> data) {
+    public FriendAdapterImage(Context context, int viewID, ArrayList<User> data) {
         super(context, viewID, data);
         this.context = context;
         this.data = data;
@@ -51,9 +54,16 @@ public class FriendAdapterImage<Friend> extends ArrayAdapter<Friend> {
             holder = (FriendHolder)row.getTag();
         }
 
-        Friend f = data.get(position);
-//        holder.name.setText("dummy");
-//        holder.vacation.setText("dummyvacation");
+        User u = data.get(position);
+        holder.name.setText(u.username);
+
+        DBConnection db = new DBConnection(getContext());
+        try {
+            Vacation firstv = db.getUserVacations(u.username).get(0);
+            holder.vacation.setText(firstv.title);
+        }catch (IndexOutOfBoundsException e) {
+            holder.vacation.setText("no vacation");
+        }
 
         return row;
     }

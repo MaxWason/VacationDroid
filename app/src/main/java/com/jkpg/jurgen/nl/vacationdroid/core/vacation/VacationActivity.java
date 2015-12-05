@@ -10,17 +10,30 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.jkpg.jurgen.nl.vacationdroid.DBConnection;
 import com.jkpg.jurgen.nl.vacationdroid.R;
-import com.jkpg.jurgen.nl.vacationdroid.core.memoryList.MemoryListActivity;
 import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
+import com.jkpg.jurgen.nl.vacationdroid.datamodels.Memory;
+import com.jkpg.jurgen.nl.vacationdroid.datamodels.Vacation;
+
+import java.util.ArrayList;
 
 public class VacationActivity extends AppCompatActivity {
+
+    private GridView gridview=null;
+    private Context mContext;
+    private int vacID;
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,23 +65,19 @@ public class VacationActivity extends AppCompatActivity {
     protected void onStart(){
         super.onStart();
         final Activity a = this;
-        APIJsonCall vaccall = new APIJsonCall("vacations/"+vacID, "GET", this) {//3 is id for Antoine's first vacation
-            @Override
-            public void JsonCallback(JsonObject obj) {
-                try {
-                    Log.d("VACATION", obj.toString());
-                    title = obj.get("title").getAsString();
-                    a.setTitle(title);
-                    desc = obj.get("description").getAsString() + " at "+ obj.get("place").getAsString()
-                            +". Date : "+obj.get("start").getAsString()+" / "+obj.get("end").getAsString();
-                    TextView descView = (TextView) findViewById(R.id.VacationDescription);
-                    descView.setText(desc);
-                } catch(Exception E) {
-                    Log.e("WEB ERROR", E.getMessage());
-                }
-            }
-        };
-        vaccall.execute(new JsonObject());
+        final TextView vtitle = (TextView)findViewById(R.id.vacationTitle);
+        final TextView vplace = (TextView)findViewById(R.id.vacationPlace);
+        final TextView vdate = (TextView)findViewById(R.id.vacationDate);
+        final TextView vdesc = (TextView)findViewById(R.id.vacationDescription);
+
+        DBConnection db = new DBConnection(this);
+        Vacation v = db.getVacationById(vacID);
+
+        vtitle.setText(v.title);
+        vplace.setText(v.place);
+        vdate.setText(v.start + " to " + v. end);
+        vdesc.setText(v.description);
+
 
         APIJsonCall memcall = new APIJsonCall("vacations/"+vacID+"/memories", "GET", this) {//3 is id for Antoine's first vacation
             @Override
@@ -77,6 +86,17 @@ public class VacationActivity extends AppCompatActivity {
                     JsonArray arrMemories = obj.getAsJsonArray("list");
                     Log.d("MEMORYLIST", arrMemories.toString());
                     gridview.setAdapter(new VacationAdapter(mContext, gridview, arrMemories, a, vacID));
+
+                    DBConnection db = new DBConnection(a);
+                    ArrayList<Memory> memories = new ArrayList<>();
+                    Gson gson = new Gson();
+                    for(JsonElement el:arrMemories) {
+                        Memory m = gson.fromJson(el, Memory.class);
+                        m.vacationid = vacID;
+                        db.addOrUpdateMemory(m);
+                    }
+
+
                 } catch(Exception E) {
                     Log.e("WEB ERROR", E.getMessage());
                 }
@@ -87,9 +107,5 @@ public class VacationActivity extends AppCompatActivity {
 
     }
 
-    private String title;
-    private String desc;
-    private GridView gridview=null;
-    private Context mContext;
-    private int vacID;
+
 }

@@ -11,9 +11,11 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import com.jkpg.jurgen.nl.vacationdroid.DBConnection;
 import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.friends.logic.Friend;
 import com.jkpg.jurgen.nl.vacationdroid.core.overview.OverviewActivity;
+import com.jkpg.jurgen.nl.vacationdroid.datamodels.User;
 
 import java.util.ArrayList;
 
@@ -39,7 +41,7 @@ public class FriendItemImage extends Fragment implements AbsListView.OnItemClick
 
     private OnFragmentInteractionListener mListener;
 
-    ArrayList friends = new ArrayList<Friend>();
+    ArrayList users = new ArrayList<User>();
     /**
      * The fragment's ListView/GridView.
      */
@@ -79,17 +81,12 @@ public class FriendItemImage extends Fragment implements AbsListView.OnItemClick
 
         // TODO: Change Adapter to display your content
 
+        DBConnection db = new DBConnection(getActivity());
 
-        friends.add(new Friend());
-        friends.add(new Friend());
-        friends.add(new Friend());
-        friends.add(new Friend());
-        // friends = (OverviewActivity) getActivity().friends or something
+        users.addAll(db.getUsers());
 
-        //Jurgen: so, this array adapter takes FriendContent objects and translates them to the list items
-        //we're probably gonna have to make our own for this to work
 
-        mAdapter = new FriendAdapterImage<Friend>(getActivity(), R.layout.fragment_friend_dash, friends);
+        mAdapter = new FriendAdapterImage(getActivity(), R.layout.fragment_friend_dash, users);
     }
 
     @Override

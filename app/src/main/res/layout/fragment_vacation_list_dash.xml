@@ -3,50 +3,51 @@
 android:layout_width="match_parent" android:layout_height="match_parent"
 android:id="@+id/vacationsName">
 
-<GridLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="VacationName"
-        android:id="@+id/dashNameVacations"
-        android:layout_row="0"
-        android:layout_column="0" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Vacation Description"
-        android:id="@+id/dashDescVacations"
-        android:layout_row="0"
-        android:layout_column="1" />
-
-    <ImageView
-        android:layout_width="128dp"
-        android:layout_height="128dp"
-        android:id="@+id/dashImg"
-        android:layout_row="1"
-        android:layout_column="0"
-        android:src="@drawable/placeholder" />
-
     <GridLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_row="1"
-        android:layout_column="1"
-        android:columnCount="3"
-        android:rowCount="3">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal|top">
 
         <ImageView
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:id="@+id/imageView5"
-            android:src="@drawable/placeholder" />
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:id="@+id/dashImg"
+            android:layout_row="0"
+            android:layout_column="0"
+            android:src="@drawable/placeholder"
+            android:layout_margin="4dp"
+            android:layout_rowSpan="3" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="VacationName"
+            android:id="@+id/dashNameVacations"
+            android:layout_row="0"
+            android:layout_column="1"
+            android:layout_margin="4dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Vacation Place"
+            android:id="@+id/dashPlaceVacations"
+            android:layout_row="1"
+            android:layout_column="1"
+            android:layout_margin="4dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Vacation Dates"
+            android:id="@+id/dashDateVacations"
+            android:layout_row="2"
+            android:layout_column="1"
+            android:layout_margin="4dp" />
+
     </GridLayout>
-</GridLayout>
 
 </FrameLayout>

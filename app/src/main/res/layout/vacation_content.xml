@@ -27,29 +27,92 @@
 
     ]]>
 
-    <GridView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/gridview"
+    <GridLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:columnWidth="90dp"
-        android:numColumns="4"
-        android:stretchMode="columnWidth"
-        android:gravity="center"
-        android:layout_below="@+id/VacationDescription"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="VacationDescription"
-        android:id="@+id/VacationDescription"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@+id/VacationDate"
-        android:layout_toStartOf="@+id/VacationDate" />
+        android:rowCount="4"
+        android:columnCount="2">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Vacationtitle"
+            android:id="@+id/vacationTitle"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@+id/VacationDate"
+            android:layout_toStartOf="@+id/VacationDate"
+            android:layout_row="0"
+            android:layout_column="0"
+            android:layout_margin="4dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="vacationplace"
+            android:id="@+id/vacationPlace"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@+id/VacationDate"
+            android:layout_toStartOf="@+id/VacationDate"
+            android:layout_row="1"
+            android:layout_column="0"
+            android:layout_margin="4dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="vacationdate"
+            android:id="@+id/vacationDate"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@+id/VacationDate"
+            android:layout_toStartOf="@+id/VacationDate"
+            android:layout_row="1"
+            android:layout_column="1"
+            android:layout_gravity="right"
+            android:layout_margin="4dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="vacation Description"
+            android:id="@+id/vacationDescription"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@+id/VacationDate"
+            android:layout_toStartOf="@+id/VacationDate"
+            android:layout_row="2"
+            android:layout_column="0"
+            android:layout_columnSpan="2"
+            android:layout_margin="4dp" />
+
+        <GridView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/gridview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:columnWidth="90dp"
+            android:numColumns="4"
+            android:stretchMode="columnWidth"
+            android:gravity="center"
+            android:layout_below="@+id/vacationTitle"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_row="3"
+            android:layout_column="0"
+            android:layout_columnSpan="2" />
+    </GridLayout>
 
 
 </RelativeLayout>

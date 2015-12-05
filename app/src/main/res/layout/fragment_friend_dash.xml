@@ -7,6 +7,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ImageView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:id="@+id/dashImg"
+            android:layout_row="0"
+            android:layout_column="0"
+            android:src="@drawable/placeholder"
+            android:layout_rowSpan="2"
+            android:layout_margin="4dp" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -14,41 +24,22 @@
             android:text="FriendName"
             android:id="@+id/dashName"
             android:layout_row="0"
-            android:layout_column="0" />
+            android:layout_column="1"
+            android:layout_margin="4dp"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Friend's Vacations"
+            android:text="Friend&apos;s vacation title"
             android:id="@+id/dashVacation"
-            android:layout_row="0"
+            android:layout_row="1"
             android:layout_column="1"
             android:clickable="true"
-            android:onClick="onVacationListFriendPress" />
+            android:onClick="onVacationListFriendPress"
+            android:layout_margin="4dp" />
 
-        <ImageView
-            android:layout_width="128dp"
-            android:layout_height="128dp"
-            android:id="@+id/dashImg"
-            android:layout_row="1"
-            android:layout_column="0"
-            android:src="@drawable/placeholder" />
-
-        <GridLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_row="1"
-            android:layout_column="1"
-            android:columnCount="3"
-            android:rowCount="3">
-
-            <ImageView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:id="@+id/imageView5"
-                android:src="@drawable/placeholder" />
-        </GridLayout>
     </GridLayout>
 
 </FrameLayout>

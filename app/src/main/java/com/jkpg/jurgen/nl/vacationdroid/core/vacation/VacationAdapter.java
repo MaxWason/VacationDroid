@@ -14,6 +14,7 @@ import android.widget.ImageView;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.jkpg.jurgen.nl.vacationdroid.DBConnection;
 import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.memoryList.MemoryListActivity;
 import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
@@ -90,24 +91,16 @@ import java.util.ArrayList;
             final int positioN = position;
             final Activity ac = a;
             final Intent intent = new Intent(a, MemoryListActivity.class);
-            APIJsonCall memcall = new APIJsonCall("vacations/"+vacID+"/memories", "GET", a) {//3 is id for Antoine's first vacation
-                @Override
-                public void JsonCallback(JsonObject obj) {
-                    try {
-                        JsonArray arrMemories = obj.getAsJsonArray("list");
-                        JsonObject ml = arrMemories.get(positioN).getAsJsonObject();
-                        Log.d("MEMORY", ml.toString());
-                        final int memoryId = ml.get("id").getAsInt();
-                        Log.d("ID", "" + memoryId);
-                        intent.putExtra("id", memoryId);
-                        ac.startActivity(intent);
-                    } catch(Exception E) {
-                        Log.e("WEB ERROR", E.getMessage());
-                    }
-                }
-            };
-            memcall.execute(new JsonObject());
 
+
+            DBConnection db = new DBConnection(a);
+            ArrayList<Memory> mems = db.getMemoriesByVacation(vacID);
+
+            Log.d("MEMORY",mems.size() + "");
+            int memoryId = mems.get(position).id;
+            Log.d("ID", "" + memoryId);
+            intent.putExtra("id", memoryId);
+            ac.startActivity(intent);
 
         }
     }
