@@ -1,8 +1,5 @@
 package com.jkpg.jurgen.nl.vacationdroid.datamodels;
 
-/**
- * Created by Jurgen on 11/5/2015.
- */
 public class Vacation {
     public int id;
     public String title;
@@ -22,4 +19,39 @@ public class Vacation {
         this.user = usern;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getPlace() {
+        return place;
+    }
+
+    public int getStart() {
+        return start;
+    }
+
+    public int getEnd() {
+        return end;
+    }
+
+//    public int getUserId() {
+//        return userId;
+//    }
+
+    @Override
+    public String toString() {
+        return "[Vacation] id:" + id + "\ttitle:" + title + "\tdescription:" + description + "place:" + place + "\tstart:" + start + "\tend:" + end;// + "\tuserId:" + userId;
+    }
+
+
 }
+

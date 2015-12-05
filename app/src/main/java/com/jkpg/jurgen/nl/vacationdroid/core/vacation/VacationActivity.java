@@ -31,10 +31,6 @@ public class VacationActivity extends AppCompatActivity {
     private Context mContext;
     private int vacID;
 
-
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,15 +92,16 @@ public class VacationActivity extends AppCompatActivity {
                         db.addOrUpdateMemory(m);
                     }
 
-
                 } catch(Exception E) {
-                    Log.e("WEB ERROR", E.getMessage());
+                    try {
+                        Log.e("WEB ERROR", E.getMessage());
+                    } catch (Exception e) {
+                        Log.e("WEB ERROR", "No error message");
+                    }
                 }
             }
         };
         memcall.execute(new JsonObject());
-
-
     }
 
 
