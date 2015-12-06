@@ -3,7 +3,6 @@ package com.jkpg.jurgen.nl.vacationdroid.core.vacation;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +12,9 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.jkpg.jurgen.nl.vacationdroid.DBConnection;
 import com.jkpg.jurgen.nl.vacationdroid.R;
-import com.jkpg.jurgen.nl.vacationdroid.core.memoryList.MemoryListActivity;
-import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
+import com.jkpg.jurgen.nl.vacationdroid.core.memory.MemoryActivity;
 import com.jkpg.jurgen.nl.vacationdroid.datamodels.Memory;
 
 import java.util.ArrayList;
@@ -48,7 +45,7 @@ import java.util.ArrayList;
 
                 public void onItemClick(AdapterView<?> parent, View v, int position,
                                         long id) {
-                    goToMemoryList(position,a);
+                    goToMemory(position, a);
                 }
             });
         }
@@ -87,10 +84,10 @@ import java.util.ArrayList;
                 R.drawable.placeholder2,R.drawable.placeholder,R.drawable.placeholder2,R.drawable.placeholder,R.drawable.placeholder2,R.drawable.placeholder,R.drawable.placeholder2,R.drawable.placeholder,
         };
 
-        public void goToMemoryList(int position, Activity a){
+        public void goToMemory(int position, Activity a){
             final int positioN = position;
             final Activity ac = a;
-            final Intent intent = new Intent(a, MemoryListActivity.class);
+            final Intent intent = new Intent(a, MemoryActivity.class);
 
 
             DBConnection db = new DBConnection(a);

@@ -42,6 +42,7 @@ import com.jkpg.jurgen.nl.vacationdroid.datamodels.Vacation;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class OverviewActivity extends AppCompatActivity
@@ -51,17 +52,17 @@ public class OverviewActivity extends AppCompatActivity
 
     @Override
     public void onFragmentInteraction(String id) { //for the friendItems
-
-        //if pressed on the "friend's vacations" text
-//        Intent gotoVacationList = new Intent(this, VacationListActivity.class);
-//        gotoVacationList.putExtra("displayUser", false); //friend's page to display
-//        gotoVacationList.putExtra("friendId", getFriendId());
-//        startActivity(gotoVacationList);
-
-        //if pressed on a specific vacation
-        Intent intent = new Intent(OverviewActivity.this, VacationActivity.class);
-        intent.putExtra("vacationName", getVacationName());
-        startActivity(intent);
+//
+//        //if pressed on the "friend's vacations" text
+////        Intent gotoVacationList = new Intent(this, VacationListActivity.class);
+////        gotoVacationList.putExtra("displayUser", false); //friend's page to display
+////        gotoVacationList.putExtra("friendId", getFriendId());
+////        startActivity(gotoVacationList);
+//
+//        //if pressed on a specific vacation
+//        Intent intent = new Intent(OverviewActivity.this, VacationActivity.class);
+//        intent.putExtra("vacationName", getVacationName());
+//        startActivity(intent);
     }
 
     private String getVacationName(){
@@ -98,6 +99,35 @@ public class OverviewActivity extends AppCompatActivity
 
         //deleteDatabase("vacationdb");
         final Context c = this;
+
+        fetchUserVacations(username);
+
+        fetchFriendVacations();
+        DBConnection db = new DBConnection(this);
+
+        APIJsonCall dbuservac = new APIJsonCall("users/" + username, "GET", this) {
+            @Override
+            public void JsonCallback(JsonObject obj) {
+                Log.d("JASON", obj.toString());
+                Integer id = obj.get("id").getAsInt();
+                String un = obj.get("username").getAsString();
+                DBConnection db = new DBConnection(c);
+                User u = new User(id, un);
+                db.addOrUpdateUser(u);
+                Log.d("USER", db.getUsers().size() + db.getUsers().get(0).username);
+
+
+            }
+        };
+        dbuservac.execute(new JsonObject());
+    }
+
+
+
+    public void fetchUserVacations(final String username) {
+
+        final Context c = this;
+
         APIJsonCall dbvac = new APIJsonCall("users/" + username +"/vacations", "GET", this) {
             @Override
             public void JsonCallback(JsonObject obj) {
@@ -111,30 +141,23 @@ public class OverviewActivity extends AppCompatActivity
                     db.addOrUpdateVacation(v);
                 }
                 ArrayList<Vacation> vacs = db.getVacations();
-                Log.d("db select", "size: " + vacs.size() + " First item: " + vacs.get(0).title );
+                Log.d("db select", "size: " + vacs.size() + " First item: " + vacs.get(0).title);
 
                 UserDashFragment dashfrag = (UserDashFragment)getFragmentManager().findFragmentById(R.id.userDashFragment);
                 dashfrag.updateView();
             }
         };
         dbvac.execute(new JsonObject());
+    }
 
+    public void fetchFriendVacations() {
+        DBConnection db = new DBConnection(this);
 
+        List<User> friends = db.getUsers();
 
-        APIJsonCall dbuservac = new APIJsonCall("users/" + username, "GET", this) {
-            @Override
-            public void JsonCallback(JsonObject obj) {
-                Log.d("JASON", obj.toString());
-                Integer id = obj.get("id").getAsInt();
-                String un = obj.get("username").getAsString();
-                DBConnection db = new DBConnection(c);
-                User u = new User(id, un);
-                db.addOrUpdateUser(u);
-                Log.d("USER", db.getUsers().size() + db.getUsers().get(0).username);
-            }
-        };
-        dbuservac.execute(new JsonObject());
-
+        for(User u: friends) {
+            fetchUserVacations(u.username);
+        }
     }
 
     @Override
@@ -198,13 +221,6 @@ public class OverviewActivity extends AppCompatActivity
     public void onVacationListUserPress(View v){
         Intent gotoVacationList = new Intent(this, VacationListActivity.class);
         startActivity(gotoVacationList); //just go as a user
-    }
-
-    public void onVacationListFriendPress(View v){
-        Intent gotoVacationList = new Intent(this, VacationListActivity.class);
-        gotoVacationList.putExtra("displayUser", false); //friend's page to display
-        gotoVacationList.putExtra("friendName", getFriendName());
-        startActivity(gotoVacationList);
     }
 
     public void onUserDashImagePress(View v){

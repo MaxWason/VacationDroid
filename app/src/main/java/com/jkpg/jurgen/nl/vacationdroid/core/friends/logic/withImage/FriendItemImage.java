@@ -2,6 +2,7 @@ package com.jkpg.jurgen.nl.vacationdroid.core.friends.logic.withImage;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +16,10 @@ import com.jkpg.jurgen.nl.vacationdroid.DBConnection;
 import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.friends.logic.Friend;
 import com.jkpg.jurgen.nl.vacationdroid.core.overview.OverviewActivity;
+import com.jkpg.jurgen.nl.vacationdroid.core.vacation.VacationActivity;
+import com.jkpg.jurgen.nl.vacationdroid.core.vacationList.VacationListActivity;
 import com.jkpg.jurgen.nl.vacationdroid.datamodels.User;
+import com.jkpg.jurgen.nl.vacationdroid.datamodels.Vacation;
 
 import java.util.ArrayList;
 
@@ -30,18 +34,10 @@ import java.util.ArrayList;
  */
 public class FriendItemImage extends Fragment implements AbsListView.OnItemClickListener {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
-    ArrayList users = new ArrayList<User>();
+    ArrayList<User> users = new ArrayList<>();
     /**
      * The fragment's ListView/GridView.
      */
@@ -57,8 +53,7 @@ public class FriendItemImage extends Fragment implements AbsListView.OnItemClick
     public static FriendItemImage newInstance(String param1, String param2) {
         FriendItemImage fragment = new FriendItemImage();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+
         fragment.setArguments(args);
         return fragment;
     }
@@ -73,13 +68,6 @@ public class FriendItemImage extends Fragment implements AbsListView.OnItemClick
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-
-        // TODO: Change Adapter to display your content
 
         DBConnection db = new DBConnection(getActivity());
 
@@ -123,17 +111,12 @@ public class FriendItemImage extends Fragment implements AbsListView.OnItemClick
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (null != mListener) {
-            // Notify the active callbacks interface (the activity, if the
-            // fragment is attached to one) that an item has been selected.
 
-            //mListener.onFragmentInteraction(friends.get(position).id);
-        }
+        Intent gotoVacationList = new Intent(getActivity(), VacationListActivity.class);
+        gotoVacationList.putExtra("displayUser", false); //friend's page to display
+        gotoVacationList.putExtra("friendName", users.get(position).username);
+        startActivity(gotoVacationList);
 
-//        FriendItemImage image = (FriendItemImage) parent.getItemAtPosition(position);
-        //TODO: this is gross hardcoding, when it is used in multiple activities it won't work
-        OverviewActivity ac = (OverviewActivity) getActivity();
-        ac.onFragmentInteraction(null);
     }
 
     /**

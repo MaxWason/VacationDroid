@@ -8,6 +8,6 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/memory_list_activity"
-    tools:context="com.jkpg.jurgen.nl.vacationdroid.core.memoryList.MemoryListActivity">
+    tools:context=".core.memory.MemoryActivity">
 
 </RelativeLayout>

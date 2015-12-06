@@ -39,7 +39,7 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name=".core.memory.MemoryActivity"
+            android:name=".core.media.MediaActivity"
             android:label="@string/title_activity_memories"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
@@ -64,7 +64,7 @@
             android:parentActivityName=".core.overview.OverviewActivity" >
         </activity>
         <activity
-            android:name=".core.memoryList.MemoryListActivity"
+            android:name=".core.memory.MemoryActivity"
             android:label="@string/title_activity_memory_list"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>

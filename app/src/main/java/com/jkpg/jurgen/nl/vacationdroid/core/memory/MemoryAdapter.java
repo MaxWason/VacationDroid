@@ -1,4 +1,4 @@
-package com.jkpg.jurgen.nl.vacationdroid.core.memoryList;
+package com.jkpg.jurgen.nl.vacationdroid.core.memory;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.jkpg.jurgen.nl.vacationdroid.R;
-import com.jkpg.jurgen.nl.vacationdroid.core.memory.MemoryActivity;
+import com.jkpg.jurgen.nl.vacationdroid.core.media.MediaActivity;
 import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import java.util.ArrayList;
  * Created by Antoine on 29/11/2015.
  */
 
-public class MemoryListAdapter extends BaseAdapter {
+public class MemoryAdapter extends BaseAdapter {
 
     private Context mContext;
     private Activity a;
@@ -31,7 +31,7 @@ public class MemoryListAdapter extends BaseAdapter {
     private GridView gv;
     private ArrayList<String> am = new ArrayList<String>();
 
-    public MemoryListAdapter(Context c, GridView gridview, JsonArray arrFiles, Activity ac, int memoryId) {
+    public MemoryAdapter(Context c, GridView gridview, JsonArray arrFiles, Activity ac, int memoryId) {
         a = ac;
         mContext = c;
         gv=gridview;
@@ -88,7 +88,7 @@ public class MemoryListAdapter extends BaseAdapter {
     public void goToMemoryActivity(int position, Activity a){
         final int positioN = position;
         final Activity ac = a;
-        final Intent intent = new Intent(a, MemoryActivity.class);
+        final Intent intent = new Intent(a, MediaActivity.class);
         APIJsonCall filecall = new APIJsonCall("memories/"+memoryID+"/media-objects", "GET", a) {
             @Override
             public void JsonCallback(JsonObject obj) {

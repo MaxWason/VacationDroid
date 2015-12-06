@@ -37,7 +37,6 @@
             android:layout_row="1"
             android:layout_column="1"
             android:clickable="true"
-            android:onClick="onVacationListFriendPress"
             android:layout_margin="4dp" />
 
     </GridLayout>

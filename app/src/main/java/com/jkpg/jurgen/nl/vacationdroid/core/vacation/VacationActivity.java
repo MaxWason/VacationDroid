@@ -69,13 +69,13 @@ public class VacationActivity extends AppCompatActivity {
         DBConnection db = new DBConnection(this);
         Vacation v = db.getVacationById(vacID);
 
-        vtitle.setText(v.title);
+         vtitle.setText(v.title);
         vplace.setText(v.place);
         vdate.setText(v.start + " to " + v. end);
         vdesc.setText(v.description);
 
 
-        APIJsonCall memcall = new APIJsonCall("vacations/"+vacID+"/memories", "GET", this) {//3 is id for Antoine's first vacation
+        APIJsonCall memcall = new APIJsonCall("vacations/"+vacID+"/memories", "GET", this) {
             @Override
             public void JsonCallback(JsonObject obj) {
                 try {

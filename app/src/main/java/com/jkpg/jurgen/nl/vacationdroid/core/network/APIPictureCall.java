@@ -58,7 +58,7 @@ public abstract class APIPictureCall extends AsyncTask<JsonObject, String, JsonO
             connection.addRequestProperty("Accept", "application/json");
             connection.addRequestProperty("Authorization", "Bearer " + token);
 
-
+            
             OutputStream ostream = connection.getOutputStream();
             image.compress(Bitmap.CompressFormat.JPEG,80, ostream);
             ostream.close();
@@ -69,9 +69,9 @@ public abstract class APIPictureCall extends AsyncTask<JsonObject, String, JsonO
             responsecode = response;
 
             //if it has been successfully created it will not return anything, so we create a message
-            if(response == 201) {
+            if(response == 201 || response == 200) {
                 JsonObject created = new JsonObject();
-                Log.d("Network", "post call returned 201");
+                Log.d("Network", "post call returned 201 or 202");
                 created.addProperty("created", "element has been created successfully");
                 return created;
             } else {

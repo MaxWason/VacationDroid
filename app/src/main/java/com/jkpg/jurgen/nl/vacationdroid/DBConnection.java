@@ -38,6 +38,7 @@ public class DBConnection extends SQLiteOpenHelper {
         cv.put("usern",v.user);
 
         db.insertWithOnConflict("vacations", "_id = ?", cv, SQLiteDatabase.CONFLICT_REPLACE);
+        db.close();
     }
 
     public void addOrUpdateMemory(Memory m) {
@@ -50,8 +51,10 @@ public class DBConnection extends SQLiteOpenHelper {
         cv.put("description", m.description);
         cv.put("place", m.place);
         cv.put("time", m.time);
+        cv.put("vacationid", m.vacationid);
 
         db.insertWithOnConflict("memories", "_id = ?", cv, SQLiteDatabase.CONFLICT_REPLACE);
+        db.close();
     }
 
     public void addOrUpdateUser(User f) {
@@ -63,6 +66,7 @@ public class DBConnection extends SQLiteOpenHelper {
 
 
         db.insertWithOnConflict("users", "_id = ?", cv, SQLiteDatabase.CONFLICT_REPLACE);
+        db.close();
     }
     public ArrayList<Vacation> getVacations() {
         SQLiteDatabase db = getReadableDatabase();
@@ -81,6 +85,7 @@ public class DBConnection extends SQLiteOpenHelper {
                     ));
         }
 
+        db.close();
         return output;
     }
 
@@ -95,7 +100,7 @@ public class DBConnection extends SQLiteOpenHelper {
                     c.getString(1)
             ));
         }
-
+        db.close();
         return output;
     }
 
@@ -117,7 +122,7 @@ public class DBConnection extends SQLiteOpenHelper {
                     c.getString(6)
             ));
         }
-
+        db.close();
         return output;
     }
 
@@ -125,7 +130,7 @@ public class DBConnection extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         ArrayList<Memory> output = new ArrayList<>();
 
-        Cursor c = db.rawQuery("SELECT * FROM memories WHERE _id = "+ id, new String[]{});
+        Cursor c = db.rawQuery("SELECT * FROM memories WHERE vacationid = "+ id, new String[]{});
         while(c.moveToNext()) {
             output.add(new Memory(
                     c.getInt(0),
@@ -136,7 +141,7 @@ public class DBConnection extends SQLiteOpenHelper {
                     c.getInt(5)
             ));
         }
-
+        db.close();
         return output;
     }
 
@@ -145,6 +150,10 @@ public class DBConnection extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
 
         Cursor c = db.rawQuery("SELECT * FROM vacations WHERE _id = " + id, new String[]{});
+
+        if (c.getCount() == 0) {
+            return null;
+        }
         c.moveToNext();
 
         Vacation v = new Vacation(
@@ -156,7 +165,7 @@ public class DBConnection extends SQLiteOpenHelper {
                     c.getInt(5),
                     c.getString(6)
         );
-
+        db.close();
         return v;
     }
 
@@ -165,6 +174,7 @@ public class DBConnection extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM vacations");
         db.execSQL("DELETE FROM memories");
         db.execSQL("DELETE FROM vacations");
+        db.close();
     }
 
     @Override
@@ -184,7 +194,8 @@ public class DBConnection extends SQLiteOpenHelper {
                 "title TEXT NOT NULL," +
                 "description TEXT," +
                 "place TEXT," +
-                "time INT);");
+                "time INT," +
+                "vacationid INT);");
 
         db.execSQL("CREATE TABLE users(" +
                 "_id INTEGER PRIMARY KEY," +
