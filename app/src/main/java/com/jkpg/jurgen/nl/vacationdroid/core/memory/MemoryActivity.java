@@ -16,10 +16,15 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.jkpg.jurgen.nl.vacationdroid.DBConnection;
 import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
 import com.jkpg.jurgen.nl.vacationdroid.core.network.APIPictureCall;
+import com.jkpg.jurgen.nl.vacationdroid.datamodels.Media;
+
+import java.util.ArrayList;
 
 public class MemoryActivity extends AppCompatActivity {
 
@@ -27,6 +32,9 @@ public class MemoryActivity extends AppCompatActivity {
     private String title;
     private String desc;
     private int memoryID;
+    private MemoryAdapter adapter;
+
+    private GridView gridview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +42,8 @@ public class MemoryActivity extends AppCompatActivity {
         c = this;
 
         Intent intent = getIntent();
-        memoryID = intent.getIntExtra("id",-1);
-        Log.d("IDMEMORY", memoryID+"");
+        memoryID = intent.getIntExtra("id", -1);
+        Log.d("IDMEMORY", memoryID + "");
 
         setContentView(R.layout.memory_list_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -58,6 +66,7 @@ public class MemoryActivity extends AppCompatActivity {
         });
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // if (resultCode != RESULT_OK) return;
@@ -70,7 +79,7 @@ public class MemoryActivity extends AppCompatActivity {
                     Bitmap bitmap;
                     try {
                         bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
-                    }catch (Exception e) {
+                    } catch (Exception e) {
                         bitmap = null;
                         Log.e("FILE", e.getMessage());
                     }
@@ -89,44 +98,61 @@ public class MemoryActivity extends AppCompatActivity {
 
     }
 
-    protected void onStart(){
-            super.onStart();
-            final Activity a = this;
+    protected void onStart() {
+        super.onStart();
+        gridview = (GridView) findViewById(R.id.gridview);
+        adapter = new MemoryAdapter(c, gridview, this, memoryID);
 
-            final GridView gridview = (GridView) findViewById(R.id.gridview);
-            APIJsonCall memcall = new APIJsonCall("memories/"+memoryID, "GET", this) {//get the info from the memory
-                @Override
-                public void JsonCallback(JsonObject obj) {
-                    try {
-                        title = obj.get("title").getAsString();
-                        Log.d("TITLE", title);
-                        a.setTitle(title);
-                        desc = obj.get("description").getAsString() + " in "+ obj.get("place").getAsString()
-                                +" at  "+obj.get("time").getAsString();
-                        Log.d("DESCRIPTION", desc);
-                        TextView descView = (TextView) findViewById(R.id.MemoryDescription);
-                        descView.setText(desc);
-                    } catch(Exception E) {
-                        Log.e("WEB ERROR", E.getMessage());
-                    }
-                }
-            };
-            memcall.execute(new JsonObject());
+        gridview.setAdapter(adapter);
 
-            APIJsonCall filescall = new APIJsonCall("memories/"+memoryID+"/media-objects", "GET", this) {//get the list of medias for a given memory
-                @Override
-                public void JsonCallback(JsonObject obj) {
-                    try {
-                        JsonArray arrFiles = obj.getAsJsonArray("list");
-                        JsonObject ml = arrFiles.get(0).getAsJsonObject();
-                        Log.d("FILESLIST", arrFiles.toString());
-                        gridview.setAdapter(new MemoryAdapter(c, gridview, arrFiles, a, memoryID));
-                    } catch(Exception E) {
-                        Log.e("WEB ERROR", E.getMessage());
-                    }
+
+        final Activity a = this;
+        APIJsonCall memcall = new APIJsonCall("memories/" + memoryID, "GET", this) {//get the info from the memory
+            @Override
+            public void JsonCallback(JsonObject obj) {
+                try {
+                    title = obj.get("title").getAsString();
+                    Log.d("TITLE", title);
+                    a.setTitle(title);
+                    desc = obj.get("description").getAsString() + " in " + obj.get("place").getAsString()
+                            + " at  " + obj.get("time").getAsString();
+                    Log.d("DESCRIPTION", desc);
+                    TextView descView = (TextView) findViewById(R.id.MemoryDescription);
+                    descView.setText(desc);
+                } catch (Exception E) {
+                    Log.e("WEB ERROR", E.getMessage());
                 }
-            };
-            filescall.execute(new JsonObject());
+            }
+        };
+        memcall.execute(new JsonObject());
+        final Context c = this;
+        APIJsonCall filescall = new APIJsonCall("memories/" + memoryID + "/media-objects", "GET", this) {//get the list of medias for a given memory
+            @Override
+            public void JsonCallback(JsonObject obj) {
+                try {
+                    JsonArray arrFiles = obj.getAsJsonArray("list");
+                    Log.d("FILESLIST", arrFiles.toString());
+
+                    DBConnection db = new DBConnection(c);
+
+                    ArrayList<Media> medias = new ArrayList<>();
+                    for (JsonElement el : arrFiles) {
+                        JsonObject e = el.getAsJsonObject();
+                        int id = e.get("id").getAsInt();
+                        int memid = memoryID;
+                        String fileUrl = e.get("fileUrl").getAsString();
+                        Media m = new Media(id, memid, fileUrl);
+                        db.addOrUpdateMedia(m);
+                    }
+                    adapter.updateView();
+                    gridview.invalidateViews();
+
+                } catch (Exception E) {
+                    Log.e("WEB ERROR", E.getMessage());
+                }
+            }
+        };
+        filescall.execute(new JsonObject());
 
     }
 

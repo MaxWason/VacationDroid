@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.jkpg.jurgen.nl.vacationdroid.datamodels.Media;
 import com.jkpg.jurgen.nl.vacationdroid.datamodels.Memory;
 import com.jkpg.jurgen.nl.vacationdroid.datamodels.User;
 import com.jkpg.jurgen.nl.vacationdroid.datamodels.Vacation;
@@ -68,6 +69,20 @@ public class DBConnection extends SQLiteOpenHelper {
         db.insertWithOnConflict("users", "_id = ?", cv, SQLiteDatabase.CONFLICT_REPLACE);
         db.close();
     }
+
+    public void addOrUpdateMedia(Media m) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put("_id", m.id);
+        cv.put("memoryid", m.memoryid);
+        cv.put("url", m.fileurl);
+
+
+        db.insertWithOnConflict("medias", "_id = ?", cv, SQLiteDatabase.CONFLICT_REPLACE);
+        db.close();
+    }
+
     public ArrayList<Vacation> getVacations() {
         SQLiteDatabase db = getReadableDatabase();
         ArrayList<Vacation> output = new ArrayList<>();
@@ -98,6 +113,22 @@ public class DBConnection extends SQLiteOpenHelper {
             output.add(new User(
                     c.getInt(0),
                     c.getString(1)
+            ));
+        }
+        db.close();
+        return output;
+    }
+
+    public ArrayList<Media> getMediasByMemory(int memid) {
+        SQLiteDatabase db = getReadableDatabase();
+        ArrayList<Media> output = new ArrayList<>();
+
+        Cursor c = db.rawQuery("SELECT * FROM medias WHERE memoryid =" + memid, new String[]{});
+        while(c.moveToNext()) {
+            output.add(new Media(
+                    c.getInt(0),
+                    c.getInt(1),
+                    c.getString(2)
             ));
         }
         db.close();

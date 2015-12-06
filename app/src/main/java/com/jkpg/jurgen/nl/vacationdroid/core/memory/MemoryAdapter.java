@@ -13,9 +13,13 @@ import android.widget.ImageView;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.jkpg.jurgen.nl.vacationdroid.DBConnection;
 import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.media.MediaActivity;
 import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
+import com.jkpg.jurgen.nl.vacationdroid.datamodels.Media;
+import com.jkpg.jurgen.nl.vacationdroid.datamodels.Memory;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -30,18 +34,12 @@ public class MemoryAdapter extends BaseAdapter {
     private int memoryID;
     private GridView gv;
     private ArrayList<String> am = new ArrayList<String>();
+    private ArrayList<Media> medialist = new ArrayList<>();
 
-    public MemoryAdapter(Context c, GridView gridview, JsonArray arrFiles, Activity ac, int memoryId) {
+    public MemoryAdapter(Context c, GridView gridview, Activity ac, int memoryId) {
         a = ac;
         mContext = c;
-        gv=gridview;
-        memoryID=memoryId;
-        if (arrFiles != null) {
-            for (int i=0;i<arrFiles.size();i++){
-                am.add(arrFiles.get(i).toString());
-            }
-        }
-
+        this.memoryID = memoryId;
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             public void onItemClick(AdapterView<?> parent, View v, int position,
@@ -49,6 +47,17 @@ public class MemoryAdapter extends BaseAdapter {
                 goToMemoryActivity(position,a);
             }
         });
+        updateView();
+    }
+
+    public void updateView() {
+        DBConnection db = new DBConnection(mContext);
+        medialist = db.getMediasByMemory(memoryID);
+        am = new ArrayList<>();
+        for(Media m:medialist) {
+            am.add(m.fileurl);
+        }
+        notifyDataSetChanged();
     }
 
     public int getCount() {
@@ -64,6 +73,7 @@ public class MemoryAdapter extends BaseAdapter {
     }
 
     // create a new ImageView for each item referenced by the Adapter
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ImageView imageView;
         if (convertView == null) {
@@ -76,7 +86,9 @@ public class MemoryAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
 
-        imageView.setImageResource(mThumbIds[position]);
+        Picasso.with(mContext).load(medialist.get(position).fileurl).into(imageView);
+
+        //imageView.setImageResource(mThumbIds[position]);
         return imageView;
     }
 
@@ -88,24 +100,14 @@ public class MemoryAdapter extends BaseAdapter {
     public void goToMemoryActivity(int position, Activity a){
         final int positioN = position;
         final Activity ac = a;
-        final Intent intent = new Intent(a, MediaActivity.class);
-        APIJsonCall filecall = new APIJsonCall("memories/"+memoryID+"/media-objects", "GET", a) {
-            @Override
-            public void JsonCallback(JsonObject obj) {
-                try {
-                    JsonArray arrFiles = obj.getAsJsonArray("list");
-                    JsonObject ml = arrFiles.get(positioN).getAsJsonObject();
-                    Log.d("FILE", ml.toString());
-                    final String fileUrl = ml.get("fileUrl").getAsString();
-                    Log.d("url", "" + fileUrl);
-                    intent.putExtra("url", fileUrl);
-                    ac.startActivity(intent);
-                } catch(Exception E) {
-                    Log.e("WEB ERROR", E.getMessage());
-                }
-            }
-        };
-        filecall.execute(new JsonObject());
+
+        DBConnection db = new DBConnection(ac);
+        ArrayList<Media> medias = db.getMediasByMemory(memoryID);
+
+        Intent intent = new Intent(a, MediaActivity.class);
+
+        intent.putExtra("url", medias.get(position).fileurl);
+        ac.startActivity(intent);
 
     }
 
