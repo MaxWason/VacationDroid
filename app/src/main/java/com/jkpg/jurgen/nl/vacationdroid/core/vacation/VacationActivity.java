@@ -28,6 +28,7 @@ import java.util.ArrayList;
 public class VacationActivity extends AppCompatActivity {
 
     private GridView gridview=null;
+    private VacationAdapter adapter;
     private Context mContext;
     private int vacID;
 
@@ -61,19 +62,21 @@ public class VacationActivity extends AppCompatActivity {
     protected void onStart(){
         super.onStart();
         final Activity a = this;
-        final TextView vtitle = (TextView)findViewById(R.id.vacationTitle);
-        final TextView vplace = (TextView)findViewById(R.id.vacationPlace);
-        final TextView vdate = (TextView)findViewById(R.id.vacationDate);
-        final TextView vdesc = (TextView)findViewById(R.id.vacationDescription);
+        TextView vtitle = (TextView)findViewById(R.id.vacationTitle);
+        TextView vplace = (TextView)findViewById(R.id.vacationPlace);
+        TextView vdate = (TextView)findViewById(R.id.vacationDate);
+        TextView vdesc = (TextView)findViewById(R.id.vacationDescription);
 
         DBConnection db = new DBConnection(this);
         Vacation v = db.getVacationById(vacID);
 
-         vtitle.setText(v.title);
+        vtitle.setText(v.title);
         vplace.setText(v.place);
         vdate.setText(v.start + " to " + v. end);
         vdesc.setText(v.description);
 
+        adapter = new VacationAdapter(mContext, gridview, a, vacID);
+        gridview.setAdapter(adapter);
 
         APIJsonCall memcall = new APIJsonCall("vacations/"+vacID+"/memories", "GET", this) {
             @Override
@@ -81,7 +84,7 @@ public class VacationActivity extends AppCompatActivity {
                 try {
                     JsonArray arrMemories = obj.getAsJsonArray("list");
                     Log.d("MEMORYLIST", arrMemories.toString());
-                    gridview.setAdapter(new VacationAdapter(mContext, gridview, arrMemories, a, vacID));
+
 
                     DBConnection db = new DBConnection(a);
                     ArrayList<Memory> memories = new ArrayList<>();
@@ -91,6 +94,7 @@ public class VacationActivity extends AppCompatActivity {
                         m.vacationid = vacID;
                         db.addOrUpdateMemory(m);
                     }
+                    adapter.updateView();
 
                 } catch(Exception E) {
                     try {

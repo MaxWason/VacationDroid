@@ -23,14 +23,13 @@ import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
 import com.jkpg.jurgen.nl.vacationdroid.core.network.APIPictureCall;
 import com.jkpg.jurgen.nl.vacationdroid.datamodels.Media;
+import com.jkpg.jurgen.nl.vacationdroid.datamodels.Memory;
 
 import java.util.ArrayList;
 
 public class MemoryActivity extends AppCompatActivity {
 
     private Context c;
-    private String title;
-    private String desc;
     private int memoryID;
     private MemoryAdapter adapter;
 
@@ -105,26 +104,21 @@ public class MemoryActivity extends AppCompatActivity {
 
         gridview.setAdapter(adapter);
 
+        DBConnection db = new DBConnection(this);
+        Memory m = db.getMemoryById(memoryID);
+
+        String title = m.title;
+        String desc = m.description + " in " + m.place + " at  " + m.time;
+
+        TextView descView = (TextView) findViewById(R.id.MemoryDescription);
+
+        descView.setText(desc);
+
+        setTitle(title);
+
 
         final Activity a = this;
-        APIJsonCall memcall = new APIJsonCall("memories/" + memoryID, "GET", this) {//get the info from the memory
-            @Override
-            public void JsonCallback(JsonObject obj) {
-                try {
-                    title = obj.get("title").getAsString();
-                    Log.d("TITLE", title);
-                    a.setTitle(title);
-                    desc = obj.get("description").getAsString() + " in " + obj.get("place").getAsString()
-                            + " at  " + obj.get("time").getAsString();
-                    Log.d("DESCRIPTION", desc);
-                    TextView descView = (TextView) findViewById(R.id.MemoryDescription);
-                    descView.setText(desc);
-                } catch (Exception E) {
-                    Log.e("WEB ERROR", E.getMessage());
-                }
-            }
-        };
-        memcall.execute(new JsonObject());
+
         final Context c = this;
         APIJsonCall filescall = new APIJsonCall("memories/" + memoryID + "/media-objects", "GET", this) {//get the list of medias for a given memory
             @Override

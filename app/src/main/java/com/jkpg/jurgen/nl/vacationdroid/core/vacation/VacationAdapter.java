@@ -15,6 +15,7 @@ import com.google.gson.JsonArray;
 import com.jkpg.jurgen.nl.vacationdroid.DBConnection;
 import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.memory.MemoryActivity;
+import com.jkpg.jurgen.nl.vacationdroid.datamodels.Media;
 import com.jkpg.jurgen.nl.vacationdroid.datamodels.Memory;
 
 import java.util.ArrayList;
@@ -29,17 +30,14 @@ import java.util.ArrayList;
         private int vacID;
         private GridView gv;
         private ArrayList<String> am = new ArrayList<String>();
+        private ArrayList<Memory> memorylist = new ArrayList<Memory>();
 
-        public VacationAdapter(Context c, GridView gridview, JsonArray arrMemory, Activity ac, int vacId) {
+        public VacationAdapter(Context c, GridView gridview, Activity ac, int vacId) {
             a = ac;
             mContext = c;
             gv=gridview;
             vacID=vacId;
-            if (arrMemory != null) {
-                for (int i=0;i<arrMemory.size();i++){
-                    am.add(arrMemory.get(i).toString());
-                }
-            }
+
 
             gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -48,8 +46,19 @@ import java.util.ArrayList;
                     goToMemory(position, a);
                 }
             });
+
+            updateView();
         }
 
+    public void updateView() {
+        DBConnection db = new DBConnection(mContext);
+        memorylist = db.getMemoriesByVacation(vacID);
+        am = new ArrayList<>();
+        for(Memory m:memorylist) {
+            am.add(m.title);
+        }
+        notifyDataSetChanged();
+    }
         public int getCount() {
             return am.size();
         }

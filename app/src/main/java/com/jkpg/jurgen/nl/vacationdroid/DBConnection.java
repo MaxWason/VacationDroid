@@ -200,6 +200,28 @@ public class DBConnection extends SQLiteOpenHelper {
         return v;
     }
 
+    public Memory getMemoryById(int id) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor c = db.rawQuery("SELECT * FROM memories WHERE _id = " + id, new String[]{});
+
+        if (c.getCount() == 0) {
+            return null;
+        }
+        c.moveToNext();
+        Memory m = new Memory(
+                    c.getInt(0),
+                    c.getString(1),
+                    c.getString(2),
+                    c.getString(3),
+                    c.getInt(4),
+                    c.getInt(5)
+            );
+
+        db.close();
+        return m;
+    }
+
     public void clearDb() {
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("DELETE FROM vacations");
