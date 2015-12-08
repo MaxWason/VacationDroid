@@ -6,10 +6,11 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
 import com.google.gson.JsonObject;
+
+import java.io.DataOutputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
 /**
  * Created by Jurgen on 11/26/2015.
  */
@@ -23,8 +24,13 @@ public abstract class APIPictureCall extends AsyncTask<JsonObject, String, JsonO
     Bitmap image;
     int memid;
 
+    String attachmentName = "file";
+    String crlf = "\r\n";
+    String twoHyphens = "--";
+    String boundary =  "*****";
+
     public APIPictureCall(int MemoryId, Bitmap b, Context c) {
-        this.fullURL = "http://vacationrest-dev.elasticbeanstalk.com/api/v1/medias/"+ MemoryId + "/pictures";
+        this.fullURL = "http://vacationrest-dev.elasticbeanstalk.com/api/v1/memories/"+ MemoryId + "/pictures";
 
         memid = MemoryId;
         image = b;
@@ -54,14 +60,30 @@ public abstract class APIPictureCall extends AsyncTask<JsonObject, String, JsonO
             URL url = new URL(newUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
-            connection.addRequestProperty("Content-Type", "multipart/form-data");
-            connection.addRequestProperty("Accept", "application/json");
+            connection.setRequestProperty("Connection", "Keep-Alive");
+            connection.setRequestProperty("Accept", "application/json");
+            connection.setRequestProperty("Cache-Control", "no-cache");
+            connection.setRequestProperty(
+                    "Content-Type", "multipart/form-data;boundary=" + this.boundary);
             connection.addRequestProperty("Authorization", "Bearer " + token);
 
-            
-            OutputStream ostream = connection.getOutputStream();
-            image.compress(Bitmap.CompressFormat.JPEG,80, ostream);
-            ostream.close();
+            DataOutputStream request = new DataOutputStream(
+                    connection.getOutputStream());
+
+            request.writeBytes(this.twoHyphens + this.boundary + this.crlf);
+            request.writeBytes("Content-Disposition: form-data; name=\"" +
+                    this.attachmentName + "\";filename=\"" +
+                    fileUrl + "\"" + this.crlf);
+            request.writeBytes(this.crlf);
+
+            image.compress(Bitmap.CompressFormat.JPEG, 90, request);
+
+            request.writeBytes(this.crlf);
+            request.writeBytes(this.twoHyphens + this.boundary +
+                    this.twoHyphens + this.crlf);
+
+            request.flush();
+            request.close();
 
             int response = connection.getResponseCode();
 

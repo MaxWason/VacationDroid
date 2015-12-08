@@ -25,6 +25,8 @@ import com.jkpg.jurgen.nl.vacationdroid.core.network.APIPictureCall;
 import com.jkpg.jurgen.nl.vacationdroid.datamodels.Media;
 import com.jkpg.jurgen.nl.vacationdroid.datamodels.Memory;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class MemoryActivity extends AppCompatActivity {
@@ -76,12 +78,21 @@ public class MemoryActivity extends AppCompatActivity {
 
                     Uri uri = data.getData();
                     Bitmap bitmap;
+
+
                     try {
                         bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
                     } catch (Exception e) {
                         bitmap = null;
                         Log.e("FILE", e.getMessage());
                     }
+
+                    JsonObject json = new JsonObject();
+                    json.addProperty("fileUrl", "file.jpg");
+                    json.addProperty("container", uri.getPath());
+                    json.addProperty("width", bitmap.getWidth());
+                    json.addProperty("height", bitmap.getHeight());
+
                     /// use btemp Image file
                     Log.d("Image", bitmap.toString());
                     APIPictureCall picture = new APIPictureCall(memoryID, bitmap, this) {
@@ -90,7 +101,7 @@ public class MemoryActivity extends AppCompatActivity {
                             Log.d("IMGJASON", obj.toString());
                         }
                     };
-                    picture.execute(new JsonObject());
+                    picture.execute(json);
                 }
                 break;
         }
