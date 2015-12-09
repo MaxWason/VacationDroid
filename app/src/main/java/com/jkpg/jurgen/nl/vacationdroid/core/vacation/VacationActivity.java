@@ -63,6 +63,7 @@ public class VacationActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                createNewMemory(view);
             }
         });
 
@@ -134,6 +135,12 @@ public class VacationActivity extends AppCompatActivity {
             }
         });
 
+        fetchMemories();
+
+    }
+
+    private void fetchMemories(){
+        final Activity a = this;
         APIJsonCall memcall = new APIJsonCall("vacations/"+vacID+"/memories", "GET", this) {
             @Override
             public void JsonCallback(JsonObject obj) {
@@ -162,11 +169,9 @@ public class VacationActivity extends AppCompatActivity {
             }
         };
         memcall.execute(new JsonObject());
-
     }
 
-
-    public void onSomethingPress(View v, String s) {
+    private void onSomethingPress(View v, String s) {
 
         final String st=s;
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -235,7 +240,7 @@ public class VacationActivity extends AppCompatActivity {
 
     }
 
-    public void SaveChanges(View v){
+    private void SaveChanges(View v){
         RelativeLayout rl = (RelativeLayout)findViewById(R.id.ChangeButtons);
         rl.setVisibility(RelativeLayout.GONE);
 
@@ -290,13 +295,13 @@ public class VacationActivity extends AppCompatActivity {
         vaccall.execute(modifJSon);
     }
 
-    public void CancelChanges(View v){
+    private void CancelChanges(View v){
         RelativeLayout rl = (RelativeLayout)findViewById(R.id.ChangeButtons);
         rl.setVisibility(RelativeLayout.GONE);
         fillFields();
     }
 
-    public void fillFields(){
+    private void fillFields(){
         TextView vtitle = (TextView)findViewById(R.id.vacationTitle);
         TextView vplace = (TextView)findViewById(R.id.vacationPlace);
         TextView vdate = (TextView)findViewById(R.id.vacationDate);
@@ -310,5 +315,73 @@ public class VacationActivity extends AppCompatActivity {
         vdate.setText(v.start + " to " + v.end);
         vdesc.setText(v.description);
 
+    }
+
+    private void createNewMemory(View v){
+        //get username from preferences
+        SharedPreferences sp = getSharedPreferences("vacation", MODE_PRIVATE);
+        final String name = sp.getString("username", "error");
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LinearLayout layout = new LinearLayout(mContext);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        final EditText title = new EditText(mContext);
+        title.setHint("Title");
+        layout.addView(title);
+
+        final EditText desc = new EditText(mContext);
+        desc.setHint("Description");
+        layout.addView(desc);
+
+        final EditText place = new EditText(mContext);
+        place.setHint("Place");
+        layout.addView(place);
+
+        final EditText from = new EditText(mContext);
+        from.setHint("Time");
+        from.setInputType(InputType.TYPE_CLASS_NUMBER);
+        layout.addView(from);
+
+        //default value to test and not type everytime
+        title.setText("Test Memory");
+        desc.setText("Should be created");
+        place.setText("Sweden");
+        from.setText("22");
+
+        builder.setView(layout);
+        builder.setMessage("Create a new memory")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        JsonObject newMem = new JsonObject();
+                        newMem.addProperty("title",title.getText().toString());
+                        newMem.addProperty("description",desc.getText().toString());
+                        newMem.addProperty("place",place.getText().toString());
+                        newMem.addProperty("time",from.getText().toString());
+                        JsonObject posdat = new JsonObject();
+                        posdat.addProperty("latitude", 0);
+                        posdat.addProperty("longitude", 0);
+                        newMem.add("position", posdat);
+
+
+                        APIJsonCall memcall = new APIJsonCall("vacations/"+vacID+"/memories", "POST", mContext) {
+                            @Override
+                            public void JsonCallback(JsonObject obj) {
+                                    Log.d("MODIFIED", obj.toString());
+                                    Toast.makeText(getApplicationContext(), "  Memory created  ", Toast.LENGTH_LONG).show();
+                                    fetchMemories();
+                            }
+                        };
+                        memcall.execute(newMem);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                    }
+                });
+
+        // Create the AlertDialog object and return it
+        builder.show();
     }
 }

@@ -30,6 +30,8 @@ import com.google.gson.JsonObject;
 import com.jkpg.jurgen.nl.vacationdroid.DBConnection;
 import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
+import com.jkpg.jurgen.nl.vacationdroid.core.overview.UserDashFragment;
+import com.jkpg.jurgen.nl.vacationdroid.core.vacationList.logic.VacationsItem;
 import com.jkpg.jurgen.nl.vacationdroid.datamodels.Vacation;
 
 import java.util.ArrayList;
@@ -132,7 +134,7 @@ public class VacationListActivity extends AppCompatActivity {
 
         final EditText from = new EditText(c);
         from.setHint("From");
-        title.setInputType(InputType.TYPE_CLASS_NUMBER);
+        from.setInputType(InputType.TYPE_CLASS_NUMBER);
         layout.addView(from);
 
         final EditText to = new EditText(c);
@@ -156,16 +158,11 @@ public class VacationListActivity extends AppCompatActivity {
                         APIJsonCall vaccall = new APIJsonCall("vacations", "POST", c) {
                             @Override
                             public void JsonCallback(JsonObject obj) {
-                                try {
                                     Log.d("MODIFIED", obj.toString());
                                     Toast.makeText(getApplicationContext(), "  Vacation created  ", Toast.LENGTH_LONG).show();
-                                } catch (Exception E) {
-                                    try {
-                                        Log.e("WEB ERROR", E.getMessage());
-                                    } catch (Exception ex){
-                                        Log.e("WEB ERROR", "No error message received!");
-                                    }
-                                }
+
+                                VacationsItem dashfrag = (VacationsItem)getFragmentManager().findFragmentById(R.id.fragment_vac_item);
+                                dashfrag.notifyList();
                             }
                         };
                         vaccall.execute(newVac);

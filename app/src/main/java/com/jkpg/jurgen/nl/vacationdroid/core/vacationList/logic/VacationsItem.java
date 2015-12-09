@@ -61,8 +61,9 @@ public class VacationsItem extends Fragment implements AbsListView.OnItemClickLi
         mAdapter = new VacationsAdapter(getActivity(), R.layout.fragment_vacation_list_dash, vacationArrayList);
     }
 
-    private void notifyList() {
-
+    public void notifyList() {
+        getVacations();
+        mAdapter.notifyDataSetChanged();
     }
     /**
      * Gets a list of vacations depending on if the user or a friend needs them.
@@ -74,6 +75,7 @@ public class VacationsItem extends Fragment implements AbsListView.OnItemClickLi
         String personToGetDataFor = useUser ? userName : friendName;
 
         DBConnection db = new DBConnection(getActivity());
+        vacationArrayList.clear();
         vacationArrayList.addAll(db.getUserVacations(personToGetDataFor));
     }
 
