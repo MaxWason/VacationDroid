@@ -17,6 +17,7 @@
     <string name="dialog_delete_friend">Unfriend this person?</string>
     <string name="delete_friend">Yes</string>
     <string name="cancel">Cancel</string>
+    <string name="save_changes">Save changes</string>
     <string name="menu_search">Search</string>
     <string name="menu_unfriend">Unfriend</string>
     <string name="contact_info">support@vacationdroid.com</string>
