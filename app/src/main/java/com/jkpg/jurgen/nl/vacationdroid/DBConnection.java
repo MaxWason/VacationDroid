@@ -222,6 +222,22 @@ public class DBConnection extends SQLiteOpenHelper {
         return m;
     }
 
+    public int getUserByName(String name) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor c = db.rawQuery("SELECT _id FROM users WHERE username = '" + name + "'", new String[]{});
+
+        if (c.getCount() == 0) {
+            return -1;
+        }
+        c.moveToNext();
+        int id = c.getInt(0);
+
+        db.close();
+        return id;
+    }
+
+
     public void clearDb() {
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("DELETE FROM vacations");

@@ -34,4 +34,25 @@
         android:tint="@color/colorWhite"
         app:backgroundTint="@color/colorPrimary" />
 
+    <RelativeLayout android:id="@+id/ChangeButtons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+            <Button android:text="Save Changes"
+                android:id="@+id/ButtonOk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentBottom="true">
+            </Button>
+            <Button android:text="Cancel"
+                android:id="@+id/ButtonCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_toRightOf="@+id/ButtonOk"
+                android:layout_toEndOf="@+id/ButtonOk">
+            </Button>
+    </RelativeLayout>
+
 </android.support.design.widget.CoordinatorLayout>

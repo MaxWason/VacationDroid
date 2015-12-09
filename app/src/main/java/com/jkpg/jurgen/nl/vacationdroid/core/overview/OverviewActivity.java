@@ -223,10 +223,6 @@ public class OverviewActivity extends AppCompatActivity
         startActivity(gotoVacationList); //just go as a user
     }
 
-    public void onUserDashImagePress(View v){
-
-    }
-
     private String getFriendName(){
         //get the list element clicked on
         //get that element's friend's name
