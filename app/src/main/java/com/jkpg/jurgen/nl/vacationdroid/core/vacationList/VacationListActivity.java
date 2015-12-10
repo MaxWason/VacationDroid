@@ -58,6 +58,9 @@ public class VacationListActivity extends AppCompatActivity {
             }
         });
 
+
+
+
         Intent intent = getIntent();
 
         //craziness below here
@@ -69,7 +72,9 @@ public class VacationListActivity extends AppCompatActivity {
         if (displayUser) {
             //get name of user
             nameToDisplay = pref.getString("username", null);
-        } else {
+        }else{
+            //hide fab
+            fab.setVisibility(FloatingActionButton.GONE);
             //get name of friend
             if (intent.getStringExtra("friendName") == null) //no name, for the unfinished test code
                 nameToDisplay = "A Friend"; //generic name
@@ -124,6 +129,9 @@ public class VacationListActivity extends AppCompatActivity {
         // Inflate the options menu from XML
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_searchable, menu);
+        if(displayUser) {
+            inflater.inflate(R.menu.menu_vacation_list, menu);
+        }
 
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);

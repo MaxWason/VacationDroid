@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,8 +36,6 @@ import com.jkpg.jurgen.nl.vacationdroid.datamodels.Vacation;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import com.google.gson.JsonObject;
-
 
 public class VacationActivity extends AppCompatActivity {
 
@@ -52,12 +52,13 @@ public class VacationActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         vacID = intent.getIntExtra("id",-1);
-        Log.d("IDVACATION", vacID+"");
+        Log.d("IDVACATION", vacID + "");
 
 
         setContentView(R.layout.vacation_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -71,6 +72,27 @@ public class VacationActivity extends AppCompatActivity {
         gridview = (GridView) findViewById(R.id.gridview);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_vacation, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // action with ID action_refresh was selected
+            case R.id.deleteMemory:
+                selectMemoryToDelete();
+                break;
+            default:
+                break;
+        }
+
+        return true;
+    }
+
+
     protected void onStart(){
         super.onStart();
         final Activity a = this;
@@ -78,6 +100,13 @@ public class VacationActivity extends AppCompatActivity {
         //get username from preferences
         SharedPreferences sp = getSharedPreferences("vacation", MODE_PRIVATE);
         name = sp.getString("username", "error");
+
+        DBConnection db = new DBConnection(this);
+        Vacation vac = db.getVacationById(vacID);
+        if( !name.equals(vac.user)){
+            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+            fab.setVisibility(FloatingActionButton.GONE);
+        }
 
         fillFields();
 
@@ -183,6 +212,8 @@ public class VacationActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int id) {
                             RelativeLayout rl = (RelativeLayout) findViewById(R.id.ChangeButtons);
                             rl.setVisibility(RelativeLayout.VISIBLE);
+                            Button okButton = (Button)findViewById(R.id.ButtonOk);
+                            okButton.setVisibility(Button.VISIBLE);
                             switch (st) {
                                 case "description":
                                     TextView vdesc = (TextView) findViewById(R.id.vacationDescription);
@@ -299,6 +330,7 @@ public class VacationActivity extends AppCompatActivity {
         RelativeLayout rl = (RelativeLayout)findViewById(R.id.ChangeButtons);
         rl.setVisibility(RelativeLayout.GONE);
         fillFields();
+        adapter.setNormalClickEvent(gridview);
     }
 
     private void fillFields(){
@@ -383,5 +415,14 @@ public class VacationActivity extends AppCompatActivity {
 
         // Create the AlertDialog object and return it
         builder.show();
+    }
+
+    public void selectMemoryToDelete(){
+        adapter.setDeletionClickEvent(gridview);
+        RelativeLayout rl = (RelativeLayout)findViewById(R.id.ChangeButtons);
+        rl.setVisibility(RelativeLayout.VISIBLE);
+
+        Button okButton = (Button)findViewById(R.id.ButtonOk);
+        okButton.setVisibility(Button.GONE);
     }
 }

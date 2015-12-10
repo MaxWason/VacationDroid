@@ -41,7 +41,6 @@ public class MediaActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String s = intent.getStringExtra("url");
         Log.d("IMAGE ID", s);
-        TextView tv = (TextView) findViewById(R.id.txtView);
         ImageView iv = (ImageView) findViewById(R.id.imgView);
         VideoView vv = (VideoView) findViewById(R.id.mediaView);
 
@@ -51,7 +50,5 @@ public class MediaActivity extends AppCompatActivity {
 
 //        iv.setVisibility(View.GONE);
         vv.setVisibility(View.GONE);
-        tv.setVisibility(View.GONE);
-//        tv.setText(s);
     }
 }

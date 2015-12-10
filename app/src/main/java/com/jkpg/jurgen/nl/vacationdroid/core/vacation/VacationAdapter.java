@@ -2,19 +2,29 @@ package com.jkpg.jurgen.nl.vacationdroid.core.vacation;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.jkpg.jurgen.nl.vacationdroid.DBConnection;
 import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.memory.MemoryActivity;
+import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
 import com.jkpg.jurgen.nl.vacationdroid.datamodels.Media;
 import com.jkpg.jurgen.nl.vacationdroid.datamodels.Memory;
 
@@ -108,5 +118,57 @@ import java.util.ArrayList;
             intent.putExtra("id", memoryId);
             ac.startActivity(intent);
 
+        }
+
+        private void deleteMemory(int pos,GridView gridview){
+            DBConnection db = new DBConnection(a);
+            final int memoryId = db.getMemoriesByVacation(vacID).get(pos).id;
+            Log.d("position", pos+"");
+            Log.d("idmemory",memoryId+"");
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+
+            builder.setMessage("Are you sure you want to delete this memory ?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            APIJsonCall memcall = new APIJsonCall("memories/"+memoryId, "DELETE", mContext) {
+                                @Override
+                                public void JsonCallback(JsonObject obj) {
+                                    Toast.makeText(mContext, "  Memory deleted  ", Toast.LENGTH_LONG).show();
+                                    //update local db here
+                                }
+                            };
+                            memcall.execute(new JsonObject());
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+                        }
+                    });
+
+            // Create the AlertDialog object and return it
+            builder.show();
+            setNormalClickEvent(gridview);
+        }
+
+        public void setDeletionClickEvent(final GridView gridview){
+            gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                public void onItemClick(AdapterView<?> parent, View v, int position,
+                                        long id) {
+                    deleteMemory(position, gridview);
+                }
+            });
+        }
+
+        public void setNormalClickEvent(GridView gridview){
+            gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                public void onItemClick(AdapterView<?> parent, View v, int position,
+                                        long id) {
+                    goToMemory(position, a);
+                }
+            });
         }
     }
