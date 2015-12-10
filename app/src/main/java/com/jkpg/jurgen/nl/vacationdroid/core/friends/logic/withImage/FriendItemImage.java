@@ -9,17 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.jkpg.jurgen.nl.vacationdroid.DBConnection;
 import com.jkpg.jurgen.nl.vacationdroid.R;
-import com.jkpg.jurgen.nl.vacationdroid.core.friends.logic.Friend;
-import com.jkpg.jurgen.nl.vacationdroid.core.overview.OverviewActivity;
-import com.jkpg.jurgen.nl.vacationdroid.core.vacation.VacationActivity;
 import com.jkpg.jurgen.nl.vacationdroid.core.vacationList.VacationListActivity;
 import com.jkpg.jurgen.nl.vacationdroid.datamodels.User;
-import com.jkpg.jurgen.nl.vacationdroid.datamodels.Vacation;
 
 import java.util.ArrayList;
 
@@ -47,7 +44,7 @@ public class FriendItemImage extends Fragment implements AbsListView.OnItemClick
      * The Adapter which will be used to populate the ListView/GridView with
      * Views.
      */
-    private ListAdapter mAdapter;
+    private ArrayAdapter mAdapter;
 
     // TODO: Rename and change types of parameters
     public static FriendItemImage newInstance(String param1, String param2) {
@@ -71,8 +68,8 @@ public class FriendItemImage extends Fragment implements AbsListView.OnItemClick
 
         DBConnection db = new DBConnection(getActivity());
 
-        users.addAll(db.getUsers());
-
+        users.clear();
+        users.addAll(db.getFriends());
 
         mAdapter = new FriendAdapterImage(getActivity(), R.layout.fragment_friend_dash, users);
     }
@@ -84,7 +81,7 @@ public class FriendItemImage extends Fragment implements AbsListView.OnItemClick
 
         // Set the adapter
         mListView = (AbsListView) view.findViewById(android.R.id.list);
-        ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
+        ( mListView).setAdapter(mAdapter);
 
         // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(this);
@@ -117,6 +114,14 @@ public class FriendItemImage extends Fragment implements AbsListView.OnItemClick
         gotoVacationList.putExtra("friendName", users.get(position).username);
         startActivity(gotoVacationList);
 
+    }
+
+    public void updateView() {
+        DBConnection db = new DBConnection(getActivity());
+
+        users.clear();
+        users.addAll(db.getFriends());
+        mAdapter.notifyDataSetChanged();
     }
 
     /**

@@ -29,6 +29,7 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import com.google.gson.JsonObject;
+import com.jkpg.jurgen.nl.vacationdroid.DBConnection;
 import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.login.LoginActivity;
 import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
@@ -104,6 +105,9 @@ public class AccountActivity extends AppCompatPreferenceActivity {
      * Logs the person out by removing their current saved data
      */
     private void logOut() {
+
+        DBConnection db = new DBConnection(this);
+        db.clearDb();
 
         SharedPreferences pref = getSharedPreferences("vacation", MODE_PRIVATE);
         SharedPreferences.Editor edit = pref.edit();

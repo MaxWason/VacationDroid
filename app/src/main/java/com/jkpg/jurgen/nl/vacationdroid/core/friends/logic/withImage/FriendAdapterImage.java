@@ -32,6 +32,7 @@ public class FriendAdapterImage extends ArrayAdapter<User> {
         this.viewid = viewID;
     }
 
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
@@ -67,6 +68,8 @@ public class FriendAdapterImage extends ArrayAdapter<User> {
 
         return row;
     }
+
+
     class FriendHolder {
         public TextView name;
         public TextView vacation;

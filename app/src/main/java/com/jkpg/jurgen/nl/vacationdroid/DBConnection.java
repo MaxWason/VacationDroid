@@ -2,6 +2,7 @@ package com.jkpg.jurgen.nl.vacationdroid;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -20,9 +21,10 @@ import java.util.ArrayList;
 public class DBConnection extends SQLiteOpenHelper {
 
     public static String dbname = "vacationdb";
+    private Context context;
     public DBConnection(Context context) {
         super(context, dbname, null, 1);
-
+        this.context = context;
     }
 
     public void addOrUpdateVacation(Vacation v) {
@@ -100,6 +102,22 @@ public class DBConnection extends SQLiteOpenHelper {
                     ));
         }
 
+        db.close();
+        return output;
+    }
+
+    public ArrayList<User> getFriends() {
+        SQLiteDatabase db = getReadableDatabase();
+        ArrayList<User> output = new ArrayList<>();
+        SharedPreferences sp = context.getSharedPreferences("vacation", Context.MODE_PRIVATE);
+        String uname = sp.getString("username", "error");
+        Cursor c = db.rawQuery("SELECT * FROM users WHERE username IS NOT '" + uname + "'", new String[]{});
+        while(c.moveToNext()) {
+            output.add(new User(
+                    c.getInt(0),
+                    c.getString(1)
+            ));
+        }
         db.close();
         return output;
     }
@@ -242,7 +260,8 @@ public class DBConnection extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("DELETE FROM vacations");
         db.execSQL("DELETE FROM memories");
-        db.execSQL("DELETE FROM vacations");
+        db.execSQL("DELETE FROM users");
+        db.execSQL("DELETE FROM medias");
         db.close();
     }
 

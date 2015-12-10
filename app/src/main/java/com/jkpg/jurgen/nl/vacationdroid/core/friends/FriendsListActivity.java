@@ -11,13 +11,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -65,7 +62,7 @@ public class FriendsListActivity extends AppCompatActivity { //implements Delete
         getFriendsWeb(new ArrayList<String>());
 
         DBConnection db = new DBConnection(this);
-        ArrayList<User> users = db.getUsers();
+        ArrayList<User> users = db.getFriends();
 
         for(User u: users) {
             values.add(u.username);

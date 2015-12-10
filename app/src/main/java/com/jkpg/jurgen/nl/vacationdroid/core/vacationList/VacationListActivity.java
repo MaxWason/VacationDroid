@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -19,8 +18,6 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -30,17 +27,16 @@ import com.google.gson.JsonObject;
 import com.jkpg.jurgen.nl.vacationdroid.DBConnection;
 import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
-import com.jkpg.jurgen.nl.vacationdroid.core.overview.UserDashFragment;
 import com.jkpg.jurgen.nl.vacationdroid.core.vacationList.logic.VacationsItem;
 import com.jkpg.jurgen.nl.vacationdroid.datamodels.Vacation;
-
-import java.util.ArrayList;
 
 public class VacationListActivity extends AppCompatActivity {
 
     private boolean displayUser; //if you should display the data for the user or for a friend
     private String friendName; //if displaying the friend, this is the one to show
     private Context c;
+    String nameToDisplay;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -66,14 +62,14 @@ public class VacationListActivity extends AppCompatActivity {
 
         //craziness below here
         displayUser = intent.getBooleanExtra("displayUser", true);
-        String nameToDisplay;
+
 
         SharedPreferences pref = this.getSharedPreferences("vacation", Context.MODE_PRIVATE);
 
-        if (displayUser){
+        if (displayUser) {
             //get name of user
             nameToDisplay = pref.getString("username", null);
-        }else{
+        } else {
             //get name of friend
             if (intent.getStringExtra("friendName") == null) //no name, for the unfinished test code
                 nameToDisplay = "A Friend"; //generic name
@@ -82,6 +78,7 @@ public class VacationListActivity extends AppCompatActivity {
         }
         this.setTitle(nameToDisplay + "'s Vacations");
 
+        syncData(nameToDisplay);
         //craziness ends
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
@@ -89,8 +86,35 @@ public class VacationListActivity extends AppCompatActivity {
         }
     }
 
+    private void syncData(final String username) {
+        final Context c = this;
 
-    private void doMySearch(String query){
+        APIJsonCall dbvac = new APIJsonCall("users/" + username + "/vacations", "GET", this) {
+            @Override
+            public void JsonCallback(JsonObject obj) {
+                JsonArray arr = obj.getAsJsonArray("list");
+                Gson gson = new Gson();
+                DBConnection db = new DBConnection(c);
+                for (JsonElement el : arr) {
+                    Vacation v = gson.fromJson(el, Vacation.class);
+                    v.user = username;
+                    Log.d("DBVAC call", v.title);
+                    db.addOrUpdateVacation(v);
+                }
+
+                //update view
+                updateListView();
+            }
+        };
+        dbvac.execute(new JsonObject());
+    }
+
+    private void updateListView() {
+        VacationsItem list = (VacationsItem) getFragmentManager().findFragmentById(R.id.fragment_vac_item);
+        list.notifyList();
+    }
+
+    private void doMySearch(String query) {
         //TODO: api web call here (with current user/friend as other search param)
 
     }
@@ -111,7 +135,7 @@ public class VacationListActivity extends AppCompatActivity {
         return true;
     }
 
-    private void createNewVacation(View v){
+    private void createNewVacation(View v) {
         //get username from preferences
         SharedPreferences sp = getSharedPreferences("vacation", MODE_PRIVATE);
         final String name = sp.getString("username", "error");
@@ -148,21 +172,19 @@ public class VacationListActivity extends AppCompatActivity {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         JsonObject newVac = new JsonObject();
-                        newVac.addProperty("title",title.getText().toString());
-                        newVac.addProperty("description",desc.getText().toString());
-                        newVac.addProperty("place",place.getText().toString());
-                        newVac.addProperty("start",from.getText().toString());
-                        newVac.addProperty("end",to.getText().toString());
+                        newVac.addProperty("title", title.getText().toString());
+                        newVac.addProperty("description", desc.getText().toString());
+                        newVac.addProperty("place", place.getText().toString());
+                        newVac.addProperty("start", from.getText().toString());
+                        newVac.addProperty("end", to.getText().toString());
 
 
                         APIJsonCall vaccall = new APIJsonCall("vacations", "POST", c) {
                             @Override
                             public void JsonCallback(JsonObject obj) {
-                                    Log.d("MODIFIED", obj.toString());
-                                    Toast.makeText(getApplicationContext(), "  Vacation created  ", Toast.LENGTH_LONG).show();
-
-                                VacationsItem dashfrag = (VacationsItem)getFragmentManager().findFragmentById(R.id.fragment_vac_item);
-                                dashfrag.notifyList();
+                                Log.d("MODIFIED", obj.toString());
+                                Toast.makeText(getApplicationContext(), "  Vacation created  ", Toast.LENGTH_LONG).show();
+                                syncData(nameToDisplay);
                             }
                         };
                         vaccall.execute(newVac);
@@ -174,7 +196,7 @@ public class VacationListActivity extends AppCompatActivity {
                     }
                 });
 
-    // Create the AlertDialog object and return it
-    builder.show();
+        // Create the AlertDialog object and return it
+        builder.show();
     }
 }
