@@ -86,7 +86,7 @@ public class OverviewActivity extends AppCompatActivity
         final String username = sp.getString("username", "notfound");
 
 
-        fetchOwnVacations(username);
+        fetchOwnInfo(username);
         fetchUserVacations(username);
         fetchFriends(username);
 
@@ -133,12 +133,13 @@ public class OverviewActivity extends AppCompatActivity
                 ArrayList<Vacation> vacs = db.getVacations();
                 Log.d("db select", "size: " + vacs.size() + " First item: " + vacs.get(0).title);
                 updateFriendView();
+                updateUserDash();
             }
         };
         dbvac.execute(new JsonObject());
     }
 
-    private void fetchOwnVacations(String username) {
+    private void fetchOwnInfo(String username) {
         final Context c = this;
 
         APIJsonCall dbuservac = new APIJsonCall("users/" + username, "GET", this) {
@@ -151,7 +152,7 @@ public class OverviewActivity extends AppCompatActivity
                 User u = new User(id, un);
                 db.addOrUpdateUser(u);
 
-                updateUserDash();
+                fetchUserVacations(un);
             }
         };
         dbuservac.execute(new JsonObject());

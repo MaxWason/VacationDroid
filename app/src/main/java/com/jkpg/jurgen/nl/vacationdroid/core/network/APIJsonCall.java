@@ -58,6 +58,7 @@ public abstract class APIJsonCall extends AsyncTask<JsonObject, String, JsonObje
             Log.d("Network call", fullURL + " - " + response + ": " + connection.getResponseMessage());
             responsecode = response;
             //if it has been successfully created it will not return anything, so we create a message
+
             if(type == "POST" && (response == 201 || response == 200)) {
                 JsonObject created = new JsonObject();
                 Log.d("Network", "post call returned 201");
@@ -69,6 +70,13 @@ public abstract class APIJsonCall extends AsyncTask<JsonObject, String, JsonObje
                 JsonObject created = new JsonObject();
                 Log.d("Network", "put call returned 200");
                 created.addProperty("updated", "element has been updated successfully");
+                return created;
+            }
+
+            if(type == "DELETE" && response == 200) {
+                JsonObject created = new JsonObject();
+                Log.d("Network", "delete call returned 200");
+                created.addProperty("deleted", "element has been deleted successfully");
                 return created;
             }
 

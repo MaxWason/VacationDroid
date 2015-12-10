@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,20 +44,11 @@ public class  LoginActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        ProgressBar pb = (ProgressBar)findViewById(R.id.progressBar);
+        pb.setVisibility(ProgressBar.GONE);
 
         pref = getSharedPreferences("vacation", MODE_PRIVATE);
 
-        //DEBUG TODO:this removes the saved credentials to test the login, remove for release version
-//        SharedPreferences.Editor ed = pref.edit();
-//        ed.remove("username");
-//        ed.remove("password");
-//        ed.remove("token");
-//        ed.commit();
-        //DEBUG
-
-        //To remember...
-        //user: maxwason
-        //pass: superpassword
 
         ConnectivityManager m = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo info = m.getActiveNetworkInfo();
@@ -72,6 +64,10 @@ public class  LoginActivity extends AppCompatActivity {
             final String user = pref.getString("username", null);
             final String pw = pref.getString("password", null);
             final Context currentct = this;
+
+            getFragmentManager().findFragmentByTag("loginFrag").getView().setVisibility(View.INVISIBLE);
+
+            pb.setVisibility(ProgressBar.VISIBLE);
 
             APITokenCall logincall = new APITokenCall() {
                 @Override
@@ -89,6 +85,7 @@ public class  LoginActivity extends AppCompatActivity {
                     } else {
                         //display error message
                         Toast.makeText(currentct, "error logging in", Toast.LENGTH_SHORT).show();
+                        getFragmentManager().findFragmentByTag("loginFrag").getView().setVisibility(View.VISIBLE);
                     }
                 }
             };
