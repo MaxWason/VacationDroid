@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.jkpg.jurgen.nl.vacationdroid.core.friends.VacationActivity">
+
+    <item android:id="@+id/deleteMemory"
+        android:title="@string/menu_delete_memory"
+        android:icon="@android:drawable/ic_menu_compass"
+        android:orderInCategory="1"
+        app:showAsAction="never" />
+
+</menu>
