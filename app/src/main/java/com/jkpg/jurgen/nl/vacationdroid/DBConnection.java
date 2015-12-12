@@ -194,7 +194,11 @@ public class DBConnection extends SQLiteOpenHelper {
         return output;
     }
 
+    public void deleteFromTable(int id, String table) {
+        SQLiteDatabase db = getWritableDatabase();
 
+        db.delete(table, "_id = "+ id, null);
+    }
     public Vacation getVacationById(int id) {
         SQLiteDatabase db = getReadableDatabase();
 

@@ -136,6 +136,9 @@ import java.util.ArrayList;
                                 public void JsonCallback(JsonObject obj) {
                                     Toast.makeText(mContext, "  Memory deleted  ", Toast.LENGTH_LONG).show();
                                     //update local db here
+                                    DBConnection db = new DBConnection(a);
+                                    db.deleteFromTable(memoryId, "memories");
+                                    updateView();
                                 }
                             };
                             memcall.execute(new JsonObject());
