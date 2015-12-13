@@ -86,9 +86,12 @@ public class MemoryAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
 
-        Picasso.with(mContext).load(medialist.get(position).fileurl).into(imageView);
+        if(medialist.get(position).type.equals("picture"))
+            Picasso.with(mContext).load(medialist.get(position).fileurl).into(imageView);
+        else {
+            imageView.setImageResource(mThumbIds[position]);
+        }
 
-        //imageView.setImageResource(mThumbIds[position]);
         return imageView;
     }
 
@@ -107,6 +110,7 @@ public class MemoryAdapter extends BaseAdapter {
         Intent intent = new Intent(a, MediaActivity.class);
 
         intent.putExtra("url", medias.get(position).fileurl);
+        intent.putExtra("type", medias.get(position).type);
         ac.startActivity(intent);
 
     }

@@ -79,6 +79,7 @@ public class DBConnection extends SQLiteOpenHelper {
         cv.put("_id", m.id);
         cv.put("memoryid", m.memoryid);
         cv.put("url", m.fileurl);
+        cv.put("type", m.type);
 
 
         db.insertWithOnConflict("medias", "_id = ?", cv, SQLiteDatabase.CONFLICT_REPLACE);
@@ -146,7 +147,8 @@ public class DBConnection extends SQLiteOpenHelper {
             output.add(new Media(
                     c.getInt(0),
                     c.getInt(1),
-                    c.getString(2)
+                    c.getString(2),
+                    c.getString(3)
             ));
         }
         db.close();
@@ -267,6 +269,7 @@ public class DBConnection extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM users");
         db.execSQL("DELETE FROM medias");
         db.close();
+
     }
 
     @Override
@@ -296,7 +299,8 @@ public class DBConnection extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE medias(" +
                 "_id INTEGER PRIMARY KEY," +
                 "memoryid INTEGER," +
-                "url TEXT);");
+                "url TEXT," +
+                "type TEXT);");
 
     }
 

@@ -44,8 +44,10 @@ public class  LoginActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        ProgressBar pb = (ProgressBar)findViewById(R.id.progressBar);
+        final ProgressBar pb = (ProgressBar)findViewById(R.id.progressBar);
+        final TextView tv = (TextView)findViewById(R.id.logging);
         pb.setVisibility(ProgressBar.GONE);
+        tv.setVisibility(TextView.GONE);
 
         pref = getSharedPreferences("vacation", MODE_PRIVATE);
 
@@ -68,7 +70,7 @@ public class  LoginActivity extends AppCompatActivity {
             getFragmentManager().findFragmentByTag("loginFrag").getView().setVisibility(View.INVISIBLE);
 
             pb.setVisibility(ProgressBar.VISIBLE);
-
+            tv.setVisibility(TextView.VISIBLE);
             APITokenCall logincall = new APITokenCall() {
                 @Override
                 public void loginCallback(String token) {
@@ -85,6 +87,8 @@ public class  LoginActivity extends AppCompatActivity {
                     } else {
                         //display error message
                         Toast.makeText(currentct, "error logging in", Toast.LENGTH_SHORT).show();
+                        pb.setVisibility(ProgressBar.GONE);
+                        tv.setVisibility(TextView.GONE);
                         getFragmentManager().findFragmentByTag("loginFrag").getView().setVisibility(View.VISIBLE);
                     }
                 }

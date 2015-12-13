@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.media.MediaExtractor;
+import android.media.MediaFormat;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -25,11 +28,15 @@ import com.jkpg.jurgen.nl.vacationdroid.DBConnection;
 import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
 import com.jkpg.jurgen.nl.vacationdroid.core.network.APIPictureCall;
+import com.jkpg.jurgen.nl.vacationdroid.core.network.APISoundCall;
 import com.jkpg.jurgen.nl.vacationdroid.datamodels.Media;
 import com.jkpg.jurgen.nl.vacationdroid.datamodels.Memory;
 
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class MemoryActivity extends AppCompatActivity {
@@ -37,7 +44,9 @@ public class MemoryActivity extends AppCompatActivity {
     private Context c;
     private int memoryID;
     private MemoryAdapter adapter;
-
+    private final int RETURN_CODE_IMG = 0;
+    private final int RETURN_CODE_AUD = 1;
+    private final int RETURN_CODE_VID = 2;
     private GridView gridview;
 
     @Override
@@ -53,63 +62,145 @@ public class MemoryActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        final Activity a = this;
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
 
-                startActivityForResult(
-                        Intent.createChooser(intent, "Complete action using"),
-                        1);
+                final Intent intent = new Intent();
 
+                AlertDialog.Builder builder = new AlertDialog.Builder(a);
+                String[] ar = {"Picture", "Sound", "Video"};
+                builder.setTitle("Choose file type")
+                        .setItems(ar, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which) {
+                                    case (0):
+                                        intent.setType("image/*");
+                                        intent.setAction(Intent.ACTION_GET_CONTENT);
+
+                                        startActivityForResult(
+                                                Intent.createChooser(intent, "Complete action using"),
+                                                RETURN_CODE_IMG);
+
+
+                                        break;
+                                    case (1):
+                                        intent.setType("audio/*");
+                                        intent.setAction(Intent.ACTION_GET_CONTENT);
+
+                                        startActivityForResult(
+                                                Intent.createChooser(intent, "Complete action using"),
+                                                RETURN_CODE_AUD);
+
+
+                                        break;
+                                    case (2):
+                                        intent.setType("video/*");
+                                        intent.setAction(Intent.ACTION_GET_CONTENT);
+
+                                        startActivityForResult(
+                                                Intent.createChooser(intent, "Complete action using"),
+                                                RETURN_CODE_VID);
+                                        break;
+                                }
+                            }
+                        });
+                builder.show();
 
             }
         });
-    }
 
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // if (resultCode != RESULT_OK) return;
-        switch (resultCode) {
+        switch (requestCode) {
+            case (RETURN_CODE_IMG):
+                switch (resultCode) {
 
+                    case RESULT_OK:
+                        if (data != null) {
+
+                            Uri uri = data.getData();
+                            Bitmap bitmap;
+
+                            try {
+                                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+                            } catch (Exception e) {
+                                bitmap = null;
+                                Log.e("FILE", e.getMessage());
+                            }
+
+                            JsonObject json = new JsonObject();
+                            json.addProperty("fileUrl", "file.jpg");
+                            json.addProperty("container", uri.getPath());
+                            json.addProperty("width", bitmap.getWidth());
+                            json.addProperty("height", bitmap.getHeight());
+
+                            Log.d("Image", bitmap.toString());
+                            APIPictureCall picture = new APIPictureCall(memoryID, bitmap, this) {
+                                @Override
+                                public void JsonCallback(JsonObject obj) {
+                                    Log.d("IMGJASON", obj.toString());
+                                }
+                            };
+                            picture.execute(json);
+                        }
+                        break;
+                }
+                break;
+            case (RETURN_CODE_AUD):
             case RESULT_OK:
                 if (data != null) {
 
                     Uri uri = data.getData();
-                    Bitmap bitmap;
+                    File audio;
 
 
+                    Cursor cursor = null;
                     try {
-                        bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
-                    } catch (Exception e) {
-                        bitmap = null;
-                        Log.e("FILE", e.getMessage());
+                        String[] proj = {MediaStore.Audio.Media.DATA};
+                        cursor = this.getContentResolver().query(uri, proj, null, null, null);
+                        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA);
+                        cursor.moveToFirst();
+                        String path = cursor.getString(column_index);
+                        audio = new File(path);
+                    } finally {
+                        if (cursor != null) {
+                            cursor.close();
+                        }
                     }
 
                     JsonObject json = new JsonObject();
-                    json.addProperty("fileUrl", "file.jpg");
+                    json.addProperty("fileUrl", "sound.mp3");
                     json.addProperty("container", uri.getPath());
-                    json.addProperty("width", bitmap.getWidth());
-                    json.addProperty("height", bitmap.getHeight());
+                    json.addProperty("duration", "100");
+                    json.addProperty("codec", "AAC");
+                    json.addProperty("bitrate", "320");
+                    json.addProperty("channels", "2");
+                    json.addProperty("samplingRate", "320");
 
-                    /// use btemp Image file
-                    Log.d("Image", bitmap.toString());
-                    APIPictureCall picture = new APIPictureCall(memoryID, bitmap, this) {
+                    Log.d("Image", audio.toString());
+                    APISoundCall picture = new APISoundCall(memoryID, audio, this) {
                         @Override
                         public void JsonCallback(JsonObject obj) {
-                            Log.d("IMGJASON", obj.toString());
+
                         }
                     };
                     picture.execute(json);
                 }
                 break;
+            case (RETURN_CODE_VID):
+
+                break;
         }
 
+
     }
+
 
     protected void onStart() {
         super.onStart();
@@ -149,7 +240,17 @@ public class MemoryActivity extends AppCompatActivity {
                         int id = e.get("id").getAsInt();
                         int memid = memoryID;
                         String fileUrl = e.get("fileUrl").getAsString();
-                        Media m = new Media(id, memid, fileUrl);
+                        String type = "";
+                        if (e.has("channels")) {
+                            type = "sound";
+                        }
+                        if (e.has("width")) {
+                            type = "picture";
+                        }
+                        if (e.has("frameRate")) {
+                            type = "video";
+                        }
+                        Media m = new Media(id, memid, fileUrl, type);
                         db.addOrUpdateMedia(m);
                     }
                     adapter.updateView();
@@ -164,7 +265,7 @@ public class MemoryActivity extends AppCompatActivity {
 
     }
 
-    private void onMemoryDescriptionPress(View v){
+    private void onMemoryDescriptionPress(View v) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         alert.setTitle("Edit Description");
@@ -190,4 +291,6 @@ public class MemoryActivity extends AppCompatActivity {
 
         alert.show();
     }
+
+
 }

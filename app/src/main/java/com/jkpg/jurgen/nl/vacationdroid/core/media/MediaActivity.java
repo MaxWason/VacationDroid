@@ -1,6 +1,9 @@
 package com.jkpg.jurgen.nl.vacationdroid.core.media;
 
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +17,9 @@ import android.widget.VideoView;
 import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.squareup.picasso.Picasso;
 
-public class MediaActivity extends AppCompatActivity {
+public class MediaActivity extends AppCompatActivity implements MediaPlayer.OnPreparedListener {
+
+    MediaPlayer player;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +27,6 @@ public class MediaActivity extends AppCompatActivity {
         setContentView(R.layout.media_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -34,21 +38,58 @@ public class MediaActivity extends AppCompatActivity {
 
         this.setTitle("Media");
 
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         editViews();
     }
 
     private void editViews(){
         Intent intent = getIntent();
         String s = intent.getStringExtra("url");
+        String type = intent.getStringExtra("type");
         Log.d("IMAGE ID", s);
         ImageView iv = (ImageView) findViewById(R.id.imgView);
         VideoView vv = (VideoView) findViewById(R.id.mediaView);
 
-        Picasso.with(this)
-                .load(s)
-                .into(iv);
+        if(type.equals("picture")) {
+            Picasso.with(this)
+                    .load(s)
+                    .into(iv);
 
 //        iv.setVisibility(View.GONE);
-        vv.setVisibility(View.GONE);
+            vv.setVisibility(View.GONE);
+        }
+        if(type.equals("sound")) {
+            try {
+
+                player = MediaPlayer.create(this, Uri.parse(s));
+                player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                player.setDataSource(s);
+                player.prepareAsync();
+
+
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
+            iv.setVisibility(View.GONE);
+            vv.setVisibility(View.GONE);
+        }
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        player.stop();
+        player.release();
+    }
+
+    @Override
+    public void onPrepared(MediaPlayer mp) {
+        player.start();
     }
 }

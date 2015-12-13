@@ -108,6 +108,7 @@ public class AccountActivity extends AppCompatPreferenceActivity {
 
         DBConnection db = new DBConnection(this);
         db.clearDb();
+        deleteDatabase("vacationdb");
 
         SharedPreferences pref = getSharedPreferences("vacation", MODE_PRIVATE);
         SharedPreferences.Editor edit = pref.edit();
