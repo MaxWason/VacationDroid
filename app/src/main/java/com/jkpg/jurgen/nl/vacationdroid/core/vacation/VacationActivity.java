@@ -375,36 +375,37 @@ public class VacationActivity extends AppCompatActivity {
         from.setInputType(InputType.TYPE_CLASS_NUMBER);
         layout.addView(from);
 
-        //default value to test and not type everytime
-        title.setText("Test Memory");
-        desc.setText("Should be created");
-        place.setText("Sweden");
-        from.setText("22");
-
         builder.setView(layout);
         builder.setMessage("Create a new memory")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        JsonObject newMem = new JsonObject();
-                        newMem.addProperty("title",title.getText().toString());
-                        newMem.addProperty("description",desc.getText().toString());
-                        newMem.addProperty("place",place.getText().toString());
-                        newMem.addProperty("time",from.getText().toString());
-                        JsonObject posdat = new JsonObject();
-                        posdat.addProperty("latitude", 0);
-                        posdat.addProperty("longitude", 0);
-                        newMem.add("position", posdat);
+                        if (title.getText().toString().matches("") ||
+                                desc.getText().toString().matches("") ||
+                                place.getText().toString().matches("") ||
+                                from.getText().toString().matches("")) {
+                            Toast.makeText(getApplicationContext(), "  Fill all the fields  ", Toast.LENGTH_LONG).show();
+                        } else {
+                            JsonObject newMem = new JsonObject();
+                            newMem.addProperty("title", title.getText().toString());
+                            newMem.addProperty("description", desc.getText().toString());
+                            newMem.addProperty("place", place.getText().toString());
+                            newMem.addProperty("time", from.getText().toString());
+                            JsonObject posdat = new JsonObject();
+                            posdat.addProperty("latitude", 0);
+                            posdat.addProperty("longitude", 0);
+                            newMem.add("position", posdat);
 
 
-                        APIJsonCall memcall = new APIJsonCall("vacations/"+vacID+"/memories", "POST", mContext) {
-                            @Override
-                            public void JsonCallback(JsonObject obj) {
+                            APIJsonCall memcall = new APIJsonCall("vacations/" + vacID + "/memories", "POST", mContext) {
+                                @Override
+                                public void JsonCallback(JsonObject obj) {
                                     Log.d("MODIFIED", obj.toString());
                                     Toast.makeText(getApplicationContext(), "  Memory created  ", Toast.LENGTH_LONG).show();
                                     fetchMemories();
-                            }
-                        };
-                        memcall.execute(newMem);
+                                }
+                            };
+                            memcall.execute(newMem);
+                        }
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

@@ -1,10 +1,14 @@
 package com.jkpg.jurgen.nl.vacationdroid.core.vacationList.logic;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +18,8 @@ import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -31,6 +37,7 @@ public class VacationsItem extends Fragment implements AbsListView.OnItemClickLi
 
     //variables for knowing who to make this fragment for
     private boolean useUser;
+    private boolean deleting=false;
     private String userName;
     private String friendName;
 
@@ -94,13 +101,55 @@ public class VacationsItem extends Fragment implements AbsListView.OnItemClickLi
         return view;
     }
 
+
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if(deleting==false) {
+            Intent gotoVacation = new Intent(getActivity(), VacationActivity.class);
+            int newid = vacationArrayList.get((int) position).id;
 
-        Intent gotoVacation = new Intent(getActivity(), VacationActivity.class);
-        int newid = vacationArrayList.get((int)position).id;
+            gotoVacation.putExtra("id", newid);
+            startActivity(gotoVacation);
+        }else{
+            final int pos = position;
+            final Context mContext = getActivity();
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
 
-        gotoVacation.putExtra("id", newid);
-        startActivity(gotoVacation);
+            final int vacID = vacationArrayList.get(pos).id;
+
+            Log.d("Position",pos+"");
+            Log.d("VacID",vacID+"");
+
+
+            builder.setMessage("Are you sure you want to delete this vacation ?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            APIJsonCall memcall = new APIJsonCall("vacations/"+vacID, "DELETE", mContext) {
+                                @Override
+                                public void JsonCallback(JsonObject obj) {
+                                    Toast.makeText(mContext, "  Vacation deleted  ", Toast.LENGTH_LONG).show();
+                                    deleting=false;
+                                    DBConnection db = new DBConnection(getActivity());
+                                    db.deleteFromTable(vacID, "vacations");
+                                    notifyList();
+                                }
+                            };
+                            memcall.execute(new JsonObject());
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+                        }
+                    });
+
+            // Create the AlertDialog object and return it
+            builder.show();
+
+        }
+    }
+
+    public void setDeleteClickEvent(){
+        deleting=true;
     }
 }

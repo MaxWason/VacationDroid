@@ -26,6 +26,7 @@ import com.jkpg.jurgen.nl.vacationdroid.core.friends.FriendsListActivity;
 import com.jkpg.jurgen.nl.vacationdroid.core.friends.logic.Friend;
 import com.jkpg.jurgen.nl.vacationdroid.core.friends.logic.withImage.FriendItemImage;
 import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
+import com.jkpg.jurgen.nl.vacationdroid.core.vacation.VacationActivity;
 import com.jkpg.jurgen.nl.vacationdroid.core.vacationList.VacationListActivity;
 import com.jkpg.jurgen.nl.vacationdroid.datamodels.User;
 import com.jkpg.jurgen.nl.vacationdroid.datamodels.Vacation;
