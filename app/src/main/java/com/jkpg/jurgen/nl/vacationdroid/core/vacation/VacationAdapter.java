@@ -94,7 +94,7 @@ import java.util.ArrayList;
                 imageView = (ImageView) convertView;
             }
 
-            imageView.setImageResource(mThumbIds[position]);
+            imageView.setImageResource(R.drawable.memory);
             return imageView;
         }
 
