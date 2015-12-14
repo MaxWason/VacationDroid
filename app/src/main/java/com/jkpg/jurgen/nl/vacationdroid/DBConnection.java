@@ -21,6 +21,7 @@ public class DBConnection extends SQLiteOpenHelper {
 
     public static String dbname = "vacationdb";
     private Context context;
+
     public DBConnection(Context context) {
         super(context, dbname, null, 1);
         this.context = context;
@@ -79,7 +80,6 @@ public class DBConnection extends SQLiteOpenHelper {
         cv.put("memoryid", m.memoryid);
         cv.put("url", m.fileurl);
         cv.put("type", m.type);
-
 
         db.insertWithOnConflict("medias", "_id = ?", cv, SQLiteDatabase.CONFLICT_REPLACE);
         db.close();

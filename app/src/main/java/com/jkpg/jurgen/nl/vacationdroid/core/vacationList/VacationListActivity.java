@@ -93,7 +93,7 @@ public class VacationListActivity extends AppCompatActivity {
         APIJsonCall dbvac = new APIJsonCall("users/" + username + "/vacations", "GET", this) {
             @Override
             public void JsonCallback(JsonObject obj) {
-                if(!obj.has("error")) {
+                if(obj != null && !obj.has("error")) {
                     JsonArray arr = obj.getAsJsonArray("list");
                     Gson gson = new Gson();
                     DBConnection db = new DBConnection(c);

@@ -126,7 +126,7 @@ public class OverviewActivity extends AppCompatActivity
         APIJsonCall dbvac = new APIJsonCall("users/" + username + "/vacations", "GET", this) {
             @Override
             public void JsonCallback(JsonObject obj) {
-                if (!obj.has("error")) {
+                if (obj != null && !obj.has("error")) {
                     JsonArray arr = obj.getAsJsonArray("list");
                     Gson gson = new Gson();
                     DBConnection db = new DBConnection(c);
@@ -137,7 +137,7 @@ public class OverviewActivity extends AppCompatActivity
                         db.addOrUpdateVacation(v);
                     }
                     ArrayList<Vacation> vacs = db.getVacations();
-                    Log.d("db select", "size: " + vacs.size() + " First item: " + vacs.get(0).title);
+                    Log.d("db select", "size: " + vacs.size() + " First item: " + (vacs.size() == 0 ? "None" : vacs.get(0).title));
                 }
                 updateFriendView();
                 updateUserDash();
