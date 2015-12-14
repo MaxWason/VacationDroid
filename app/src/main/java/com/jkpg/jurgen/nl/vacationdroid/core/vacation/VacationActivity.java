@@ -173,7 +173,7 @@ public class VacationActivity extends AppCompatActivity {
         APIJsonCall memcall = new APIJsonCall("vacations/" + vacID + "/memories", "GET", this) {
             @Override
             public void JsonCallback(JsonObject obj) {
-                if (!obj.has("error")) {
+                if (obj != null && !obj.has("error")) {
                     JsonArray arrMemories = obj.getAsJsonArray("list");
                     Log.d("MEMORYLIST", arrMemories.toString());
 

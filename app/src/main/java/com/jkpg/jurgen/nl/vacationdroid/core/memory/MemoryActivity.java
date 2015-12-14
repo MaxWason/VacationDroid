@@ -138,7 +138,8 @@ public class MemoryActivity extends AppCompatActivity {
                             APIPictureCall picture = new APIPictureCall(memoryID, bitmap, this) {
                                 @Override
                                 public void JsonCallback(JsonObject obj) {
-                                    Log.d("IMGJASON", obj.toString());
+                                    if (obj != null)
+                                        Log.d("IMGJASON", obj.toString());
                                 }
                             };
                             picture.execute(json);
@@ -257,7 +258,7 @@ public class MemoryActivity extends AppCompatActivity {
 
     }
 
-    private void onMemoryDescriptionPress(View v) {
+    public void onMemoryDescriptionPress(View v) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         alert.setTitle("Edit Description");
@@ -283,6 +284,5 @@ public class MemoryActivity extends AppCompatActivity {
 
         alert.show();
     }
-
 
 }
