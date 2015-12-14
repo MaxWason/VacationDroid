@@ -228,7 +228,7 @@ public class MemoryActivity extends AppCompatActivity {
         APIJsonCall filescall = new APIJsonCall("memories/" + memoryID + "/media-objects", "GET", this) {//get the list of medias for a given memory
             @Override
             public void JsonCallback(JsonObject obj) {
-                try {
+                if (!obj.has("error")) {
                     JsonArray arrFiles = obj.getAsJsonArray("list");
                     Log.d("FILESLIST", arrFiles.toString());
 
@@ -253,12 +253,10 @@ public class MemoryActivity extends AppCompatActivity {
                         Media m = new Media(id, memid, fileUrl, type);
                         db.addOrUpdateMedia(m);
                     }
-                    adapter.updateView();
-                    gridview.invalidateViews();
-
-                } catch (Exception E) {
-                    Log.e("WEB ERROR", E.getMessage());
                 }
+                adapter.updateView();
+                gridview.invalidateViews();
+
             }
         };
         filescall.execute(new JsonObject());
