@@ -3,7 +3,6 @@ package com.jkpg.jurgen.nl.vacationdroid.core.memory;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -11,14 +10,10 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.jkpg.jurgen.nl.vacationdroid.DBConnection;
 import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.media.MediaActivity;
-import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
 import com.jkpg.jurgen.nl.vacationdroid.datamodels.Media;
-import com.jkpg.jurgen.nl.vacationdroid.datamodels.Memory;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;

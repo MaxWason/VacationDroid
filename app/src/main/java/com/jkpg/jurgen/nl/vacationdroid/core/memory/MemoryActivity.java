@@ -6,8 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.media.MediaExtractor;
-import android.media.MediaFormat;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -32,11 +30,7 @@ import com.jkpg.jurgen.nl.vacationdroid.core.network.APISoundCall;
 import com.jkpg.jurgen.nl.vacationdroid.datamodels.Media;
 import com.jkpg.jurgen.nl.vacationdroid.datamodels.Memory;
 
-import org.json.JSONObject;
-
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 public class MemoryActivity extends AppCompatActivity {
@@ -228,7 +222,7 @@ public class MemoryActivity extends AppCompatActivity {
         APIJsonCall filescall = new APIJsonCall("memories/" + memoryID + "/media-objects", "GET", this) {//get the list of medias for a given memory
             @Override
             public void JsonCallback(JsonObject obj) {
-                try {
+                if (!obj.has("error")) {
                     JsonArray arrFiles = obj.getAsJsonArray("list");
                     Log.d("FILESLIST", arrFiles.toString());
 
@@ -253,12 +247,10 @@ public class MemoryActivity extends AppCompatActivity {
                         Media m = new Media(id, memid, fileUrl, type);
                         db.addOrUpdateMedia(m);
                     }
-                    adapter.updateView();
-                    gridview.invalidateViews();
-
-                } catch (Exception E) {
-                    Log.e("WEB ERROR", E.getMessage());
                 }
+                adapter.updateView();
+                gridview.invalidateViews();
+
             }
         };
         filescall.execute(new JsonObject());

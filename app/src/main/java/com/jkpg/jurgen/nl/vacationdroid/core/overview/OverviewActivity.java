@@ -26,7 +26,6 @@ import com.jkpg.jurgen.nl.vacationdroid.core.friends.FriendsListActivity;
 import com.jkpg.jurgen.nl.vacationdroid.core.friends.logic.Friend;
 import com.jkpg.jurgen.nl.vacationdroid.core.friends.logic.withImage.FriendItemImage;
 import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
-import com.jkpg.jurgen.nl.vacationdroid.core.vacation.VacationActivity;
 import com.jkpg.jurgen.nl.vacationdroid.core.vacationList.VacationListActivity;
 import com.jkpg.jurgen.nl.vacationdroid.datamodels.User;
 import com.jkpg.jurgen.nl.vacationdroid.datamodels.Vacation;
@@ -98,18 +97,23 @@ public class OverviewActivity extends AppCompatActivity
         APIJsonCall friendcall = new APIJsonCall("users/" + username + "/friends", "GET", this) {
             @Override
             public void JsonCallback(JsonObject obj) {
-                Log.d("JASON", obj.toString());
-                JsonArray arr = obj.get("list").getAsJsonArray();
-                DBConnection db = new DBConnection(c);
+                if (!obj.has("error")) {
 
-                for (JsonElement anArr : arr) {
-                    JsonObject j = (JsonObject) anArr;
-                    User u = new User(j.get("id").getAsInt(), j.get("username").getAsString());
-                    db.addOrUpdateUser(u);
+                    Log.d("JASON", obj.toString());
+                    JsonArray arr = obj.get("list").getAsJsonArray();
+                    DBConnection db = new DBConnection(c);
+
+                    for (JsonElement anArr : arr) {
+                        JsonObject j = (JsonObject) anArr;
+                        User u = new User(j.get("id").getAsInt(), j.get("username").getAsString());
+                        db.addOrUpdateUser(u);
+                    }
+                    Log.d("USER", db.getFriends().size() + db.getFriends().get(0).username);
+                    fetchFriendVacations();
                 }
-                Log.d("USER", db.getFriends().size() + db.getFriends().get(0).username);
-                fetchFriendVacations();
 
+                updateFriendView();
+                updateUserDash();
             }
         };
         friendcall.execute(new JsonObject());
@@ -122,17 +126,19 @@ public class OverviewActivity extends AppCompatActivity
         APIJsonCall dbvac = new APIJsonCall("users/" + username + "/vacations", "GET", this) {
             @Override
             public void JsonCallback(JsonObject obj) {
-                JsonArray arr = obj.getAsJsonArray("list");
-                Gson gson = new Gson();
-                DBConnection db = new DBConnection(c);
-                for (JsonElement el : arr) {
-                    Vacation v = gson.fromJson(el, Vacation.class);
-                    v.user = username;
-                    Log.d("DBVAC call", v.title);
-                    db.addOrUpdateVacation(v);
+                if (!obj.has("error")) {
+                    JsonArray arr = obj.getAsJsonArray("list");
+                    Gson gson = new Gson();
+                    DBConnection db = new DBConnection(c);
+                    for (JsonElement el : arr) {
+                        Vacation v = gson.fromJson(el, Vacation.class);
+                        v.user = username;
+                        Log.d("DBVAC call", v.title);
+                        db.addOrUpdateVacation(v);
+                    }
+                    ArrayList<Vacation> vacs = db.getVacations();
+                    Log.d("db select", "size: " + vacs.size() + " First item: " + vacs.get(0).title);
                 }
-                ArrayList<Vacation> vacs = db.getVacations();
-                Log.d("db select", "size: " + vacs.size() + " First item: " + vacs.get(0).title);
                 updateFriendView();
                 updateUserDash();
             }
@@ -146,14 +152,19 @@ public class OverviewActivity extends AppCompatActivity
         APIJsonCall dbuservac = new APIJsonCall("users/" + username, "GET", this) {
             @Override
             public void JsonCallback(JsonObject obj) {
-                Log.d("JASON", obj.toString());
-                Integer id = obj.get("id").getAsInt();
-                String un = obj.get("username").getAsString();
-                DBConnection db = new DBConnection(c);
-                User u = new User(id, un);
-                db.addOrUpdateUser(u);
+                if (!obj.has("error")) {
 
-                fetchUserVacations(un);
+                    Log.d("JASON", obj.toString());
+                    Integer id = obj.get("id").getAsInt();
+                    String un = obj.get("username").getAsString();
+                    DBConnection db = new DBConnection(c);
+                    User u = new User(id, un);
+                    db.addOrUpdateUser(u);
+
+                    fetchUserVacations(un);
+                }
+                updateUserDash();
+                updateFriendView();
             }
         };
         dbuservac.execute(new JsonObject());

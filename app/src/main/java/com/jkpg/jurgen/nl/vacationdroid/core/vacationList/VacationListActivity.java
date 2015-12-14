@@ -42,7 +42,6 @@ public class VacationListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
         c = this;
 
         setContentView(R.layout.vacation_list_activity);
@@ -59,15 +58,10 @@ public class VacationListActivity extends AppCompatActivity {
             }
         });
 
-
-
-
         Intent intent = getIntent();
 
-        //craziness below here
+        //modify the display depending on who opened the activity
         displayUser = intent.getBooleanExtra("displayUser", true);
-
-
         SharedPreferences pref = this.getSharedPreferences("vacation", Context.MODE_PRIVATE);
 
         if (displayUser) {
@@ -85,7 +79,8 @@ public class VacationListActivity extends AppCompatActivity {
         this.setTitle(nameToDisplay + "'s Vacations");
 
         syncData(nameToDisplay);
-        //craziness ends
+
+        //deal with the search bar
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             doMySearch(query);
@@ -98,14 +93,16 @@ public class VacationListActivity extends AppCompatActivity {
         APIJsonCall dbvac = new APIJsonCall("users/" + username + "/vacations", "GET", this) {
             @Override
             public void JsonCallback(JsonObject obj) {
-                JsonArray arr = obj.getAsJsonArray("list");
-                Gson gson = new Gson();
-                DBConnection db = new DBConnection(c);
-                for (JsonElement el : arr) {
-                    Vacation v = gson.fromJson(el, Vacation.class);
-                    v.user = username;
-                    Log.d("DBVAC call", v.title);
-                    db.addOrUpdateVacation(v);
+                if(!obj.has("error")) {
+                    JsonArray arr = obj.getAsJsonArray("list");
+                    Gson gson = new Gson();
+                    DBConnection db = new DBConnection(c);
+                    for (JsonElement el : arr) {
+                        Vacation v = gson.fromJson(el, Vacation.class);
+                        v.user = username;
+                        Log.d("DBVAC call", v.title);
+                        db.addOrUpdateVacation(v);
+                    }
                 }
 
                 //update view
@@ -122,6 +119,7 @@ public class VacationListActivity extends AppCompatActivity {
 
     private void doMySearch(String query) {
         //TODO: api web call here (with current user/friend as other search param)
+        //TODO IMPORTANT. THIS IS A REQUIREMENT, IT HAS TO BE DONE
 
     }
 
@@ -189,7 +187,6 @@ public class VacationListActivity extends AppCompatActivity {
         to.setInputType(InputType.TYPE_CLASS_NUMBER);
         layout.addView(to);
 
-
         builder.setView(layout);
         builder.setMessage("Create a new vacation")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -208,18 +205,22 @@ public class VacationListActivity extends AppCompatActivity {
                             newVac.addProperty("start", from.getText().toString());
                             newVac.addProperty("end", to.getText().toString());
 
-
                             APIJsonCall vaccall = new APIJsonCall("vacations", "POST", c) {
                                 @Override
                                 public void JsonCallback(JsonObject obj) {
-                                    Log.d("MODIFIED", obj.toString());
-                                    Toast.makeText(getApplicationContext(), "  Vacation created  ", Toast.LENGTH_LONG).show();
+                                    if (!obj.has("error")) {
+
+
+                                        Log.d("MODIFIED", obj.toString());
+                                        Toast.makeText(getApplicationContext(), "  Vacation created  ", Toast.LENGTH_LONG).show();
+                                    }
                                     syncData(nameToDisplay);
                                 }
                             };
                             vaccall.execute(newVac);
                         }
-                }})
+                    }
+                })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // User cancelled the dialog

@@ -37,15 +37,7 @@ import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
 import java.util.List;
 
 /**
- * A {@link PreferenceActivity} that presents a set of application settings. On
- * handset devices, settings are presented as a single list. On tablets,
- * settings are split by category, with category headers shown to the left of
- * the list of settings.
- * <p/>
- * See <a href="http://developer.android.com/design/patterns/settings.html">
- * Android Design: Settings</a> for design guidelines and the <a
- * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
- * API Guide</a> for more information on developing a Settings UI.
+ * A preference activity to handle user settings.
  */
 public class AccountActivity extends AppCompatPreferenceActivity {
 
@@ -56,6 +48,7 @@ public class AccountActivity extends AppCompatPreferenceActivity {
         setupDeleteButton();
     }
 
+    //add delete button to bottom of settings list
     private void setupDeleteButton(){
         ListView v = getListView();
         Button deleteAccountButton = new Button(this);
@@ -79,6 +72,9 @@ public class AccountActivity extends AppCompatPreferenceActivity {
         return true;
     }
 
+    /**
+     * Deletes the account with a web call and then logs that user out
+     */
     private void deleteAccount(){
 
         SharedPreferences pref = getSharedPreferences("vacation", Context.MODE_PRIVATE);
@@ -120,7 +116,7 @@ public class AccountActivity extends AppCompatPreferenceActivity {
         edit.apply();
     }
 
-
+    //deals with the options bar (in this case just logging out)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
@@ -146,6 +142,7 @@ public class AccountActivity extends AppCompatPreferenceActivity {
         }
     }
 
+    //copied over cod (from the docs) to deal with varying sizes of displays
     /**
      * {@inheritDoc}
      */
@@ -216,7 +213,7 @@ public class AccountActivity extends AppCompatPreferenceActivity {
                 }
 
             } else {
-                //update it
+                //update the remaining value
                 preference.setSummary(stringValue);
             }
             return true;
@@ -330,7 +327,7 @@ public class AccountActivity extends AppCompatPreferenceActivity {
                 @Override
                 public void JsonCallback(JsonObject obj) {
                     try {
-//                        Log.d("JASON after", v1.toString());
+                        //shouldn't need to do anything
                     } catch(Exception E) {
                         Log.e("WEB ERROR", E.getMessage());
                     }
@@ -340,6 +337,7 @@ public class AccountActivity extends AppCompatPreferenceActivity {
 
         }
 
+        //update the displayed information so it is current
         public void updateDisplayedInfo() {
 
             final EditTextPreference firstNameTextPref = (EditTextPreference) findPreference("firstName");

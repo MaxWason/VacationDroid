@@ -53,12 +53,19 @@ public abstract class APIJsonCall extends AsyncTask<JsonObject, String, JsonObje
                 writer.close();
             }
 
-            int response = connection.getResponseCode();
-
+            int response = 0;
+            try {
+                response = connection.getResponseCode();
+            } catch(Exception e) {
+                JsonObject created = new JsonObject();
+                Log.d("Network", "no network connection");
+                created.addProperty("error", "no network");
+                return created;
+            }
             Log.d("Network call", fullURL + " - " + response + ": " + connection.getResponseMessage());
             responsecode = response;
-            //if it has been successfully created it will not return anything, so we create a message
 
+            //if it has been successfully created it will not return anything, so we create a message
             if(type == "POST" && (response == 201 || response == 200)) {
                 JsonObject created = new JsonObject();
                 Log.d("Network", "post call returned 201");

@@ -2,8 +2,6 @@ package com.jkpg.jurgen.nl.vacationdroid.core.network;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -12,8 +10,6 @@ import com.google.gson.JsonObject;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 

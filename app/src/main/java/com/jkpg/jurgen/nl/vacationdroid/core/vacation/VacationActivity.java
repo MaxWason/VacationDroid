@@ -5,10 +5,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
@@ -39,7 +39,7 @@ import java.util.Arrays;
 
 public class VacationActivity extends AppCompatActivity {
 
-    private GridView gridview=null;
+    private GridView gridview = null;
     private VacationAdapter adapter;
     private Context mContext;
     private int vacID;
@@ -51,7 +51,7 @@ public class VacationActivity extends AppCompatActivity {
         mContext = this;
 
         Intent intent = getIntent();
-        vacID = intent.getIntExtra("id",-1);
+        vacID = intent.getIntExtra("id", -1);
         Log.d("IDVACATION", vacID + "");
 
 
@@ -93,7 +93,7 @@ public class VacationActivity extends AppCompatActivity {
     }
 
 
-    protected void onStart(){
+    protected void onStart() {
         super.onStart();
         final Activity a = this;
 
@@ -103,19 +103,19 @@ public class VacationActivity extends AppCompatActivity {
 
         DBConnection db = new DBConnection(this);
         Vacation vac = db.getVacationById(vacID);
-        if( !name.equals(vac.user)){
+        if (!name.equals(vac.user)) {
             FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
             fab.setVisibility(FloatingActionButton.GONE);
         }
 
         fillFields();
 
-        TextView vtitle = (TextView)findViewById(R.id.vacationTitle);
-        TextView vplace = (TextView)findViewById(R.id.vacationPlace);
-        TextView vdate = (TextView)findViewById(R.id.vacationDate);
-        TextView vdesc = (TextView)findViewById(R.id.vacationDescription);
+        TextView vtitle = (TextView) findViewById(R.id.vacationTitle);
+        TextView vplace = (TextView) findViewById(R.id.vacationPlace);
+        TextView vdate = (TextView) findViewById(R.id.vacationDate);
+        TextView vdesc = (TextView) findViewById(R.id.vacationDescription);
 
-        RelativeLayout rl = (RelativeLayout)findViewById(R.id.ChangeButtons);
+        RelativeLayout rl = (RelativeLayout) findViewById(R.id.ChangeButtons);
         rl.setVisibility(RelativeLayout.GONE);
 
         vtitle.setOnClickListener(new View.OnClickListener() {
@@ -127,19 +127,19 @@ public class VacationActivity extends AppCompatActivity {
         vplace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSomethingPress(v,"place");
+                onSomethingPress(v, "place");
             }
         });
         vdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSomethingPress(v,"date");
+                onSomethingPress(v, "date");
             }
         });
         vdesc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSomethingPress(v,"description");
+                onSomethingPress(v, "description");
             }
         });
 
@@ -148,7 +148,7 @@ public class VacationActivity extends AppCompatActivity {
         gridview.setAdapter(adapter);
 
 
-        Button buttonOk= (Button) findViewById(R.id.ButtonOk);
+        Button buttonOk = (Button) findViewById(R.id.ButtonOk);
         buttonOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -156,7 +156,7 @@ public class VacationActivity extends AppCompatActivity {
             }
         });
 
-        Button buttonCancel= (Button) findViewById(R.id.ButtonCancel);
+        Button buttonCancel = (Button) findViewById(R.id.ButtonCancel);
         buttonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -168,12 +168,12 @@ public class VacationActivity extends AppCompatActivity {
 
     }
 
-    private void fetchMemories(){
+    private void fetchMemories() {
         final Activity a = this;
-        APIJsonCall memcall = new APIJsonCall("vacations/"+vacID+"/memories", "GET", this) {
+        APIJsonCall memcall = new APIJsonCall("vacations/" + vacID + "/memories", "GET", this) {
             @Override
             public void JsonCallback(JsonObject obj) {
-                try {
+                if (!obj.has("error")) {
                     JsonArray arrMemories = obj.getAsJsonArray("list");
                     Log.d("MEMORYLIST", arrMemories.toString());
 
@@ -181,20 +181,14 @@ public class VacationActivity extends AppCompatActivity {
                     DBConnection db = new DBConnection(a);
                     ArrayList<Memory> memories = new ArrayList<>();
                     Gson gson = new Gson();
-                    for(JsonElement el:arrMemories) {
+                    for (JsonElement el : arrMemories) {
                         Memory m = gson.fromJson(el, Memory.class);
                         m.vacationid = vacID;
                         db.addOrUpdateMemory(m);
                     }
-                    adapter.updateView();
-
-                } catch(Exception E) {
-                    try {
-                        Log.e("WEB ERROR", E.getMessage());
-                    } catch (Exception e) {
-                        Log.e("WEB ERROR", "No error message");
-                    }
                 }
+                adapter.updateView();
+
             }
         };
         memcall.execute(new JsonObject());
@@ -202,9 +196,9 @@ public class VacationActivity extends AppCompatActivity {
 
     private void onSomethingPress(View v, String s) {
 
-        final String st=s;
+        final String st = s;
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        if(!s.equals("date")) {
+        if (!s.equals("date")) {
             final EditText input = new EditText(this);
             builder.setView(input);
             builder.setMessage("Edit " + st)
@@ -212,7 +206,7 @@ public class VacationActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int id) {
                             RelativeLayout rl = (RelativeLayout) findViewById(R.id.ChangeButtons);
                             rl.setVisibility(RelativeLayout.VISIBLE);
-                            Button okButton = (Button)findViewById(R.id.ButtonOk);
+                            Button okButton = (Button) findViewById(R.id.ButtonOk);
                             okButton.setVisibility(Button.VISIBLE);
                             switch (st) {
                                 case "description":
@@ -235,7 +229,7 @@ public class VacationActivity extends AppCompatActivity {
                             // User cancelled the dialog
                         }
                     });
-        }else{
+        } else {
             LinearLayout layout = new LinearLayout(mContext);
             layout.setOrientation(LinearLayout.VERTICAL);
 
@@ -254,7 +248,7 @@ public class VacationActivity extends AppCompatActivity {
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             TextView vdate = (TextView) findViewById(R.id.vacationDate);
-                            vdate.setText(input.getText().toString()+" to "+input2.getText().toString());
+                            vdate.setText(input.getText().toString() + " to " + input2.getText().toString());
 
                             RelativeLayout rl = (RelativeLayout) findViewById(R.id.ChangeButtons);
                             rl.setVisibility(RelativeLayout.VISIBLE);
@@ -271,16 +265,16 @@ public class VacationActivity extends AppCompatActivity {
 
     }
 
-    private void SaveChanges(View v){
-        RelativeLayout rl = (RelativeLayout)findViewById(R.id.ChangeButtons);
+    private void SaveChanges(View v) {
+        RelativeLayout rl = (RelativeLayout) findViewById(R.id.ChangeButtons);
         rl.setVisibility(RelativeLayout.GONE);
 
-        TextView vtitle = (TextView)findViewById(R.id.vacationTitle);
-        TextView vplace = (TextView)findViewById(R.id.vacationPlace);
-        TextView vdate = (TextView)findViewById(R.id.vacationDate);
-        TextView vdesc = (TextView)findViewById(R.id.vacationDescription);
+        TextView vtitle = (TextView) findViewById(R.id.vacationTitle);
+        TextView vplace = (TextView) findViewById(R.id.vacationPlace);
+        TextView vdate = (TextView) findViewById(R.id.vacationDate);
+        TextView vdesc = (TextView) findViewById(R.id.vacationDescription);
 
-        ArrayList<String> split = new ArrayList<String> (Arrays.asList(vdate.getText().toString().split("\\s+")));
+        ArrayList<String> split = new ArrayList<String>(Arrays.asList(vdate.getText().toString().split("\\s+")));
         int from = Integer.parseInt(split.get(0).toString());
         int to = Integer.parseInt(split.get(2).toString());
 
@@ -293,51 +287,45 @@ public class VacationActivity extends AppCompatActivity {
                 vplace.getText().toString(),
                 from, to,
                 name
-                );
+        );
 
         db.addOrUpdateVacation(modif);
 
         JsonObject modifJSon = new JsonObject();
-        modifJSon.addProperty("id",modif.id);
-        modifJSon.addProperty("title",modif.title);
-        modifJSon.addProperty("description",modif.description);
-        modifJSon.addProperty("place",modif.place);
-        modifJSon.addProperty("start",modif.start);
-        modifJSon.addProperty("end",modif.end);
+        modifJSon.addProperty("id", modif.id);
+        modifJSon.addProperty("title", modif.title);
+        modifJSon.addProperty("description", modif.description);
+        modifJSon.addProperty("place", modif.place);
+        modifJSon.addProperty("start", modif.start);
+        modifJSon.addProperty("end", modif.end);
         modifJSon.addProperty("userId", db.getUserByName(name));
 
         db.close();
 
-        APIJsonCall vaccall = new APIJsonCall("vacations/" + vac.id , "PUT", this) {
+        APIJsonCall vaccall = new APIJsonCall("vacations/" + vac.id, "PUT", this) {
             @Override
             public void JsonCallback(JsonObject obj) {
-                try {
-                    Log.d("MODIFIED", obj.toString());
-                    Toast.makeText(getApplicationContext(), "  Changes Saved  ", Toast.LENGTH_LONG).show();
-                } catch (Exception E) {
-                    try {
-                        Log.e("WEB ERROR", E.getMessage());
-                    } catch (Exception ex){
-                        Log.e("WEB ERROR", "No error message received!");
-                    }
-                }
+
+                Log.d("MODIFIED", obj.toString());
+                Toast.makeText(getApplicationContext(), "  Changes Saved  ", Toast.LENGTH_LONG).show();
+
             }
         };
         vaccall.execute(modifJSon);
     }
 
-    private void CancelChanges(View v){
-        RelativeLayout rl = (RelativeLayout)findViewById(R.id.ChangeButtons);
+    private void CancelChanges(View v) {
+        RelativeLayout rl = (RelativeLayout) findViewById(R.id.ChangeButtons);
         rl.setVisibility(RelativeLayout.GONE);
         fillFields();
         adapter.setNormalClickEvent(gridview);
     }
 
-    private void fillFields(){
-        TextView vtitle = (TextView)findViewById(R.id.vacationTitle);
-        TextView vplace = (TextView)findViewById(R.id.vacationPlace);
-        TextView vdate = (TextView)findViewById(R.id.vacationDate);
-        TextView vdesc = (TextView)findViewById(R.id.vacationDescription);
+    private void fillFields() {
+        TextView vtitle = (TextView) findViewById(R.id.vacationTitle);
+        TextView vplace = (TextView) findViewById(R.id.vacationPlace);
+        TextView vdate = (TextView) findViewById(R.id.vacationDate);
+        TextView vdesc = (TextView) findViewById(R.id.vacationDescription);
 
         DBConnection db = new DBConnection(this);
         Vacation v = db.getVacationById(vacID);
@@ -349,7 +337,7 @@ public class VacationActivity extends AppCompatActivity {
 
     }
 
-    private void createNewMemory(View v){
+    private void createNewMemory(View v) {
         //get username from preferences
         SharedPreferences sp = getSharedPreferences("vacation", MODE_PRIVATE);
         final String name = sp.getString("username", "error");
@@ -399,8 +387,10 @@ public class VacationActivity extends AppCompatActivity {
                             APIJsonCall memcall = new APIJsonCall("vacations/" + vacID + "/memories", "POST", mContext) {
                                 @Override
                                 public void JsonCallback(JsonObject obj) {
-                                    Log.d("MODIFIED", obj.toString());
-                                    Toast.makeText(getApplicationContext(), "  Memory created  ", Toast.LENGTH_LONG).show();
+                                    if (!obj.has("error")) {
+                                        Log.d("MODIFIED", obj.toString());
+                                        Toast.makeText(getApplicationContext(), "  Memory created  ", Toast.LENGTH_LONG).show();
+                                    }
                                     fetchMemories();
                                 }
                             };
@@ -418,12 +408,12 @@ public class VacationActivity extends AppCompatActivity {
         builder.show();
     }
 
-    public void selectMemoryToDelete(){
+    public void selectMemoryToDelete() {
         adapter.setDeletionClickEvent(gridview);
-        RelativeLayout rl = (RelativeLayout)findViewById(R.id.ChangeButtons);
+        RelativeLayout rl = (RelativeLayout) findViewById(R.id.ChangeButtons);
         rl.setVisibility(RelativeLayout.VISIBLE);
 
-        Button okButton = (Button)findViewById(R.id.ButtonOk);
+        Button okButton = (Button) findViewById(R.id.ButtonOk);
         okButton.setVisibility(Button.GONE);
     }
 }

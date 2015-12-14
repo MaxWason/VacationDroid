@@ -5,10 +5,10 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
+
 import com.google.gson.JsonObject;
 
 import java.io.DataOutputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 /**

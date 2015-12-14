@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.jkpg.jurgen.nl.vacationdroid.datamodels.Media;
 import com.jkpg.jurgen.nl.vacationdroid.datamodels.Memory;

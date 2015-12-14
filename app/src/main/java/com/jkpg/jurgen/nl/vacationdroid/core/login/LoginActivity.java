@@ -54,6 +54,7 @@ public class  LoginActivity extends AppCompatActivity {
 
         ConnectivityManager m = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo info = m.getActiveNetworkInfo();
+
         if (info == null) {
             Toast.makeText(this, "no network detected, showing local data", Toast.LENGTH_LONG);
             gotoOverview();

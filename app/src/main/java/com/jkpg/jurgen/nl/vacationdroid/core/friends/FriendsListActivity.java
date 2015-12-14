@@ -29,7 +29,7 @@ import com.jkpg.jurgen.nl.vacationdroid.datamodels.User;
 
 import java.util.ArrayList;
 
-public class FriendsListActivity extends AppCompatActivity { //implements DeleteFriendDialogFragment.NoticeDialogListener //unnecessary feature for now
+public class FriendsListActivity extends AppCompatActivity {
 
     private ListView listView;
     private SharedPreferences pref;
@@ -69,7 +69,7 @@ public class FriendsListActivity extends AppCompatActivity { //implements Delete
         }
 
         if(values.size() == 0)
-            values.add("no friends man, i'm sorry, we could grab a beer if you want");
+            values.add("No friends man, I'm sorry. We could grab a beer if you want!");
 
         listView = (ListView) findViewById(R.id.list_friend_id);
 
@@ -143,7 +143,6 @@ public class FriendsListActivity extends AppCompatActivity { //implements Delete
         alert.show();
     }
 
-    //TODO: test
     private void addFriend(String friendUsername){
         JsonObject friend = new JsonObject();
         friend.addProperty("username",friendUsername);
@@ -168,7 +167,6 @@ public class FriendsListActivity extends AppCompatActivity { //implements Delete
         dashcall.execute(friend);
     }
 
-    //TODO: test
     private void removeFriend(String friendName){
         APIJsonCall dashcall = new APIJsonCall("users/" + username + "/friends/" + friendName, "DELETE", this) {
             @Override
@@ -194,10 +192,11 @@ public class FriendsListActivity extends AppCompatActivity { //implements Delete
 
     private ArrayList<String> populateListWithFriends() {
         ArrayList<String> returnValue = new ArrayList<String>();
+
         //get friends list
         try {
             returnValue = getFriendsWeb(returnValue);
-        } catch (Exception e) { //is this actually ever caught?
+        } catch (Exception e) {
             //web error, use cached data
             returnValue.add("Cached data only");
         }
@@ -208,7 +207,6 @@ public class FriendsListActivity extends AppCompatActivity { //implements Delete
         return returnValue;
     }
 
-    //TODO: test
     private ArrayList<String> getFriendsWeb(final ArrayList<String> initList) {
         final Context c = this;
         APIJsonCall dashcall = new APIJsonCall("users/" + username + "/friends", "GET", this) {
