@@ -15,6 +15,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -143,6 +144,20 @@ public class VacationListActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // action with ID action_refresh was selected
+            case R.id.deleteVacation:
+                selectVacationToDelete();
+                break;
+            default:
+                break;
+        }
+
+        return true;
+    }
+
     private void createNewVacation(View v) {
         //get username from preferences
         SharedPreferences sp = getSharedPreferences("vacation", MODE_PRIVATE);
@@ -179,25 +194,32 @@ public class VacationListActivity extends AppCompatActivity {
         builder.setMessage("Create a new vacation")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        JsonObject newVac = new JsonObject();
-                        newVac.addProperty("title", title.getText().toString());
-                        newVac.addProperty("description", desc.getText().toString());
-                        newVac.addProperty("place", place.getText().toString());
-                        newVac.addProperty("start", from.getText().toString());
-                        newVac.addProperty("end", to.getText().toString());
+                        if (title.getText().toString().matches("") ||
+                                desc.getText().toString().matches("") ||
+                                place.getText().toString().matches("") ||
+                                to.getText().toString().matches("") ||
+                                from.getText().toString().matches("")) {
+                            Toast.makeText(getApplicationContext(), "  Fill all the fields  ", Toast.LENGTH_LONG).show();
+                        } else {
+                            JsonObject newVac = new JsonObject();
+                            newVac.addProperty("title", title.getText().toString());
+                            newVac.addProperty("description", desc.getText().toString());
+                            newVac.addProperty("place", place.getText().toString());
+                            newVac.addProperty("start", from.getText().toString());
+                            newVac.addProperty("end", to.getText().toString());
 
 
-                        APIJsonCall vaccall = new APIJsonCall("vacations", "POST", c) {
-                            @Override
-                            public void JsonCallback(JsonObject obj) {
-                                Log.d("MODIFIED", obj.toString());
-                                Toast.makeText(getApplicationContext(), "  Vacation created  ", Toast.LENGTH_LONG).show();
-                                syncData(nameToDisplay);
-                            }
-                        };
-                        vaccall.execute(newVac);
-                    }
-                })
+                            APIJsonCall vaccall = new APIJsonCall("vacations", "POST", c) {
+                                @Override
+                                public void JsonCallback(JsonObject obj) {
+                                    Log.d("MODIFIED", obj.toString());
+                                    Toast.makeText(getApplicationContext(), "  Vacation created  ", Toast.LENGTH_LONG).show();
+                                    syncData(nameToDisplay);
+                                }
+                            };
+                            vaccall.execute(newVac);
+                        }
+                }})
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // User cancelled the dialog
@@ -206,5 +228,10 @@ public class VacationListActivity extends AppCompatActivity {
 
         // Create the AlertDialog object and return it
         builder.show();
+    }
+
+    private void selectVacationToDelete(){
+        VacationsItem list = (VacationsItem) getFragmentManager().findFragmentById(R.id.fragment_vac_item);
+        list.setDeleteClickEvent();
     }
 }

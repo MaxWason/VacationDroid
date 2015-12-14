@@ -66,9 +66,11 @@ public class MediaActivity extends AppCompatActivity implements MediaPlayer.OnPr
         if(type.equals("sound")) {
             try {
 
-                player = MediaPlayer.create(this, Uri.parse(s));
+                player = new MediaPlayer();
+
                 player.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                player.setDataSource(s);
+                Uri uri = Uri.parse(s);
+                player.setDataSource(this, uri);
                 player.prepareAsync();
 
 
@@ -84,12 +86,14 @@ public class MediaActivity extends AppCompatActivity implements MediaPlayer.OnPr
     @Override
     protected void onStop() {
         super.onStop();
-        player.stop();
-        player.release();
+        if(player != null) {
+            player.stop();
+            player.release();
+        }
     }
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        player.start();
+        mp.start();
     }
 }

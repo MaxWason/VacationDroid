@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 
 public class VacationDroidContentProvider extends ContentProvider {
 
+    //uri for media
     static final String PROVIDER_NAME = "com.jkpg.jurgen.nl.vacationdroid";
     static final String URL = "content://" + PROVIDER_NAME + "/media";
     static final Uri CONTENT_URI = Uri.parse(URL);
@@ -20,15 +21,19 @@ public class VacationDroidContentProvider extends ContentProvider {
     static final int MEDIA = 1;
 
     static final UriMatcher uriMatcher;
-
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(PROVIDER_NAME, "media", MEDIA);
     }
 
+    //databaseHelper and db itself
     private DBConnection dbHelper;
     private SQLiteDatabase db;
 
+    /**
+     * When the application starts get the database to manipulate.
+     * @return true if it successfully establishes the database
+     */
     @Override
     public boolean onCreate() {
 
@@ -51,11 +56,15 @@ public class VacationDroidContentProvider extends ContentProvider {
         return null;
     }
 
+    /**
+     * Insert to add a new media with the values passed in as a parameter.
+     * @param uri - the uri to manipulate
+     * @param values - the values to use in the new media. They should be: _id, memoryid, url, type
+     * @return - the uri if successful
+     */
     @Nullable
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-
-        //content values should be: _id, memoryid, url, type
 
         //update database
         long row = db.insertWithOnConflict("medias", "_id = ?", values, SQLiteDatabase.CONFLICT_REPLACE);
