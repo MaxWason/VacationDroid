@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -139,6 +140,9 @@ import java.util.ArrayList;
                                     DBConnection db = new DBConnection(a);
                                     db.deleteFromTable(memoryId, "memories");
                                     updateView();
+                                    RelativeLayout rl = (RelativeLayout)a.findViewById(R.id.ChangeButtons);
+                                    rl.setVisibility(RelativeLayout.GONE);
+
                                 }
                             };
                             memcall.execute(new JsonObject());
@@ -153,6 +157,8 @@ import java.util.ArrayList;
             // Create the AlertDialog object and return it
             builder.show();
             setNormalClickEvent(gridview);
+
+
         }
 
         public void setDeletionClickEvent(final GridView gridview){
