@@ -114,6 +114,7 @@ public class  LoginActivity extends AppCompatActivity {
                 .addToBackStack(null)
                 .commit();
     }
+    
 
     public void onLoginPress(View v) {
         //get data from view
@@ -195,6 +196,6 @@ public class  LoginActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        onStop(); //you never need to go back from the log-in page
+        super.onBackPressed();
     }
 }
