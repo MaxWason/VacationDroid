@@ -179,10 +179,11 @@ public class FriendsListActivity extends AppCompatActivity {
                     arrayAdapter.remove(friendName);
                     arrayAdapter.notifyDataSetChanged();
                 } catch (Exception E) {
-                    Toast.makeText(getApplicationContext(), "  Couldn't remove friend : " + friendName, Toast.LENGTH_LONG).show();
                     try {
+                        Toast.makeText(getApplicationContext(), "  Couldn't remove friend : " + friendName, Toast.LENGTH_LONG).show();
                         Log.e("WEB ERROR", E.getMessage());
                     } catch (Exception ex){
+                        Toast.makeText(getApplicationContext(), "  Couldn't remove friend : " + friendName, Toast.LENGTH_LONG).show();
                         Log.e("WEB ERROR", "No error message received!");
                     }
                 }
