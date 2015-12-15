@@ -146,6 +146,7 @@ public class VacationActivity extends AppCompatActivity {
 
         adapter = new VacationAdapter(mContext, gridview, a, vacID);
         gridview.setAdapter(adapter);
+        adapter.updateView();
 
 
         Button buttonOk = (Button) findViewById(R.id.ButtonOk);
