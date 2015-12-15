@@ -1,5 +1,6 @@
 package com.jkpg.jurgen.nl.vacationdroid.core.login;
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -114,7 +115,7 @@ public class  LoginActivity extends AppCompatActivity {
                 .addToBackStack(null)
                 .commit();
     }
-    
+
 
     public void onLoginPress(View v) {
         //get data from view
@@ -196,6 +197,10 @@ public class  LoginActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        FragmentManager fm = getFragmentManager();
+        if (fm.getBackStackEntryCount() > 0)
+            fm.popBackStack();
+        else
+            super.onBackPressed();
     }
 }
