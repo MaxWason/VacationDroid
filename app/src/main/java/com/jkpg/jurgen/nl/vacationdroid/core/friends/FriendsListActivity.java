@@ -1,5 +1,6 @@
 package com.jkpg.jurgen.nl.vacationdroid.core.friends;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -169,6 +170,7 @@ public class FriendsListActivity extends AppCompatActivity {
     }
 
     private void removeFriend(final String friendName){
+        final Activity a = this;
         APIJsonCall dashcall = new APIJsonCall("users/" + username + "/friends/" + friendName, "DELETE", this) {
             @Override
             public void JsonCallback(JsonObject obj) {
@@ -177,6 +179,10 @@ public class FriendsListActivity extends AppCompatActivity {
                     //update the list and notify the user if successful
                     Toast.makeText(getApplicationContext(), "  Removed Friend : " + friendName, Toast.LENGTH_LONG).show();
                     arrayAdapter.remove(friendName);
+
+                    DBConnection db = new DBConnection(a);
+
+                    db.deleteFriendByString(friendName);
                     arrayAdapter.notifyDataSetChanged();
                 } catch (Exception E) {
                     try {

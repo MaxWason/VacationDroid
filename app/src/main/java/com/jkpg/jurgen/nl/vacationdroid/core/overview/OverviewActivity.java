@@ -108,7 +108,7 @@ public class OverviewActivity extends AppCompatActivity
                         User u = new User(j.get("id").getAsInt(), j.get("username").getAsString());
                         db.addOrUpdateUser(u);
                     }
-                    Log.d("USER", db.getFriends().size() + db.getFriends().size() != 0 ? db.getFriends().get(0).username : "no friends");
+                    //Log.d("USER", db.getFriends().size() + db.getFriends().size() != 0 ? db.getFriends().get(0).username : "no friends");
                     fetchFriendVacations();
                 }
 
@@ -137,7 +137,7 @@ public class OverviewActivity extends AppCompatActivity
                         db.addOrUpdateVacation(v);
                     }
                     ArrayList<Vacation> vacs = db.getVacations();
-                    Log.d("db select", "size: " + vacs.size() + " First item: " + (vacs.size() == 0 ? "None" : vacs.get(0).title));
+                    //Log.d("db select", "size: " + vacs.size() + " First item: " + (vacs.size() == 0 ? "None" : vacs.get(0).title));
                 }
                 updateFriendView();
                 updateUserDash();
