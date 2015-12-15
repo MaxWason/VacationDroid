@@ -206,7 +206,7 @@ public class DBConnection extends SQLiteOpenHelper {
     public void deleteFriendByString(String nm) {
         SQLiteDatabase db = getWritableDatabase();
 
-        db.delete("friends", "username = '"+ nm + "'", null);
+        db.delete("users", "username = '"+ nm + "'", null);
     }
     public Vacation getVacationById(int id) {
         SQLiteDatabase db = getReadableDatabase();
