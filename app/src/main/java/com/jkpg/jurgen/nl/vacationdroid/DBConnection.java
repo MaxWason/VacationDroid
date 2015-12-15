@@ -74,11 +74,7 @@ public class DBConnection extends SQLiteOpenHelper {
 
     public void addOrUpdateMedia(Media m) {
 
-        reCreateMedias(); // FIXME: 12/15/2015
-
         SQLiteDatabase db = getWritableDatabase();
-
-        db.execSQL("ALTER TABLE " + "medias" + " ADD COLUMN " + "type"+ " TEXT"); // FIXME: 12/15/2015
 
         ContentValues cv = new ContentValues();
         cv.put("_id", m.id);
@@ -88,19 +84,6 @@ public class DBConnection extends SQLiteOpenHelper {
 
 
         db.insertWithOnConflict("medias", "_id = ?", cv, SQLiteDatabase.CONFLICT_REPLACE);
-        db.close();
-    }
-
-    // FIXME: 12/15/2015
-    private void reCreateMedias() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DROP TABLE IF EXISTS " + "medias");
-        String sql = "CREATE TABLE " + "medias" + " ("
-                + "_id INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + "memoryid INTEGER, "
-                + "url TEXT NOT NULL, "
-                + "type" + "TEXT NOT NULL" + ");";
-        db.execSQL(sql);
         db.close();
     }
 

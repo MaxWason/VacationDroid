@@ -143,8 +143,8 @@ public class FriendsListActivity extends AppCompatActivity {
         alert.show();
     }
 
-    private void addFriend(String friendUsername){
-        JsonObject friend = new JsonObject();
+    private void addFriend(final String friendUsername){
+        final JsonObject friend = new JsonObject();
         friend.addProperty("username",friendUsername);
         APIJsonCall dashcall = new APIJsonCall("users/" + username + "/friends/" , "POST", this) {
             @Override
@@ -152,10 +152,11 @@ public class FriendsListActivity extends AppCompatActivity {
                 try {
                     Log.d("JASON", obj.toString());
                     //notify user and update list if successful
-                    Toast.makeText(getApplicationContext(), "  Added Friend : " + obj.toString(), Toast.LENGTH_SHORT).show();
-                    arrayAdapter.add(obj.toString());
+                    Toast.makeText(getApplicationContext(), "  Added Friend : " + friendUsername, Toast.LENGTH_SHORT).show();
+                    arrayAdapter.add(friendUsername);
                     arrayAdapter.notifyDataSetChanged();
                 } catch (Exception E) {
+                    Toast.makeText(getApplicationContext(), "  Couldn't add friend : " + friendUsername, Toast.LENGTH_SHORT).show();
                     try {
                         Log.e("WEB ERROR", E.getMessage());
                     } catch (Exception ex){
@@ -167,17 +168,18 @@ public class FriendsListActivity extends AppCompatActivity {
         dashcall.execute(friend);
     }
 
-    private void removeFriend(String friendName){
+    private void removeFriend(final String friendName){
         APIJsonCall dashcall = new APIJsonCall("users/" + username + "/friends/" + friendName, "DELETE", this) {
             @Override
             public void JsonCallback(JsonObject obj) {
                 try {
                     Log.d("JASON", obj.toString());
                     //update the list and notify the user if successful
-                    Toast.makeText(getApplicationContext(), "  Removed Friend : " + obj.toString(), Toast.LENGTH_LONG).show();
-                    arrayAdapter.remove(obj.toString());
+                    Toast.makeText(getApplicationContext(), "  Removed Friend : " + friendName, Toast.LENGTH_LONG).show();
+                    arrayAdapter.remove(friendName);
                     arrayAdapter.notifyDataSetChanged();
                 } catch (Exception E) {
+                    Toast.makeText(getApplicationContext(), "  Couldn't remove friend : " + friendName, Toast.LENGTH_LONG).show();
                     try {
                         Log.e("WEB ERROR", E.getMessage());
                     } catch (Exception ex){

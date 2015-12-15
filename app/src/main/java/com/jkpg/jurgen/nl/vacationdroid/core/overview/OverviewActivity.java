@@ -108,7 +108,7 @@ public class OverviewActivity extends AppCompatActivity
                         User u = new User(j.get("id").getAsInt(), j.get("username").getAsString());
                         db.addOrUpdateUser(u);
                     }
-                    Log.d("USER", db.getFriends().size() + db.getFriends().get(0).username);
+                    Log.d("USER", db.getFriends().size() + db.getFriends().size() != 0 ? db.getFriends().get(0).username : "no friends");
                     fetchFriendVacations();
                 }
 
