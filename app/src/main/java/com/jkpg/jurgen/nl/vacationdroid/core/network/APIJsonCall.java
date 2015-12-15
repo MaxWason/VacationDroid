@@ -65,6 +65,12 @@ public abstract class APIJsonCall extends AsyncTask<JsonObject, String, JsonObje
             Log.d("Network call", fullURL + " - " + response + ": " + connection.getResponseMessage());
             responsecode = response;
 
+            if(respone == 400) {
+                JsonObject created = new JsonObject();
+                Log.d("Network", "post call returned 400");
+                created.addProperty("error", "faulty request");
+                return created;
+            }
             //if it has been successfully created it will not return anything, so we create a message
             if(type == "POST" && (response == 201 || response == 200)) {
                 JsonObject created = new JsonObject();
