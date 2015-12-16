@@ -116,48 +116,44 @@ public class VacationListActivity extends AppCompatActivity {
         list.notifyList();
     }
 
+    /**
+     * Searches for a memory by the title. The domain searched is the current user.
+     * It returns the vacation that the memory searched for is in, so that the view is still compatible.
+     * The reason we did it this way was that this seemed to be the only realistic use case,
+     * and the exact implementation wasn't specified in the requirements.
+     *
+     * @param query - the title of the memory to search for
+     */
     private void doMySearch(String query) {
-        //TODO: api web call here (with current user/friend as other search param)
-        // --> /api/v1/memories/search?type=<type>&q=<query>
-//        GET: Returns a list of memories matching the search. <type> is
-//        where to look (user, place or title) and <query> is the
-//        value to search for.
-        final Activity a = this;
-        APIJsonCall searchcall = new APIJsonCall("memories/search?type=user&query="+query, "GET", this) {
-            @Override
-            public void JsonCallback(JsonObject obj) {
-                if (obj != null && !obj.has("error")) {
-                    JsonArray arrMemories = obj.getAsJsonArray("list");
-                    Log.d("MEMORYLIST", arrMemories.toString());
 
-                    DBConnection db = new DBConnection(a);
-                    ArrayList<Vacation> vacations = new ArrayList<>();
-                    Gson gson = new Gson();
-                    for (JsonElement el : arrMemories) {
-                        Memory m = gson.fromJson(el, Memory.class);
-                        System.out.println("memory: "+m.toString());
-                        int vacId = m.vacationid;
-                        for (Vacation vacation : vacations) {
-                            if (vacId > 0 && vacation.id != vacId) { //don't add duplicates
-                                Vacation myVac = db.getVacationById(vacId);
-                                if (myVac != null) {
-                                    vacations.add(myVac);
-                                    System.out.println("adding a vac");
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    for (Vacation vacation : vacations){
-                        System.out.println("Found vac: "+vacation.getTitle());
-                    }
-                    updateListView(); //TODO: fix
-                }else{
-                    System.out.println("obj is null");
+        final Activity a = this;
+
+        //empty search string, return immediately
+        if (query.isEmpty()){
+            updateListView();
+            return;
+        }
+
+        //get the database and initialize the vacations to return
+        DBConnection db = new DBConnection(a);
+        ArrayList<Vacation> returnVacations = new ArrayList<Vacation>();
+
+        //loop through to get the correct vacations
+        ArrayList<Vacation> allVacations = db.getUserVacations(nameToDisplay); //depends on current user
+        for (Vacation vacation : allVacations) {
+            ArrayList<Memory> memories = db.getMemoriesByVacation(vacation.getId());
+            for (Memory memory : memories) {
+                Vacation tempVac = db.getVacationById(memory.vacationid);
+                if (memory.title.equals(query.trim()) && (!returnVacations.contains(tempVac))) { //if search equal to the memory title and it is not in the vacation list already
+                    returnVacations.add(tempVac);
                 }
             }
-        };
-        searchcall.execute(new JsonObject());
+        }
+
+        if (returnVacations.size() > 0) {
+            VacationsItem list = (VacationsItem) getFragmentManager().findFragmentById(R.id.fragment_vac_item);
+            list.updateWithNewData(returnVacations);
+        }
 
     }
 

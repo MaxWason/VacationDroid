@@ -60,13 +60,18 @@ public class VacationsItem extends Fragment implements AbsListView.OnItemClickLi
         mAdapter = new VacationsAdapter(getActivity(), R.layout.fragment_vacation_list_dash, vacationArrayList);
     }
 
+    public void updateWithNewData(ArrayList<Vacation> newData){
+        mAdapter = new VacationsAdapter(getActivity(), R.layout.fragment_vacation_list_dash, newData);
+        mListView.setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
+    }
+
     public void notifyList() {
         getVacations();
         mAdapter.notifyDataSetChanged();
     }
     /**
      * Gets a list of vacations depending on if the user or a friend needs them.
-     * @return - the list of vacations
      */
     private void getVacations(){
 
