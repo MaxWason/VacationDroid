@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.jkpg.jurgen.nl.vacationdroid.core.vacationList.VacationListActivity">>
     <item
-        android:id="@+id/search_menu_test"
+        android:id="@+id/search_menu_vacation_list"
         android:title="@string/menu_search"
         android:icon="@android:drawable/ic_menu_search"
         app:showAsAction="ifRoom|collapseActionView"

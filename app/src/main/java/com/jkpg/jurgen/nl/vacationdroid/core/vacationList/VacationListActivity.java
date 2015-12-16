@@ -1,5 +1,6 @@
 package com.jkpg.jurgen.nl.vacationdroid.core.vacationList;
 
+import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -29,7 +30,10 @@ import com.jkpg.jurgen.nl.vacationdroid.DBConnection;
 import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
 import com.jkpg.jurgen.nl.vacationdroid.core.vacationList.logic.VacationsItem;
+import com.jkpg.jurgen.nl.vacationdroid.datamodels.Memory;
 import com.jkpg.jurgen.nl.vacationdroid.datamodels.Vacation;
+
+import java.util.ArrayList;
 
 public class VacationListActivity extends AppCompatActivity {
 
@@ -80,11 +84,6 @@ public class VacationListActivity extends AppCompatActivity {
 
         syncData(nameToDisplay);
 
-        //deal with the search bar
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            doMySearch(query);
-        }
     }
 
     private void syncData(final String username) {
@@ -119,7 +118,46 @@ public class VacationListActivity extends AppCompatActivity {
 
     private void doMySearch(String query) {
         //TODO: api web call here (with current user/friend as other search param)
-        //TODO IMPORTANT. THIS IS A REQUIREMENT, IT HAS TO BE DONE
+        // --> /api/v1/memories/search?type=<type>&q=<query>
+//        GET: Returns a list of memories matching the search. <type> is
+//        where to look (user, place or title) and <query> is the
+//        value to search for.
+        final Activity a = this;
+        APIJsonCall searchcall = new APIJsonCall("memories/search?type=user&query="+query, "GET", this) {
+            @Override
+            public void JsonCallback(JsonObject obj) {
+                if (obj != null && !obj.has("error")) {
+                    JsonArray arrMemories = obj.getAsJsonArray("list");
+                    Log.d("MEMORYLIST", arrMemories.toString());
+
+                    DBConnection db = new DBConnection(a);
+                    ArrayList<Vacation> vacations = new ArrayList<>();
+                    Gson gson = new Gson();
+                    for (JsonElement el : arrMemories) {
+                        Memory m = gson.fromJson(el, Memory.class);
+                        System.out.println("memory: "+m.toString());
+                        int vacId = m.vacationid;
+                        for (Vacation vacation : vacations) {
+                            if (vacId > 0 && vacation.id != vacId) { //don't add duplicates
+                                Vacation myVac = db.getVacationById(vacId);
+                                if (myVac != null) {
+                                    vacations.add(myVac);
+                                    System.out.println("adding a vac");
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    for (Vacation vacation : vacations){
+                        System.out.println("Found vac: "+vacation.getTitle());
+                    }
+                    updateListView(); //TODO: fix
+                }else{
+                    System.out.println("obj is null");
+                }
+            }
+        };
+        searchcall.execute(new JsonObject());
 
     }
 
@@ -134,10 +172,24 @@ public class VacationListActivity extends AppCompatActivity {
 
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.search_menu_test).getActionView();
+        SearchView searchView = (SearchView) menu.findItem(R.id.search_menu_vacation_list).getActionView();
         // Assumes current activity is the searchable activity
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                doMySearch(s);
+                return false; //collapses keyboard if false
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
 
         return true;
     }
