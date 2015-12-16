@@ -63,21 +63,14 @@ public class MediaActivity extends AppCompatActivity implements MediaPlayer.OnPr
             vv.setVisibility(View.GONE);
         }
         if(type.equals("sound")) {
-            try {
-
-                player = new MediaPlayer();
-
-                player.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                Uri uri = Uri.parse(s);
-                player.setDataSource(this, uri);
-                player.prepareAsync();
-
-
-            } catch (Exception e) {
-                // TODO: handle exception
-            }
-            iv.setVisibility(View.GONE);
-            vv.setVisibility(View.GONE);
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(s));
+            startActivity(browserIntent);
+            finish();
+        }
+        if(type.equals("video")) {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(s));
+            startActivity(browserIntent);
+            finish();
         }
 
     }

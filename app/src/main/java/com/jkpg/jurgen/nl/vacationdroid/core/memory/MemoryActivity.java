@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -27,8 +28,10 @@ import com.jkpg.jurgen.nl.vacationdroid.R;
 import com.jkpg.jurgen.nl.vacationdroid.core.network.APIJsonCall;
 import com.jkpg.jurgen.nl.vacationdroid.core.network.APIPictureCall;
 import com.jkpg.jurgen.nl.vacationdroid.core.network.APISoundCall;
+import com.jkpg.jurgen.nl.vacationdroid.core.network.APIVideoCall;
 import com.jkpg.jurgen.nl.vacationdroid.datamodels.Media;
 import com.jkpg.jurgen.nl.vacationdroid.datamodels.Memory;
+import com.jkpg.jurgen.nl.vacationdroid.datamodels.Vacation;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -51,6 +54,9 @@ public class MemoryActivity extends AppCompatActivity {
         Intent intent = getIntent();
         memoryID = intent.getIntExtra("id", -1);
         Log.d("IDMEMORY", memoryID + "");
+
+        SharedPreferences sp = getSharedPreferences("vacation", MODE_PRIVATE);
+        String name = sp.getString("username", "error");
 
         setContentView(R.layout.memory_list_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -105,6 +111,12 @@ public class MemoryActivity extends AppCompatActivity {
 
             }
         });
+        DBConnection db = new DBConnection(this);
+        Memory vac = db.getMemoryById(memoryID);
+        Vacation v = db.getVacationById(vac.vacationid);
+        if (!name.equals(v.user)) {
+            fab.setVisibility(FloatingActionButton.GONE);
+        }
 
     }
 
@@ -189,7 +201,48 @@ public class MemoryActivity extends AppCompatActivity {
                 }
                 break;
             case (RETURN_CODE_VID):
+                if (data != null) {
 
+                    Uri uri = data.getData();
+                    File video;
+
+
+                    Cursor cursor = null;
+                    try {
+                        String[] proj = {MediaStore.Video.Media.DATA};
+                        cursor = this.getContentResolver().query(uri, proj, null, null, null);
+                        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Video.VideoColumns.DATA);
+                        cursor.moveToFirst();
+                        String path = cursor.getString(column_index);
+                        video = new File(path);
+                    } finally {
+                        if (cursor != null) {
+                            cursor.close();
+                        }
+                    }
+
+                    JsonObject json = new JsonObject();
+                    json.addProperty("fileUrl", "video.mp4");
+                    json.addProperty("container", uri.getPath());
+                    json.addProperty("videoCodec", "AAC");
+                    json.addProperty("videoBitRate", "500");
+                    json.addProperty("width", "500");
+                    json.addProperty("height", "500");
+                    json.addProperty("frameRate", "30");
+                    json.addProperty("audioCodec", "FLAC");
+                    json.addProperty("audioBitRate", "320");
+                    json.addProperty("channels", "320");
+                    json.addProperty("samplingRate", "1000");
+
+                    Log.d("video", video.toString());
+                    APIVideoCall picture = new APIVideoCall(memoryID, video, this) {
+                        @Override
+                        public void JsonCallback(JsonObject obj) {
+
+                        }
+                    };
+                    picture.execute(json);
+                }
                 break;
         }
 

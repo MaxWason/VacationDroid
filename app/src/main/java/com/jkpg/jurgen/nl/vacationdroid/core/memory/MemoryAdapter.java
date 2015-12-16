@@ -83,6 +83,8 @@ public class MemoryAdapter extends BaseAdapter {
 
         if(medialist.get(position).type.equals("picture"))
             Picasso.with(mContext).load(medialist.get(position).fileurl).into(imageView);
+        else if (medialist.get(position).type.equals("video"))
+            imageView.setImageResource(R.drawable.video);
         else {
             imageView.setImageResource(R.drawable.sound);
         }
